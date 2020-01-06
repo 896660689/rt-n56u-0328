@@ -84,6 +84,20 @@
 			{0,0,0,0}
 		};
 
+	struct variable variables_AdbybyConf_AdIPList[] = {
+			{"adbybyip_mac_x", "14", NULL, FALSE},
+			{"adbybyip_ip_x", "17", NULL, FALSE},
+			{"adbybyip_name_x", "24", NULL, FALSE},
+			{"adbybyip_ip_road_x", "24", NULL, FALSE},
+			{0,0,0,0}
+		};
+
+	struct variable variables_AdbybyConf_AdRULESList[] = {
+			{"adbybyrules_x", "24", NULL, FALSE},
+			{"adbybyrules_road_x", "24", NULL, FALSE},
+			{0,0,0,0}
+		};
+
 	struct variable variables_LANHostConfig_VPNSACLList[] = {
 			{"vpns_user_x", "32", NULL, FALSE},
 			{"vpns_pass_x", "32", NULL, FALSE},
@@ -129,9 +143,6 @@
 #if defined (APP_TTYD)
 			{"ttyd_enable", "", NULL, EVM_RESTART_TTYD},
 			{"ttyd_port", "", NULL, EVM_RESTART_TTYD},
-#endif
-#if defined (APP_VLMCSD)
-			{"vlmcsd_enable", "", NULL, EVM_RESTART_VLMCSD},
 #endif
 #if defined (APP_NAPT66)
 			{"napt66_enable", "", NULL, FALSE},
@@ -775,63 +786,13 @@
 #endif
 			{0,0,0,0}
 		};
-		
-#if defined (APP_SCUT)
-	struct variable variables_ScutclientConf[] = {
-			{"scutclient_enable", "",NULL, EVM_RESTART_SCUT},
-			{"scutclient_debug","",NULL,EVM_RESTART_SCUT },
-			{"scutclient_username","",NULL,EVM_RESTART_SCUT },
-			{"scutclient_password","",NULL,EVM_RESTART_SCUT },
-			{"scutclient_server_auth_ip","",NULL,EVM_RESTART_SCUT },
-			{"scutclient_version","",NULL,EVM_RESTART_SCUT },
-			{"scutclient_hash","",NULL,EVM_RESTART_SCUT },
-			{"scutclient_hostname","",NULL,EVM_RESTART_SCUT },
-			{"scutclient_watchcat","",NULL,FALSE},
-			{"scutclient_wdg_force","",NULL,FALSE},
-			{"scutclient_skip_udp_hb","",NULL,EVM_RESTART_SCUT},
-			{0,0,0,0}
-	};
-#endif
-
-#if defined (APP_MENTOHUST)
-	struct variable variables_mentohustConf[] = {
-			{"mentohust_enable", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_username", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_password", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_nic", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_ip", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_mask", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_gw", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_dns", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_pinghost", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_timeout", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_interval", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_restart_wait", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_maxfail", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_startmode", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_dhcp", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_daemon", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_ver", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_datafile", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_dhcpscript", "", NULL, EVM_RESTART_MENTOHUST},
-			{"mentohust_service", "", NULL, EVM_RESTART_MENTOHUST},
-			{0,0,0,0}
-	};
-#endif
-
-#if defined(APP_DNSFORWARDER)
-	struct variable variables_dnsforwarderConf[] = {
-			{"dns_forwarder_enable", "", NULL, EVM_RESTART_DNSFORWARDER},
-			{"dns_forwarder_bind", "", NULL, EVM_RESTART_DNSFORWARDER},
-			{"dns_forwarder_port", "", NULL, EVM_RESTART_DNSFORWARDER},
-			{"dns_forwarder_server", "", NULL, EVM_RESTART_DNSFORWARDER},
-			{0,0,0,0}
-	};
-#endif
 
 #if defined(APP_SHADOWSOCKS)
 	struct variable variables_ShadowsocksConf[] = {
 			{"ss_enable","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"ss_dnsforwarder","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"ss_dnsproxy","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"ss_pdnsd","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"ss_type","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
 			{"ss_mode","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"ss_server","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
@@ -848,13 +809,36 @@
 			{"ss_proto_param","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
 			{"ss_obfs","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
 			{"ss_obfs_param","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
-			{"ss_watchcat","",NULL, FALSE},
+			{"ss_watchcat","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
+			{"ss_dns","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
 			{"ss_update_chnroute","",NULL, FALSE},
 			{"ss_update_gfwlist","",NULL, FALSE},
 			{"ss-tunnel_enable","",NULL, EVM_RESTART_SS_TUNNEL},
 			{"ss-tunnel_local_port","",NULL, EVM_RESTART_SS_TUNNEL},
 			{"ss-tunnel_remote","",NULL, EVM_RESTART_SS_TUNNEL},
 			{"ss-tunnel_mtu","",NULL, EVM_RESTART_SS_TUNNEL},
+			{"scripts.ss_dom.sh", "File", NULL, EVM_RESTART_SHADOWSOCKS},
+			{"scripts.ss_pc.sh", "File", NULL, EVM_RESTART_SHADOWSOCKS},
+			{0,0,0,0}
+	};
+#endif
+#if defined(APP_ADBYBY)
+    struct variable variables_AdbybyConf[] = {
+			{"adbyby_enable", "", NULL, EVM_RESTART_ADBYBY},
+			{"adbyby_rules_x", "", NULL, EVM_RESTART_ADBYBY},
+			{"hosts_ad", "", NULL, EVM_RESTART_ADBYBY},
+			{"tv_hosts", "", NULL, EVM_RESTART_ADBYBY},
+			{"adbyby_set", "", NULL, EVM_RESTART_ADBYBY},
+			{"adbyby_adb_update", "", NULL, EVM_RESTART_ADBYBY},
+			{"adbyby_update", "", NULL, EVM_RESTART_ADBYBY},
+			{"adbyby_update_hour", "", NULL, EVM_RESTART_ADBYBY},
+			{"adbyby_update_min", "", NULL, EVM_RESTART_ADBYBY},
+			{"adbybyrules_staticnum_x", "", NULL, EVM_RESTART_ADBYBY},
+			{"scripts.ad_blacklist.sh", "File", NULL, EVM_RESTART_ADBYBY},
+			{"scripts.ad_whitelist.sh", "File", NULL, EVM_RESTART_ADBYBY},
+			{"scripts.ad_custom.sh", "File", NULL, EVM_RESTART_ADBYBY},
+			{"AdIPList", "Group", ARGV((char*)variables_AdbybyConf_AdIPList, "8", "55", "adbybyip_staticnum_x"), EVM_RESTART_ADBYBY},
+			{"AdRULESList", "Group", ARGV((char*)variables_AdbybyConf_AdRULESList, "8", "55", "adbybyrules_staticnum_x"), EVM_RESTART_ADBYBY},
 			{0,0,0,0}
 	};
 #endif
@@ -966,17 +950,11 @@
 		{"DeviceSecurity11b",		variables_DeviceSecurity11b},
 		{"WLANAuthentication11a",	variables_WLANAuthentication11a},
 		{"WLANAuthentication11b",	variables_WLANAuthentication11b},
-#if defined(APP_DNSFORWARDER)
-		{"dnsforwarderConf",		variables_dnsforwarderConf},
-#endif
-#if defined(APP_SCUT)
-		{"ScutclientConf",		variables_ScutclientConf},
-#endif
-#if defined(APP_MENTOHUST)
-		{"mentohustConf",		variables_mentohustConf},
-#endif
 #if defined(APP_SHADOWSOCKS)
 		{"ShadowsocksConf",		variables_ShadowsocksConf},
+#endif
+#if defined(APP_ADBYBY)
+		{"AdbybyConf",		variables_AdbybyConf},
 #endif
 		{"LANGUAGE",			variables_Language},
 		{0,0}
@@ -1042,24 +1020,15 @@
 		{EVM_RESTART_ARIA,		EVT_RESTART_ARIA,		RCN_RESTART_ARIA,	EVM_RESTART_FIREWALL},
 #endif
 #endif
-#if defined(APP_SCUT)
-		{EVM_RESTART_SCUT,		EVT_RESTART_SCUT,		RCN_RESTART_SCUT,	0},
-#endif
-#if defined(APP_MENTOHUST)
-		{EVM_RESTART_MENTOHUST,		EVT_RESTART_MENTOHUST,		RCN_RESTART_MENTOHUST,	0},
-#endif
 #if defined(APP_TTYD)
 		{EVM_RESTART_TTYD,		EVT_RESTART_TTYD,		RCN_RESTART_TTYD,	0},
 #endif
-#if defined(APP_VLMCSD)
-		{EVM_RESTART_VLMCSD,	EVT_RESTART_VLMCSD,		RCN_RESTART_VLMCSD,	0},
-#endif
-#if defined(APP_DNSFORWARDER)
-		{EVM_RESTART_DNSFORWARDER,	EVT_RESTART_DNSFORWARDER,	RCN_RESTART_DNSFORWARDER, 0},
-#endif
 #if defined(APP_SHADOWSOCKS)
-		{EVM_RESTART_SHADOWSOCKS,	EVT_RESTART_SHADOWSOCKS,	RCN_RESTART_SHADOWSOCKS,  0},
-		{EVM_RESTART_SS_TUNNEL,		EVT_RESTART_SS_TUNNEL,		RCN_RESTART_SS_TUNNEL,	  0},
+		{EVM_RESTART_SHADOWSOCKS,	EVT_RESTART_SHADOWSOCKS,		RCN_RESTART_SHADOWSOCKS,	0},
+		{EVM_RESTART_SS_TUNNEL,		EVT_RESTART_SS_TUNNEL,		RCN_RESTART_SS_TUNNEL,	0},
+#endif
+#if defined(APP_ADBYBY)
+		{EVM_RESTART_ADBYBY,		EVT_RESTART_ADBYBY,		RCN_RESTART_ADBYBY,	0},
 #endif
 #if defined(APP_SMBD) || defined(APP_NMBD)
 		{EVM_RESTART_NMBD,		EVT_RESTART_NMBD,		RCN_RESTART_NMBD,	0},

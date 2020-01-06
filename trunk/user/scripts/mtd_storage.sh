@@ -217,27 +217,64 @@ func_fill()
 	user_sswan_conf="$dir_sswan/strongswan.conf"
 	user_sswan_ipsec_conf="$dir_sswan/ipsec.conf"
 	user_sswan_secrets="$dir_sswan/ipsec.secrets"
-	
+
 	chnroute_file="/etc_ro/chnroute.bz2"
 	gfwlist_conf_file="/etc_ro/gfwlist.bz2"
 
+	username=$(whoami)
+	[ -z $username ] && username=$(nvram get http_username)
 	# create crond dir
 	[ ! -d "$dir_crond" ] && mkdir -p -m 730 "$dir_crond"
+	if [ ! -f "$dir_crond/$username" ] ; then
+		touch "$dir_crond/$username"
+		chown $username:root "$dir_crond/$username"
+		cat > "$dir_crond/$username" <<EOF
+
+============路-由-定-时-控-制=====##删除前面#号启动命令##=================
+## 定时重启路由器
+#30 5 * * * reboot & #每天的5:30重启路由
+#30 3 * * 1 reboot & #每周一3:30重启路由
+##------------------------------------------------------------------
+## 定时开启关闭wan网络
+#30 05 * * * restart_wan  & #每天早上5:30点定时开网
+#15 02 * * * stop_wan  & #每天凌晨2:15点定时关网
+##-------------------------------------------------------------------
+## 定时开启关闭无线网络
+#35 5 * * * radio2_enable & #每天早上5:35开启无线2.4G
+#45 5 * * * radio5_enable & #每天早上5:45开启无线5G
+#30 01 * * 1-5 radio2_disable & #周一至周五早上1:30关闭无线2.4G
+#00 02 * * 6,0 radio2_disable & #周六至周日早上2:30关闭无线2.4G
+#30 22 * * 5,6 radio5_disable & #周五至周六晚上10:30关闭无线5G
+##------------------------------------------------------------------
+## 定时开启关闭无线来宾网络
+#0 6 * * * radio2_guest_enable & #每天早上6:00开启来宾无线2.4G
+#5 6 * * * radio5_guest_enable & #每天早上6:05开启来宾无线5G
+#30 20 * * 0-4 radio2_guest_disable & #周日至周四晚上8:30关闭来宾无线2.4G
+#30 21 * * 5,6 radio2_guest_disable & #周五至周六晚上9:30关闭来宾无线2.4G
+#30 21 * * 0-4 radio5_guest_disable & #周日至周四晚上9:30关闭来宾无线5G
+#30 22 * * 5,6 radio5_guest_disable & #周五至周六晚上10:30关闭来宾无线5G
+===============================END===================================
+
+EOF
+		chmod 644 "$dir_crond/$username"
+	fi
 
 	# create https dir
 	[ ! -d "$dir_httpssl" ] && mkdir -p -m 700 "$dir_httpssl"
 
 	# create chnroute.txt
 	if [ ! -d "$dir_chnroute" ] ; then
-		if [ -f "$chnroute_file" ]; then
+		if [ -f "$chnroute_file" ] ; then
 			mkdir -p "$dir_chnroute" && tar jxf "$chnroute_file" -C "$dir_chnroute"
+			chmod 644 "$dir_chnroute/chnroute.txt"
 		fi
 	fi
 
 	# create gfwlist
 	if [ ! -d "$dir_gfwlist" ] ; then
-		if [ -f "$gfwlist_conf_file" ]; then	
+		if [ -f "$gfwlist_conf_file" ] ; then
 			mkdir -p "$dir_gfwlist" && tar jxf "$gfwlist_conf_file" -C "$dir_gfwlist"
+			chmod 644 "$dir_gfwlist/gfw_list.conf"
 		fi
 	fi
 
@@ -256,11 +293,11 @@ func_fill()
 
 ### Example - load ipset modules
 #modprobe ip_set
-#modprobe ip_set_hash_ip
-#modprobe ip_set_hash_net
 #modprobe ip_set_bitmap_ip
 #modprobe ip_set_list_set
-#modprobe xt_set
+modprobe ip_set_hash_ip
+modprobe ip_set_hash_net
+modprobe xt_set
 
 #drop caches
 sync && echo 3 > /proc/sys/vm/drop_caches
@@ -283,7 +320,6 @@ EOF
 	fi
 
 	# create post-iptables script
-
 	if [ ! -f "$script_postf" ] ; then
 		cat > "$script_postf" <<EOF
 #!/bin/sh
@@ -473,26 +509,7 @@ dhcp-option=252,"\n"
 ### Set the boot filename for netboot/PXE
 #dhcp-boot=pxelinux.0
 
-### Log for all queries
-#log-queries
-
 EOF
-	if [ -f /usr/bin/vlmcsd ]; then
-		cat >> "$user_dnsmasq_conf" <<EOF
-### vlmcsd related
-srv-host=_vlmcs._tcp,my.router,1688,0,100
-
-EOF
-	fi
-
-	if [ -d $dir_gfwlist ]; then
-		cat >> "$user_dnsmasq_conf" <<EOF
-### gfwlist related (resolve by port 5353)
-#min-cache-ttl=3600
-#conf-dir=/etc/storage/gfwlist
-
-EOF
-	fi
 		chmod 644 "$user_dnsmasq_conf"
 	fi
 
@@ -534,7 +551,7 @@ EOF
 		cat > "$user_hosts" <<EOF
 # Custom user hosts file
 # Example:
-# 192.168.1.100		Boo
+# 192.168.2.80 Boo
 
 EOF
 		chmod 644 "$user_hosts"
@@ -689,3 +706,4 @@ fill)
 esac
 
 exit $result
+

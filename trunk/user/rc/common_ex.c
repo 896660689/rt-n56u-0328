@@ -145,15 +145,43 @@ get_eeprom_params(void)
 	char country_code[4];
 	char regspec_code[8];
 	char wps_pin[12];
-	char productid[16];
+	char productid[25];
 	char fwver[8], fwver_sub[32];
 
+	memset(buffer, 0xff, ETHER_ADDR_LEN);
+#if defined (VENDOR_TPLINK)
+	i_ret = flash_mtd_read("Romfile", 0xf100, buffer, ETHER_ADDR_LEN);
+	// Try Factory partition
+	if (i_ret < 0)
+		i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, 0xf100, buffer, ETHER_ADDR_LEN);
+	if (i_ret >=0 && !(buffer[0] & 0x01)) {
+		ether_etoa(buffer, macaddr_lan);
+		ether_etoa(buffer, macaddr_rt);
+		i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_WSOC, buffer_compare, ETHER_ADDR_LEN);
+		if (i_ret >= 0 && memcmp(buffer, buffer_compare, ETHER_ADDR_LEN) != 0) {
+			// write mac to ralink eeprom 2,4 Ghz
+			flash_mtd_write(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_WSOC, buffer, ETHER_ADDR_LEN);
+		}
+		buffer[5] += 1;
+		ether_etoa(buffer, macaddr_wan);
+		buffer[5] -= 2;
+		ether_etoa(buffer, macaddr_wl);
+#if defined (BOARD_HAS_5G_RADIO)
+		i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_INIC, buffer_compare, ETHER_ADDR_LEN);
+		if (i_ret >= 0 && memcmp(buffer, buffer_compare, ETHER_ADDR_LEN) != 0) {
+			// write mac to ralink eeprom 5 Ghz
+			flash_mtd_write(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_INIC, buffer, ETHER_ADDR_LEN);
+		}
+#endif
+	} else {
+		// no Romfile partition or error. Switch to ralink standart
+	}
+#endif
 #if (BOARD_5G_IN_SOC || !BOARD_HAS_5G_RADIO)
 	i_offset = OFFSET_MAC_ADDR_WSOC;
 #else
 	i_offset = OFFSET_MAC_ADDR_INIC;
 #endif
-	memset(buffer, 0xff, ETHER_ADDR_LEN);
 	i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, i_offset, buffer, ETHER_ADDR_LEN);
 	if (i_ret >= 0 && !(buffer[0] & 0x01))
 		ether_etoa(buffer, macaddr_wl);
@@ -252,7 +280,7 @@ get_eeprom_params(void)
 			if ((unsigned char)regspec_code[i] > 0x7f)
 				regspec_code[i] = 0;
 		}
-		
+
 		if (!check_regspec_code(regspec_code))
 			strcpy(regspec_code, "CE");
 	}
@@ -312,12 +340,12 @@ get_eeprom_params(void)
 	} else {
 		strncpy(productid, buffer + 4, 12);
 		productid[12] = 0;
-		
+
 		if(valid_subver(buffer[27]))
 			sprintf(fwver_sub, "%d.%d.%d.%d%c", buffer[0], buffer[1], buffer[2], buffer[3], buffer[27]);
 		else
 			sprintf(fwver_sub, "%d.%d.%d.%d", buffer[0], buffer[1], buffer[2], buffer[3]);
-		
+
 		sprintf(fwver, "%d.%d.%d.%d", buffer[0], buffer[1], buffer[2], buffer[3]);
 	}
 
@@ -362,7 +390,7 @@ get_eeprom_params(void)
 					count_0xff++;
 			}
 		}
-		
+
 		nvram_wlan_set_int(1, "txbf_en", (count_0xff == 33) ? 0 : 1);
 	}
 
@@ -419,8 +447,11 @@ restart_all_sysctl(void)
 #endif
 }
 
+
+/* dell 2017-0410 cn */
+
 void
-char_to_ascii(char *output, char *input)
+char_to_ascii(char *output, uint8_t *input)
 {
 	int i;
 	char tmp[10];
@@ -428,20 +459,24 @@ char_to_ascii(char *output, char *input)
 
 	ptr = output;
 
-	for ( i=0; i<strlen(input); i++ ) {
-		if ((input[i]>='0' && input[i] <='9')
-		   ||(input[i]>='A' && input[i]<='Z')
-		   ||(input[i] >='a' && input[i]<='z')
-		   || input[i] == '!' || input[i] == '*'
-		   || input[i] == '(' || input[i] == ')'
-		   || input[i] == '_' || input[i] == '-'
-		   || input[i] == '\'' || input[i] == '.') {
-			*ptr = input[i];
-			ptr ++;
-		} else {
-			sprintf(tmp, "%%%.02X", input[i]);
-			strcpy(ptr, tmp);
-			ptr += 3;
+		for (i = 0; i < strlen(input); i++)
+		{
+			if ((input[i] >= '0' && input[i] <= '9')
+				||(input[i] >= 'A' && input[i] <= 'Z')
+				||(input[i] >= 'a' && input[i] <= 'z')
+				|| input[i] == '!' || input[i] == '*'
+				|| input[i] == '(' || input[i] == ')'
+				|| input[i] == '_' || input[i] == '-'
+				|| input[i] == '\'' || input[i] == '.')
+			{
+				*ptr = input[i];
+				ptr ++;
+			}
+			else
+			{
+				sprintf(tmp, "%%%.02X", input[i]);
+				strcpy(ptr, tmp);
+				ptr += 3;
 		}
 	}
 	*(ptr) = '\0';
@@ -457,7 +492,9 @@ fput_string(const char *name, const char *value)
 		fputs(value, fp);
 		fclose(fp);
 		return 0;
-	} else {
+	}
+	else
+	{
 		return errno;
 	}
 }
@@ -511,14 +548,14 @@ load_user_config(FILE *fp, const char *dir_name, const char *file_name, const ch
 			    line[0] == '#' ||
 			    line[0] == ';')
 				continue;
-			
+
 			if (forbid_list && is_param_forbidden(line, forbid_list))
 				continue;
-			
+
 			line[strlen(line) - 1] = '\n';
 			fprintf(fp, line);
 		}
-		
+
 		fclose(fp_user);
 	}
 }
@@ -676,7 +713,7 @@ void umount_rwfs_partition(void)
 
 	if (check_if_dir_exist(mp_rwfs)) {
 		doSystem("/usr/bin/opt-umount.sh %s %s", "/dev/ubi", mp_rwfs);
-		
+
 		if (umount(mp_rwfs) == 0)
 			rmdir(mp_rwfs);
 	}
@@ -721,27 +758,27 @@ kill_services(char* svc_name[], int wtimeout, int forcekill)
 	if (wtimeout < 1)
 		wtimeout = 1;
 
-	for (i=0;svc_name[i] && *svc_name[i];i++)
+	for (i = 0;svc_name[i] && *svc_name[i];i++)
 		doSystem("killall %s %s", "-q", svc_name[i]);
 
-	for (k=0;k<wtimeout;k++) {
+	for (k = 0;k<wtimeout;k++) {
 		i_waited = 0;
-		for (i=0;svc_name[i] && *svc_name[i];i++) {
+		for (i = 0;svc_name[i] && *svc_name[i];i++) {
 			if (pids(svc_name[i])) {
 				i_waited = 1;
 				break;
 			}
 		}
-		
+
 		if (!i_waited)
 			break;
-		
+
 		sleep(1);
 	}
 
 	if (forcekill) {
 		i_killed = 0;
-		for (i=0;svc_name[i] && *svc_name[i];i++) {
+		for (i = 0;svc_name[i] && *svc_name[i];i++) {
 			if (pids(svc_name[i])) {
 				i_killed = 1;
 				doSystem("killall %s %s", "-SIGKILL", svc_name[i]);
@@ -760,7 +797,7 @@ kill_process_pidfile(char *pidfile, int wtimeout, int forcekill)
 	if (wtimeout < 1)
 		wtimeout = 1;
 
-	for (i=0; i<wtimeout; i++) {
+	for (i = 0; i<wtimeout; i++) {
 		if (kill_pidfile(pidfile) != 0)
 			break;
 		result = 0; // process exist
@@ -902,3 +939,4 @@ get_hotplug_action(const char *action)
 
 	return 1;
 }
+

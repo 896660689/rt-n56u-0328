@@ -208,7 +208,7 @@ function showLANIPList(){
 				show_name = wds_aplist[i][0].substring(0, 14) + "..";
 			else
 				show_name = wds_aplist[i][0];
-			
+
 			if(wds_aplist[i][1] && wds_aplist[i][1].length > 0){
 				code += '<a href="javascript:void(0)"><div onclick="setClientIP('+i+');"><strong>'+show_name+'</strong>';
 				code += ' ['+wds_aplist[i][1]+']';
@@ -267,7 +267,7 @@ function hideClients_Block(){
     <input type="hidden" name="current_page" value="Advanced_WMode_Content.asp">
     <input type="hidden" name="next_page" value="">
     <input type="hidden" name="next_host" value="">
-    <input type="hidden" name="sid_list" value="WLANConfig11a;">
+    <input type="hidden" name="sid_list" value="WLANConfig11a;General;">
     <input type="hidden" name="group_id" value="RBRList">
     <input type="hidden" name="action_mode" value="">
     <input type="hidden" name="action_script" value="">
@@ -361,7 +361,7 @@ function hideClients_Block(){
 
                                     <table width="100%" align="center" cellpadding="4" cellspacing="0" class="table">
                                         <tr id="row_wds_apc" style="display:none;">
-                                            <th width="50%"><a id="ctl_apc_1" class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 1);"><#APSTA_SSID#></a></th>
+                                            <th width="50%"><a id="ctl_apc_1" class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this, 0, 1);"><#WLANConfig11b_Channel_itemonssid#></a></th>
                                             <td>
                                                 <div id="WDSAPList" class="alert alert-info ddown-list"></div>
                                                 <div class="input-append" style="float: left;">
@@ -440,3 +440,4 @@ function hideClients_Block(){
 </div>
 </body>
 </html>
+

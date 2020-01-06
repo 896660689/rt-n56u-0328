@@ -195,7 +195,7 @@ $j(document).ready(function() {
 
         $j.each(devices, function(mac, name){
             var vendor = '';
-            var btn = '<button class="btn btn-info btn_wakeup"><#WOL_Wake_up#></button><div class="wol_response" class="alert"></div>';
+            var btn = '<button class="btn btn-info btn_wakeup"><#MAC_Wakeup#></button><div class="wol_response" class="alert"></div>';
 
             t_body += '<tr>\n';
             t_body += '  <td class="mac">'+mac+'</td>\n';
@@ -305,7 +305,7 @@ $j(document).ready(function() {
                                                 <input style="float: left; margin-right: 5px; font-family: monospace" id="wol_mac" type="text" maxlength="17" class="span12 mac" size="15" name="wol_mac" value="<% nvram_get_x("","wol_mac_last"); %>"/>
                                             </td>
                                             <td style="border-top: 0 none; ">
-                                                <input type="button" id="wol_btn" class="btn btn-primary" value="<#WOL_Wake_up#>" />
+                                                <input type="button" id="wol_btn" class="btn btn-primary" value="<#MAC_Wakeup#>" />
                                                 <div class="wol_response" class="alert"></div>
                                             </td>
                                         </tr>
@@ -315,7 +315,7 @@ $j(document).ready(function() {
                                         <tr>
                                             <th width="25%"><#MAC_Address#></th>
                                             <th width="25%"><#Computer_Name#></th>
-                                            <th width="35%"><#WOL_Vendor#></th>
+                                            <th width="35%"><#MAC_Vendor#></th>
                                             <th width="15%">&nbsp;</th>
                                         </tr>
                                     </table>
@@ -334,3 +334,4 @@ $j(document).ready(function() {
 </div>
 </body>
 </html>
+

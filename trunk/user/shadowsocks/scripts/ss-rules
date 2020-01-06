@@ -85,7 +85,7 @@ ipt_nat() {
 	ipt="iptables -t nat"
 	$ipt -A SS_SPEC_WAN_FW -p tcp \
 		-j REDIRECT --to-ports $local_port || return 1
-	if [ -n "$OUTPUT" ]; then
+	if [ -n "$OUTPUT" ] ; then
 		$ipt -N SS_SPEC_WAN_DG
 		$ipt -A SS_SPEC_WAN_DG -m set --match-set ss_spec_dst_sp dst -j RETURN
 		$ipt -A SS_SPEC_WAN_DG -p tcp $EXT_ARGS -j $OUTPUT
@@ -96,7 +96,7 @@ ipt_nat() {
 
 ipt_mangle() {
 	[ -n "$TPROXY" ] || return 0
-	if !(lsmod | grep -q TPROXY ); then
+	if ! (lsmod | grep -q TPROXY ); then
 		loger 4 "TPROXY or ip not found."
 		return 0
 	fi
@@ -146,11 +146,8 @@ gen_special_purpose_ip() {
 		172.16.0.0/12
 		192.0.0.0/24
 		192.0.2.0/24
-		192.31.196.0/24
-		192.52.193.0/24
 		192.88.99.0/24
 		192.168.0.0/16
-		192.175.48.0/24
 		198.18.0.0/15
 		198.51.100.0/24
 		203.0.113.0/24
@@ -252,12 +249,14 @@ while getopts ":s:l:S:L:B:b:W:w:I:d:a:e:oOuUfh" arg; do
 	esac
 done
 
-[ -z "$server" -o -z "$local_port" ] && usage 2
+if [ -z "$server" -o -z "$local_port" ] ; then
+	usage 2
+fi
 
-if [ "$TPROXY" = 1 ]; then
+if [ "$TPROXY" = 1 ] ; then
 	unset SERVER
 	LOCAL_PORT=$local_port
-elif [ "$TPROXY" = 2 ]; then
+elif [ "$TPROXY" = 2 ] ; then
 	: ${SERVER:?"You must assign an ip for the udp relay server."}
 	: ${LOCAL_PORT:?"You must assign a port for the udp relay server."}
 fi

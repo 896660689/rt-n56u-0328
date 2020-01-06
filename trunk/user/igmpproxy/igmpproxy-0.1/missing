@@ -49,7 +49,7 @@ case $1 in
   # Try to run requested program, and just exit if it succeeds.
   run=
   shift
-  "$@" && exit 0
+  $@ && exit 0
   # Exit code 63 means version mismatch.  This often happens
   # when the user try to use an ancient version of a tool on
   # a file that requires a minimum version.  In this case we

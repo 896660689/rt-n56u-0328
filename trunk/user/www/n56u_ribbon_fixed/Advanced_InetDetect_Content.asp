@@ -34,11 +34,11 @@ function initial(){
 function applyRule(){
 	if(validForm()){
 		showLoading();
-		
+
 		document.form.action_mode.value = " Apply ";
 		document.form.current_page.value = "/Advanced_InetDetect_Content.asp";
 		document.form.next_page.value = "";
-		
+
 		document.form.submit();
 	}
 }
@@ -65,7 +65,7 @@ function validForm(){
 	if (document.form.di_poll_mode.value == "1"){
 		if(!validate_range(document.form.di_lost_delay, 0, 600))
 			return false;
-		
+
 		if (document.form.di_lost_action.value == "2" && !get_ap_mode()){
 			if(!validate_range(document.form.di_recon_pause, 0, 600))
 				return false;
@@ -254,9 +254,10 @@ function done_validating(action){
                                         </tr>
                                         <tr>
                                             <td colspan="2" style="padding-bottom: 0px;">
+                                            <span class="icon-hand-right"></span>
                                                 <a href="javascript:spoiler_toggle('script3')"><span><#RunInetState#></span></a>
                                                 <div id="script3" style="display:none;">
-                                                    <textarea rows="16" wrap="off" spellcheck="false" maxlength="8192" class="span12" name="scripts.inet_state_script.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.inet_state_script.sh",""); %></textarea>
+                                                    <textarea rows="16" wrap="off" spellcheck="false" maxlength="18192" class="span12" name="scripts.inet_state_script.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.inet_state_script.sh",""); %></textarea>
                                                 </div>
                                             </td>
                                         </tr>
@@ -284,3 +285,4 @@ function done_validating(action){
 </div>
 </body>
 </html>
+

@@ -1,5 +1,5 @@
-SRC_NAME=libwebsockets-2.4.2
-SRC_URL=https://github.com/warmcat/libwebsockets/archive/v2.4.2.tar.gz
+SRC_NAME=libwebsockets-3.2.1
+SRC_URL=git clone https://github.com/warmcat/libwebsockets.git
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)/build
@@ -41,3 +41,4 @@ install:
 
 romfs:
 	cp -fP $(DESTDIR)/lib/libwebsockets.so* $(ROMFSDIR)/lib
+

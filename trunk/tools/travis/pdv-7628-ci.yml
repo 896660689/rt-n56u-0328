@@ -1,4 +1,4 @@
-dist: bionic
+dist: xenial
 
 language: c
 
@@ -7,15 +7,27 @@ compiler:
 
 env:
     global:
-      - targets="HC5861B MI-NANO MZ-R13 360P2 HC5761A HC5661A"
-      - toolchain_url="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.0/mipsel-linux-uclibc.tar.xz"
+      - targets="HC5861B 360P2 MZ-R13 MZ-R13P HC5661A"
+      - toolchain_url="https://github.com/896660689/padavan-toolchain/releases/download/1108/mipsel-linux-uclibc.tar.xz"
+      - secure: "GGHrKCkSvtNDttSd6jMV8cm6Cqv0LvpKz4s55N/Nl3WduMV0W/sixAquQ6a3/MNIvfosVsE9J+etT6lIeKap1X1awnLzpTU2shi7jJN7pBwh/aomsKPpuGFF4w56cQKJqi7It3l6T/Xd02r059mbQkfx3H0MyjXlwcIf1rPhtnksxAQ7tFYmLMuCClahgN42+JL6Brmy2gkL3kY7W0rtUd6SZ7H16gTW+Rm1eJMU1kBMku9wz3cgu9jLuBrgE6RgDDE5nMfVimJbEWo2pkVJH2sTWu3nvZ3S+3WNHNJvkpb08Sx7NCB9IYrWQgzNHRd0YkptksDJ1qZNepaO03uHPZfscLl9O8UinJpkp1DCwnQK9yQ3SbbZy2S1i492c+93z2reTSrXu+PIe1U12tVmXx5Vk7RbWuErHW9+Uq1fYbqK9GvPtZbpHusiphA+5WeaNyRCO+9axjn9pGVnsaBWjyH2pKV4N7o1pQIydmPgxqmQe45y/oZ0rMIsLyUEImvCkDg4tfig22NierCbhT+LFnu1fHE1RpS2kzrwXmy/w5UNVAP3zF+hS59YVuSnRgP0sKuRZyTeHHGrIgNAdAv5fSjsGgHtYaKnMXoypXMETZAJFdnDGOJM5AYNhVAgWd59YcF4AaF0xZwz0w8t9q4rq1p50KJxu6sZW5XvhlqrOr0="
+
+before_deploy:
+    - openssl aes-256-cbc -K $encrypted_5ce6dd74edeb_key -iv $encrypted_5ce6dd74edeb_iv -in deploy_key.enc -out deploy_key -d
+    - in .travis/deploy_key.enc -out .travis/deploy_key -d
+    - eval $(ssh-agent -s)
+    - chmod 600 .travis/deploy_key
+    - ssh-add .travis/deploy_key
 
 addons:
     apt:
-      packages: [ fakeroot, p7zip-full, libtool-bin, gperf, texinfo, python-docutils, autopoint ]
+      packages: [ fakeroot, p7zip-full, autoconf, automake, bison, build-essential,
+        flex, gawk, gettext, gperf, libtool, pkg-config, zlib1g-dev, libgmp3-dev,
+        libmpc-dev, libmpfr-dev, texinfo, python-docutils, libncurses5-dev, curl,
+        autopoint, libltdl-dev, cmake, m4, perl, build-essential, pkg-config,
+        libgmp3-dev, libmpfr-dev, libmpc-dev, python-docutils, mc, tinc, -y ]
 
 before_script:
-    - cd /opt && git clone --depth=1 https://github.com/hanwckf/rt-n56u.git
+    - cd /opt && git clone --depth=3 --branch=k2x https://github.com/896660689/rt-n56u.git
     - rm -rf ./rt-n56u/toolchain-mipsel/ && mkdir -p ./rt-n56u/toolchain-mipsel/toolchain-3.4.x && mkdir -p ./images
     - wget $toolchain_url && tar -xf mipsel-linux-uclibc.tar.xz -C ./rt-n56u/toolchain-mipsel/toolchain-3.4.x
     - ls -Alh /opt/rt-n56u && cd /opt/rt-n56u/trunk/
@@ -24,9 +36,10 @@ script:
     - for m in $targets; do fakeroot ./build_firmware_nohup $m && cp -f images/*.trx /opt/images/$m.trx; ./clear_tree_simple >/dev/null 2>&1; done
 
 after_script:
-    - GIT_VERSION=`git rev-parse --short=7 HEAD 2>/dev/null` && [ -n "$GIT_VERSION" ] && image_name=images_mt7628_$GIT_VERSION || image_name=images_mt7628
-    - cd /opt/images; du -k *; md5sum *.trx |tee md5sum.txt; 7z a -mx=9 ${image_name}.7z ./*
+    - GIT_VERSION=`git rev-parse --short=7 HEAD 2>/dev/null` && [ -n "$GIT_VERSION" ] && image_name=images_mt7621_$GIT_VERSION || image_name=images_mt7621
+    - cd /opt/images; du -k *; md5sum *.trx |tee md5sum.txt ; 7z a -mx=9 ${image_name}.7z ./*
     - "curl -m 180 -H 'Max-Days: 3' --upload-file ./${image_name}.7z https://transfer.sh/${image_name}.7z ; echo"
 
 git:
     depth: 3
+

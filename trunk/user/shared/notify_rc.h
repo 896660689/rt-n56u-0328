@@ -60,15 +60,13 @@
 #define RCN_RESTART_ITUNES		"restart_itunes"
 #define RCN_RESTART_TRMD		"restart_trmd"
 #define RCN_RESTART_ARIA		"restart_aria"
-#define RCN_RESTART_SCUT		"restart_scutclient"
-#define RCN_RESTART_MENTOHUST	"restart_mentohust"
 #define RCN_RESTART_TTYD		"restart_ttyd"
-#define RCN_RESTART_VLMCSD		"restart_vlmcsd"
-#define RCN_RESTART_SHADOWSOCKS	"restart_shadowsocks"
+#define RCN_RESTART_SHADOWSOCKS		"restart_shadowsocks"
 #define RCN_RESTART_CHNROUTE_UPD	"restart_chnroute_upd"
-#define RCN_RESTART_DNSFORWARDER	"restart_dns_forwarder"
 #define RCN_RESTART_SS_TUNNEL		"restart_ss_tunnel"
 #define RCN_RESTART_GFWLIST_UPD		"restart_gfwlist_upd"
+#define RCN_RESTART_ADBYBY		"restart_adbyby"
+#define RCN_RESTART_UPDATEADB		"update_adb"
 #define RCN_RESTART_REBOOT		"restart_reboot"
 
 ////////////////////////////////////////////////////////////
@@ -81,3 +79,4 @@ extern void notify_rc_and_wait(const char *event_name, int wait_sec);
 
 
 #endif /* NOTIFY_RC_H */
+

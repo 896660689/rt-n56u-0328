@@ -196,7 +196,7 @@ is_sshd_run(void)
 		if (pids("sshd"))
 			return 1;
 	}
-	
+
 	return 0;
 }
 
@@ -231,62 +231,6 @@ restart_sshd(void)
 	if ((is_run_after != is_run_before) && nvram_match("sshd_wopen", "1") && nvram_match("fw_enable_x", "1"))
 		restart_firewall();
 }
-#endif
-
-#if defined(APP_SCUT)
-int is_scutclient_run(void)
-{
-	if(pids("bin_scutclient"))
-		return 1;
-	return 0;
-}
-void stop_scutclient(void)
-{
-	eval("/usr/bin/scutclient.sh","stop");
-}
-
-void start_scutclient(void)
-{
-	int scutclient_mode = nvram_get_int("scutclient_enable");
-	if (scutclient_mode == 1)
-		eval("/usr/bin/scutclient.sh","start");
-}
-
-void restart_scutclient(void)
-{
-	stop_scutclient();
-	start_scutclient();
-}
-
-#endif
-
-
-#if defined(APP_MENTOHUST)
-
-int is_mentohust_run(void)
-{
-	if(pids("bin_mentohust"))
-		return 1;
-	return 0;
-}
-void stop_mentohust(void)
-{
-	eval("/usr/bin/mentohust.sh","stop");
-}
-
-void start_mentohust(void)
-{
-	int mode = nvram_get_int("mentohust_enable");
-	if (mode == 1)
-		eval("/usr/bin/mentohust.sh","start");
-}
-
-void restart_mentohust(void)
-{
-	stop_mentohust();
-	start_mentohust();
-}
-
 #endif
 
 #if defined(APP_TTYD)
@@ -347,40 +291,6 @@ void update_gfwlist(void){
 
 #endif
 
-#if defined(APP_VLMCSD)
-void stop_vlmcsd(void){
-	eval("/usr/bin/vlmcsd.sh","stop");
-}
-
-void start_vlmcsd(void){
-	int vlmcsd_mode = nvram_get_int("vlmcsd_enable");
-	if ( vlmcsd_mode == 1)
-		eval("/usr/bin/vlmcsd.sh","start");
-}
-
-void restart_vlmcsd(void){
-	stop_vlmcsd();
-	start_vlmcsd();
-}
-#endif
-
-#if defined(APP_DNSFORWARDER)
-void stop_dnsforwarder(void){
-	eval("/usr/bin/dns-forwarder.sh","stop");
-}
-
-void start_dnsforwarder(void){
-	int dnsforwarder_mode = nvram_get_int("dns_forwarder_enable");
-	if (dnsforwarder_mode == 1)
-		eval("usr/bin/dns-forwarder.sh","start");
-}
-
-void restart_dnsforwarder(void){
-	stop_dnsforwarder();
-	start_dnsforwarder();
-}
-#endif
-
 #if defined(APP_NAPT66)
 void start_napt66(void){
 	int napt66_mode = nvram_get_int("napt66_enable");
@@ -395,6 +305,27 @@ void start_napt66(void){
 			logmessage("napt66","Invalid wan6 ifname!");
 		}
 	}
+}
+#endif
+
+#if defined(APP_ADBYBY)
+void stop_adbyby(void){
+	eval("/usr/bin/adbyby.sh","stop");
+}
+
+void start_adbyby(void){
+	int adbyby_mode = nvram_get_int("adbyby_enable");
+	if ( adbyby_mode == 1)
+		eval("/usr/bin/adbyby.sh","start");
+}
+
+void restart_adbyby(void){
+	stop_adbyby();
+	start_adbyby();
+}
+
+void update_adb(void){
+	eval("/usr/bin/adbyby.sh","updateadb");
 }
 #endif
 
@@ -429,12 +360,12 @@ start_httpd(int restart_fw)
 			http_port = 80;
 			nvram_set_int("http_lanport", http_port);
 		}
-		
+
 		sprintf(http_port_s, "%d", http_port);
-		
+
 		httpd_argv[argv_index++] = "-p";
 		httpd_argv[argv_index++] = http_port_s;
-		
+
 		restart_fw_need |= nvram_get_int("misc_http_x");
 	}
 
@@ -445,12 +376,12 @@ start_httpd(int restart_fw)
 			https_port = 443;
 			nvram_set_int("https_lport", https_port);
 		}
-		
+
 		sprintf(https_port_s, "%d", https_port);
-		
+
 		httpd_argv[argv_index++] = "-s";
 		httpd_argv[argv_index++] = https_port_s;
-		
+
 		restart_fw_need |= nvram_get_int("https_wopen");
 	}
 #endif
@@ -530,7 +461,7 @@ start_logger(int showinfo)
 	{
 		// wait for logger daemon started
 		usleep(300000);
-		
+
 #if 0
 #if defined (VENDOR_ASUS)
 		logmessage(LOGNAME, "bootloader version: %s", nvram_safe_get("blver"));
@@ -584,7 +515,7 @@ start_services_once(int is_ap_mode)
 	if (!is_ap_mode) {
 		if (!is_upnp_run())
 			start_upnp();
-		
+
 		if (!nvram_match("lan_stp", "0")) {
 			br_set_stp(IFNAME_BR, 1);
 			br_set_fd(IFNAME_BR, 15);
@@ -596,12 +527,6 @@ start_services_once(int is_ap_mode)
 #endif
 	}
 
-#if defined(APP_SCUT)
-	start_scutclient();
-#endif
-#if defined(APP_DNSFORWARDER)
-	start_dnsforwarder();
-#endif
 #if defined(APP_SHADOWSOCKS)
 	start_ss();
 	start_ss_tunnel();
@@ -609,17 +534,15 @@ start_services_once(int is_ap_mode)
 #if defined(APP_TTYD)
 	start_ttyd();
 #endif
-#if defined(APP_VLMCSD)
-	start_vlmcsd();
+#if defined(APP_ADBYBY)
+	start_adbyby();
 #endif
 	start_lltd();
 	start_watchdog_cpu();
 	start_crond();
 	start_networkmap(1);
 	start_rstats();
-#if defined(APP_MENTOHUST)
-	start_mentohust();
-#endif
+
 	return 0;
 }
 
@@ -643,14 +566,11 @@ stop_services(int stopall)
 	stop_u2ec();
 #endif
 #endif
-#if defined(APP_SCUT)
-	stop_scutclient();
-#endif
-#if defined(APP_MENTOHUST)
-	stop_mentohust();
-#endif
 #if defined(APP_TTYD)
 	stop_ttyd();
+#endif
+#if defined(APP_ADBYBY)
+	stop_adbyby();
 #endif
 	stop_networkmap();
 	stop_lltd();
@@ -684,3 +604,4 @@ stop_misc(void)
 
 	kill_services(svcs, 3, 1);
 }
+

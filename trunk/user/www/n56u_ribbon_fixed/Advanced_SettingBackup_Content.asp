@@ -85,7 +85,7 @@ function applyRule(){
 
 function restoreNVRAM(){
 	var alert_string = "<#Setting_factorydefault_hint1#>";
-	if(lan_ipaddr != "192.168.1.1")
+	if(lan_ipaddr != "192.168.2.1")
 		alert_string += "\n<#Setting_factorydefault_iphint#>\n";
 	alert_string += "\n<#Setting_factorydefault_hint2#>";
 	if(confirm(alert_string)){
@@ -446,3 +446,4 @@ $j.fn.fileName = function() {
 </div>
 </body>
 </html>
+

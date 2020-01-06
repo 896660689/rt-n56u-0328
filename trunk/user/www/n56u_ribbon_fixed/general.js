@@ -587,7 +587,7 @@ function validate_ipaddr_final(o, v) {
                 document.form.wan_netmask.value = "255.0.0.0";
             }
             else if (v == 'lan_ipaddr') {
-                document.form.lan_ipaddr.value = "192.168.1.1";
+                document.form.lan_ipaddr.value = "192.168.2.1";
                 document.form.lan_netmask.value = "255.255.255.0";
             }
             o.focus();
@@ -865,7 +865,7 @@ function validate_portrange(o,v) {
             o.select();
             return false;
         }
-    } // wrong port 
+    } // wrong port
     else {
         if (prev == -2) {
             if (num == 65535) o.value = num;
@@ -1319,3 +1319,4 @@ function showhide_div(e, sh) {
     else if (document.layers)
         document.layers[e].display = status;
 }
+

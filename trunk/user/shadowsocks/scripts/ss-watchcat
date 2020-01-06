@@ -1,0 +1,33 @@
+#!/bin/sh
+
+SS_WATCHDOG_PID="/var/run/ss-watchdog.pid"
+echo "$$" > $SS_WATCHDOG_PID
+
+LOGFILE="/tmp/ss-watchcat.log"
+Ssr_App="/usr/bin/shadowsocks.sh"
+Google_Website="www.google.com"
+Baidu_Website="www.baidu.com"
+
+while true; do
+sleep 120
+loger(){
+	LOGSIZE=$(wc -c < $LOGFILE)
+	[ "$LOGSIZE" -ge 5000 ] && sed -i -e 1,10d $LOGFILE
+	time=$(date "+%H:%M:%S")
+	echo "$time ss-watchcat $1" >> $LOGFILE
+}
+
+wget -s -q -T 3 $Google_Website > /dev/null
+if [ "$?" == "0" ]; then
+	loger "Shadowsocks-运行正常,世界之窗已开启..."
+else
+	wget -s -q -T 3 $Baidu_Website > /dev/null
+	if [ "$?" == "0" ]; then
+		loger "网络正常,Ssr-服务失败,重新启动-Shadowsocks..."
+		$Ssr_App restart > /dev/null 2>&1
+	else
+		loger "互联网络未接通-已断网......"
+	fi
+fi
+done
+

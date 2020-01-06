@@ -84,11 +84,11 @@ function initial(){
 function applyRule(){
 	if(validForm()){
 		showLoading();
-		
+
 		document.form.action_mode.value = " Restart ";
 		document.form.current_page.value = "/Advanced_DHCP_Content.asp";
 		document.form.next_page.value = "";
-		
+
 		document.form.submit();
 	}
 }
@@ -209,13 +209,13 @@ function setClientMAC(num){
 function showLANIPList(){
 	var code = "";
 	var show_name = "";
-	
+
 	for(var i = 0; i < clients_info.length ; i++){
 		if(clients_info[i][0] && clients_info[i][0].length > 20)
 			show_name = clients_info[i][0].substring(0, 18) + "..";
 		else
 			show_name = clients_info[i][0];
-		
+
 		if(clients_info[i][2]){
 			code += '<a href="javascript:void(0)"><div onclick="setClientMAC('+i+');"><strong>'+clients_info[i][1]+'</strong>';
 			code += ' ['+clients_info[i][2]+']';
@@ -226,7 +226,7 @@ function showLANIPList(){
 	}
 	if (code == "")
 		code = '<div style="text-align: center;" onclick="hideClients_Block();"><#Nodata#></div>';
-	code +='<!--[if lte IE 6.5]><iframe class="hackiframe2"></iframe><![endif]-->';	
+	code +='<!--[if lte IE 6.5]><iframe class="hackiframe2"></iframe><![endif]-->';
 	$("ClientList_Block").innerHTML = code;
 }
 
@@ -512,14 +512,16 @@ function changeBgColor(obj, num){
                                         </tr>
                                         <tr>
                                             <td colspan="2">
+						<span class="icon-hand-right"></span>
                                                 <a href="javascript:spoiler_toggle('spoiler_conf')"><span><#CustomConf#> "dnsmasq.conf"</span></a>
                                                 <div id="spoiler_conf" style="display:none;">
-                                                    <textarea rows="16" wrap="off" spellcheck="false" maxlength="4096" class="span12" name="dnsmasq.dnsmasq.conf" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("dnsmasq.dnsmasq.conf",""); %></textarea>
+                                                    <textarea rows="16" wrap="off" spellcheck="false" maxlength="16384" class="span12" name="dnsmasq.dnsmasq.conf" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("dnsmasq.dnsmasq.conf",""); %></textarea>
                                                 </div>
                                             </td>
                                         </tr>
                                         <tr id="row_dservers">
                                             <td colspan="2">
+						<span class="icon-hand-right"></span>
                                                 <a href="javascript:spoiler_toggle('spoiler_dservers')"><span><#CustomConf#> "dnsmasq.servers"</span></a>
                                                 <div id="spoiler_dservers" style="display:none;">
                                                     <textarea rows="16" wrap="off" spellcheck="false" maxlength="16384" class="span12" name="dnsmasq.dnsmasq.servers" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("dnsmasq.dnsmasq.servers",""); %></textarea>
@@ -528,9 +530,10 @@ function changeBgColor(obj, num){
                                         </tr>
                                         <tr id="row_hosts">
                                             <td colspan="2" style="padding-bottom: 0px;">
+						<span class="icon-hand-right"></span>
                                                 <a href="javascript:spoiler_toggle('spoiler_hosts')"><span><#CustomConf#> "hosts"</span></a>
                                                 <div id="spoiler_hosts" style="display:none;">
-                                                    <textarea rows="16" wrap="off" spellcheck="false" maxlength="8192" class="span12" name="dnsmasq.hosts" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("dnsmasq.hosts",""); %></textarea>
+                                                    <textarea rows="16" wrap="off" spellcheck="false" maxlength="88192" class="span12" name="dnsmasq.hosts" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("dnsmasq.hosts",""); %></textarea>
                                                 </div>
                                             </td>
                                         </tr>
@@ -629,3 +632,4 @@ function changeBgColor(obj, num){
 </div>
 </body>
 </html>
+

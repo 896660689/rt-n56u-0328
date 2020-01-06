@@ -755,7 +755,7 @@ function validate_wlkey(key_obj){
 	var wep_type = document.form.wl_wep_x.value;
 	var iscurrect = true;
 	var str = "<#JS_wepkey#>";
-	
+
 	if(wep_type == "0")
 		iscurrect = true;	// do nothing
 	else if(wep_type == "1"){
@@ -769,7 +769,7 @@ function validate_wlkey(key_obj){
 		}
 		else{
 			str += "(<#WLANConfig11b_WEPKey_itemtype1#>)";
-			
+
 			iscurrect = false;
 		}
 	}
@@ -784,7 +784,7 @@ function validate_wlkey(key_obj){
 		}
 		else{
 			str += "(<#WLANConfig11b_WEPKey_itemtype2#>)";
-			
+
 			iscurrect = false;
 		}
 	}
@@ -792,14 +792,14 @@ function validate_wlkey(key_obj){
 		alert("System error!");
 		iscurrect = false;
 	}
-	
+
 	if(iscurrect == false){
 		alert(str);
-		
+
 		key_obj.focus();
 		key_obj.select();
 	}
-	
+
 	return iscurrect;
 }
 

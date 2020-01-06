@@ -129,7 +129,7 @@ function fill_port_link(oname,ins1g,pid){
 		idx = ether_link_mode(pid);
 	add_option(o, "Auto", "0", idx==0);
 	if (ins1g)
-		add_option(o, "1000 Mbps, Full Duplex: [AN]", "1", idx==1);
+	add_option(o, "1000 Mbps, Full Duplex: [AN]", "1", idx==1);
 	add_option(o, "100 Mbps, Full Duplex: [AN]", "2", idx==2);
 	add_option(o, "100 Mbps, Half Duplex: [AN]", "3", idx==3);
 	add_option(o, "10 Mbps, Full Duplex: [AN]", "4", idx==4);
@@ -253,7 +253,7 @@ function done_validating(action){
                                             </td>
                                         </tr>
                                         <tr id="row_ether_green">
-                                            <th width="50%"><#btn_Enable#> Green Ethernet?</th>
+                                            <th width="50%"><#btn_Enable#><#SwitchGreenEth#></th>
                                             <td>
                                                 <div class="main_itoggle">
                                                     <div id="ether_green_on_of">
@@ -268,7 +268,7 @@ function done_validating(action){
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th width="50%"><#btn_Enable#><#SwitchEEE#>(802.3az)</th>
+                                            <th width="50%"><#btn_Enable#><#SwitchEEE#></th>
                                             <td>
                                                 <div class="main_itoggle">
                                                     <div id="ether_eee_on_of">
@@ -496,3 +496,4 @@ function done_validating(action){
 </div>
 </body>
 </html>
+

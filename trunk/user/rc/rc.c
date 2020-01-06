@@ -658,7 +658,7 @@ storage_save_time(time_t delta)
 #endif
 }
 
-void 
+void
 setenv_tz(void)
 {
 	static char TZ_env[64];
@@ -668,7 +668,7 @@ setenv_tz(void)
 	putenv(TZ_env);
 }
 
-void 
+void
 setkernel_tz(void)
 {
 	time_t now;
@@ -693,7 +693,7 @@ setkernel_tz(void)
 	settimeofday(tvp, &tz);
 }
 
-void 
+void
 LED_CONTROL(int gpio_led, int flag)
 {
 	int front_led_x = 1;
@@ -792,8 +792,8 @@ LED_CONTROL(int gpio_led, int flag)
 #endif
 #if defined (CONFIG_RALINK_MT7628) && (BOARD_GPIO_LED_WIFI == 44)
 	if (gpio_led == BOARD_GPIO_LED_WIFI) {
-		cpu_gpio_mode_set_bit(32, (flag == LED_OFF) ? 1 : 0); // change GPIO Mode for WLED_AN
-		cpu_gpio_mode_set_bit(48, (flag == LED_OFF) ? 1 : 0); // change GPIO Mode for WLED_KN
+        //cpu_gpio_mode_set_bit(32, (flag == LED_OFF) ? 1 : 0); // change GPIO Mode for WLED_AN
+        //cpu_gpio_mode_set_bit(48, (flag == LED_OFF) ? 1 : 0); // change GPIO Mode for WLED_KN
 		cpu_gpio_set_pin(gpio_led, LED_OFF); // always set GPIO to high
 	} else
 #endif
@@ -807,7 +807,7 @@ LED_CONTROL(int gpio_led, int flag)
 #endif
 		if (is_soft_blink)
 			cpu_gpio_led_enabled(gpio_led, (flag == LED_OFF) ? 0 : 1);
-		
+
 		cpu_gpio_set_pin(gpio_led, flag);
 	}
 }
@@ -816,18 +816,14 @@ int
 init_crontab(void)
 {
 	int ret = 0; //no change
-#if defined (APP_SCUT)
-	ret |= system("/sbin/check_crontab.sh a/1 a a a a scutclient_watchcat.sh");
-#endif
 #if defined (APP_SHADOWSOCKS)
-	ret |= system("/sbin/check_crontab.sh a/5 a a a a ss-watchcat.sh");
-	ret |= system("/sbin/check_crontab.sh 0 8 a/10 a a update_chnroute.sh");
-	ret |= system("/sbin/check_crontab.sh 0 7 a/10 a a update_gfwlist.sh");
+	ret |= system("/sbin/check_crontab.sh 0 5 a/3 a a update_chnroute.sh");
+	ret |= system("/sbin/check_crontab.sh 0 6 a/2 a a update_gfwlist.sh");
 #endif
 	return ret;
 }
 
-void 
+void
 init_router(void)
 {
 	int log_remote, is_ap_mode, nvram_need_commit;
@@ -1005,7 +1001,7 @@ shutdown_router(int level)
 #endif
 }
 
-void 
+void
 handle_notifications(void)
 {
 	int i, stop_handle = 0;
@@ -1020,7 +1016,7 @@ handle_notifications(void)
 	{
 		struct dirent *entry;
 		FILE *test_fp;
-		
+
 		entry = readdir(directory);
 		if (!entry)
 			break;
@@ -1028,13 +1024,13 @@ handle_notifications(void)
 			continue;
 		if (strcmp(entry->d_name, "..") == 0)
 			continue;
-		
+
 		/* Remove the marker file. */
 		snprintf(notify_name, sizeof(notify_name), "%s/%s", DIR_RC_NOTIFY, entry->d_name);
 		remove(notify_name);
-		
+
 		printf("rc notification: %s\n", entry->d_name);
-		
+
 		/* Take the appropriate action. */
 		if (!strcmp(entry->d_name, RCN_RESTART_REBOOT))
 		{
@@ -1249,26 +1245,6 @@ handle_notifications(void)
 			restart_sshd();
 		}
 #endif
-#if defined(APP_SCUT)
-		else if (strcmp(entry->d_name, RCN_RESTART_SCUT) == 0)
-		{
-			restart_scutclient();
-		}
-		else if (strcmp(entry->d_name, "stop_scutclient") == 0)
-		{
-			stop_scutclient();
-		}
-#endif
-#if defined(APP_MENTOHUST)
-		else if (strcmp(entry->d_name, RCN_RESTART_MENTOHUST) == 0)
-		{
-			restart_mentohust();
-		}
-		else if (strcmp(entry->d_name, "stop_mentohust") == 0)
-		{
-			stop_mentohust();
-		}
-#endif
 #if defined(APP_TTYD)
 		else if (strcmp(entry->d_name, RCN_RESTART_TTYD) == 0)
 		{
@@ -1293,16 +1269,14 @@ handle_notifications(void)
 			update_gfwlist();
 		}
 #endif
-#if defined(APP_VLMCSD)
-		else if (strcmp(entry->d_name, RCN_RESTART_VLMCSD) == 0)
+#if defined(APP_ADBYBY)
+		else if (strcmp(entry->d_name, RCN_RESTART_ADBYBY) == 0)
 		{
-			restart_vlmcsd();
+			restart_adbyby();
 		}
-#endif
-#if defined(APP_DNSFORWARDER)
-		else if (strcmp(entry->d_name, RCN_RESTART_DNSFORWARDER) == 0)
+		else if (strcmp(entry->d_name, RCN_RESTART_UPDATEADB) == 0)
 		{
-			restart_dnsforwarder();
+			update_adb();
 		}
 #endif
 #if defined(APP_SMBD) || defined(APP_NMBD)
@@ -1425,9 +1399,9 @@ handle_notifications(void)
 		else if (strcmp(entry->d_name, RCN_RESTART_SYSCTL) == 0)
 		{
 			int nf_nat_type = nvram_get_int("nf_nat_type");
-			
+
 			restart_all_sysctl();
-			
+
 			/* flush conntrack after NAT model changing */
 			if (nvram_nf_nat_type != nf_nat_type) {
 				nvram_nf_nat_type = nf_nat_type;
@@ -1516,7 +1490,7 @@ handle_notifications(void)
 		{
 			dbg("WARNING: rc notified of unrecognized event `%s'.\n", entry->d_name);
 		}
-		
+
 		/*
 		 * If there hasn't been another request for the same event made since
 		 * we started, we can safely remove the ``action incomplete'' marker.
@@ -1536,7 +1510,7 @@ handle_notifications(void)
 			snprintf(notify_name, sizeof(notify_name), "%s/%s", DIR_RC_INCOMPLETE, entry->d_name);
 			remove(notify_name);
 		}
-		
+
 		if (stop_handle)
 			break;
 	}

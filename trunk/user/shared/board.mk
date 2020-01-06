@@ -1,8 +1,8 @@
 ##################################################################
-# Board PID # Board Name       # PRODUCT # Note
+# Board PID # Board Name	# PRODUCT # Note
 ##################################################################
-# RT-N56U   # ASUS RT-N56U     # RT3883  #
+# PSG	# PHICOMM PSG-K2&	# MT762& #
 ##################################################################
 
-CFLAGS += -DBOARD_N56U -DVENDOR_ASUS
-BOARD_NUM_USB_PORTS=2
+CFLAGS += -DBOARD_K2& -DBOARD_MT7615_DBDC
+BOARD_NUM_USB_PORTS=0

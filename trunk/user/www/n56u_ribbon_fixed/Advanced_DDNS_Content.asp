@@ -64,6 +64,7 @@ var ddns_list = [
 	[ 0x0f, "TB.NETASSIST.UA",      "", "http://tb.netassist.ua/reg.php" ],
 	[ 0x0f, "IPV4.NSUPDATE.INFO",   "", "https://nsupdate.info/account/register/" ],
 	[ 0x0f, "FREEDNS.AFRAID.ORG",   "", "http://freedns.afraid.org/signup/" ],
+	[ 0x0f, "WWW.PUBYUN.COM",       "(3322.NET)", "http://www.pubyun.com/accounts/signin/" ],
 	[ 0x01, "CUSTOM",               "(http basic auth)", "" ]
 ];
 
@@ -284,11 +285,11 @@ function show_asus_alert(hname)
 	else if(ddns_return_code == 'register,296')
 		alert("<#LANHostConfig_x_DDNS_alarm_6#>");
 	else if(ddns_return_code == 'register,297'){
-		document.form.ddns_hostname_x.value = ""; 
+		document.form.ddns_hostname_x.value = "";
 		alert("<#LANHostConfig_x_DDNS_alarm_7#>");
 	}
 	else if(ddns_return_code == 'register,298'){
-		document.form.ddns_hostname_x.value = ""; 
+		document.form.ddns_hostname_x.value = "";
 		alert("<#LANHostConfig_x_DDNS_alarm_8#>");
 	}
 	else if(ddns_return_code == 'register,299')
@@ -371,11 +372,11 @@ function validForm(){
 function applyRule(){
 	if(validForm()){
 		showLoading();
-		
+
 		document.form.action_mode.value = " Apply ";
 		document.form.current_page.value = "/Advanced_DDNS_Content.asp";
 		document.form.next_page.value = "";
-		
+
 		document.form.submit();
 	}
 }
@@ -620,6 +621,9 @@ function checkDDNSReturnCode(){
                                                     <option value="11" <% nvram_match_x("", "ddns_checkip", "11","selected"); %>>ipv4.wtfismyip.com/text</option>
                                                     <option value="12" <% nvram_match_x("", "ddns_checkip", "12","selected"); %>>ipv4.nsupdate.info/myip</option>
                                                     <option value="13" <% nvram_match_x("", "ddns_checkip", "13","selected"); %>>myip.dtdns.com</option>
+                                                    <option value="14" <% nvram_match_x("", "ddns_checkip", "14","selected"); %>>members.3322.net/dyndns/getip</option>
+                                                    <option value="15" <% nvram_match_x("", "ddns_checkip", "15","selected"); %>>ip.3322.net</option>
+                                                    <option value="16" <% nvram_match_x("", "ddns_checkip", "16","selected"); %>>whatismyip.akamai.com</option>
                                                 </select>
                                             </td>
                                         </tr>
@@ -686,3 +690,4 @@ function checkDDNSReturnCode(){
 </div>
 </body>
 </html>
+

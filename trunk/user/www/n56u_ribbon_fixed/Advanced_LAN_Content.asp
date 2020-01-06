@@ -42,11 +42,11 @@ function initial(){
 function applyRule(){
 	if(validForm()){
 		showLoading();
-		
+
 		document.form.action_mode.value = " Apply ";
 		document.form.current_page.value = "Advanced_LAN_Content.asp";
 		document.form.next_page.value = "";
-		
+
 		document.form.submit();
 	}
 }
@@ -207,7 +207,7 @@ function done_validating(action){
                                             <th width="50%" style="border-top: 0 none;"><a class="help_tooltip" href="javascript: void(0)" onmouseover="openTooltip(this, 4, 1);"><#LANHostConfig_IPRouters_itemname#></a></th>
                                             <td style="border-top: 0 none;">
                                                 <input type="text" maxlength="15" class="input" size="15" id="lan_ipaddr" name="lan_ipaddr" value="<% nvram_get_x("LANHostConfig","lan_ipaddr"); %>" onKeyPress="return is_ipaddr(this,event);" />
-                                                &nbsp;<span style="color:#888;">192.168.1.1</span>
+                                                &nbsp;<span style="color:#888;">192.168.2.1</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -254,3 +254,4 @@ function done_validating(action){
 </div>
 </body>
 </html>
+

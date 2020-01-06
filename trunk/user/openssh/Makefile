@@ -1,5 +1,5 @@
 SRC_NAME=openssh-8.1p1
-SRC_URL=https://ftp.usa.openbsd.org/pub/OpenBSD/OpenSSH/portable/$(SRC_NAME).tar.gz
+SRC_URL=https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/$(SRC_NAME).tar.gz
 
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections

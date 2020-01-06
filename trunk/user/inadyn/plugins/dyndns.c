@@ -97,10 +97,10 @@ static ddns_system_t _3322 = {
 	.request      = (req_fn_t)request,
 	.response     = (rsp_fn_t)response,
 
-	.checkip_name = "bliao.com",
-	.checkip_url  = "/ip.phtml",
+	.checkip_name = "members.3322.net",
+	.checkip_url  = "/dyndns/getip",
 
-	.server_name  = "members.3322.org",
+	.server_name  = "members.3322.net",
 	.server_url   = "/dyndns/update"
 };
 
@@ -236,11 +236,4 @@ PLUGIN_EXIT(plugin_exit)
 	plugin_unregister(&googledomains);
 	plugin_unregister(&nic_ru);
 }
-
-/**
- * Local Variables:
- *  version-control: t
- *  indent-tabs-mode: t
- *  c-file-style: "linux"
- * End:
- */
+ 

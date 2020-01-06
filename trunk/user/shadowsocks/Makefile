@@ -1,14 +1,14 @@
 THISDIR = $(shell pwd)
 
-SRC_SS_NAME=shadowsocks-libev-3.3.3
+SRC_SS_NAME=shadowsocks-libev-3.3.4
 #https://github.com/shadowsocks/shadowsocks-libev.git
 
 SRC_SSR_NAME=shadowsocksr-libev-master
 ARCHIVE_SSR_NAME=shadowsocksr-libev-master-e2373d7
 #https://github.com/shadowsocksr-backup/shadowsocksr-libev.git
 
-GFWLIST_NAME=dnsmasq_gfwlist.conf
-GFWLIST_URL=https://cokebar.github.io/gfwlist2dnsmasq/$(GFWLIST_NAME)
+GFWLIST_NAME=gfw_list.conf
+GFWLIST_URL=https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist_ipset.conf
 GFWLIST_DIR=gfwlist
 
 all: gfwlist_dl extract_test config_test
@@ -22,7 +22,8 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 	mkdir -p $(GFWLIST_DIR)
 	( if [ ! -f $(GFWLIST_DIR)/.finish ]; then \
 		cd $(GFWLIST_DIR) && rm -f * && \
-		wget -q -t5 --timeout=20 --no-check-certificate $(GFWLIST_URL) && \
+		wget -q -t5 --timeout=20 --no-check-certificate -O- $(GFWLIST_URL) \
+		|sed -e "/github.com/d" >> $(GFWLIST_NAME) && \
 		tar jcf gfwlist.bz2 $(GFWLIST_NAME) && \
 		touch .finish ; \
 	fi )
@@ -120,3 +121,5 @@ endif
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SSSERVER),y)
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-server /usr/bin/ss-server
 endif
+	$(ROMFSINST) $(THISDIR)/Shadowsocks.asp /www/Shadowsocks.asp
+	$(ROMFSINST) $(THISDIR)/Shadowsocks_action.asp /www/Shadowsocks_action.asp

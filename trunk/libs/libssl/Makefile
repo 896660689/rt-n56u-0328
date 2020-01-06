@@ -1,5 +1,4 @@
 SRC_NAME=openssl-1.0.2t
-SRC_URL=https://www.openssl.org/source/$(SRC_NAME).tar.gz
 
 # openssl use CROSS_COMPILE prefix
 CC=gcc $(CPUFLAGS)
@@ -31,14 +30,9 @@ ifneq ($(CONFIG_FIRMWARE_INCLUDE_OPENSSL_EC),y)
 OPENSSL_CIPHERS += no-ec
 endif
 
-all: download_test extract_test config_test
+all: extract_test config_test
 	$(MAKE) -C $(SRC_NAME) depend
 	$(MAKE) -C $(SRC_NAME)
-
-download_test:
-	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
-		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
-	fi )
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
