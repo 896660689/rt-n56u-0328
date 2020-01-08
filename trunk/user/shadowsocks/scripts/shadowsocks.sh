@@ -134,23 +134,11 @@ EOF
 			cp -f $Dnsmasq_d_dns/resolv.conf /tmp/resolv.conf
 			mv -f /tmp/resolv.conf /etc/resolv.conf
 		fi
-		grep "resolv" $Firewall_rules
-		if [ ! "$?" -eq "0" ]
-		then
-			sed -i '/^\s*$/d; /resolv.conf/d' $Firewall_rules
-			sed -i '$a cp -f /etc/storage/dnsmasq.d/dns/resolv.conf /tmp/resolv.conf' $Firewall_rules
-			sed -i '$a sed -i "/#/d" /tmp/resolv.conf;mv -f /tmp/resolv.conf /etc/resolv.conf' $Firewall_rules
-			restart_dns; sleep 3
-		fi
+		restart_dns; sleep 3
 	else
-		grep "resolv" $Firewall_rules
-		if [ "$?" -eq "0" ]
-		then
-			sed -i '/resolv.conf/d' $Firewall_rules
-		fi
 		if [ -f "$Dnsmasq_d_dns/resolv_bak" ]
 		then
-			cp -f $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
+			cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
 		else
 			sed -i '/208.67/d; /240c/d; /182.254/d; /2001/d' /etc/resolv.conf
 		fi
