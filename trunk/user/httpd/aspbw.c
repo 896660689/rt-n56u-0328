@@ -241,7 +241,7 @@ char_to_ascii(char *output, uint8_t *input)
 	}
 	else
 	{
-		for (i = 0; i < input_len; i++)
+		for (i = 0; i < strlen(input); i++)
 		{
 			if ((input[i] >= '0' && input[i] <= '9')
 				||(input[i] >= 'A' && input[i] <= 'Z')
