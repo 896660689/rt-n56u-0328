@@ -227,24 +227,12 @@ add_rule()
 {
 	if [ "$wan_mode" = "0" ]
 	then
-		$ipt_n -N ADBYBY
-		$ipt_n -A ADBYBY -d 0.0.0.0/8 -j RETURN
-		$ipt_n -A ADBYBY -d 10.0.0.0/8 -j RETURN
-		$ipt_n -A ADBYBY -d 127.0.0.0/8 -j RETURN
-		$ipt_n -A ADBYBY -d 169.254.0.0/16 -j RETURN
-		$ipt_n -A ADBYBY -d 172.16.0.0/12 -j RETURN
-		$ipt_n -A ADBYBY -d 192.168.0.0/16 -j RETURN
-		$ipt_n -A ADBYBY -d 224.0.0.0/4 -j RETURN
-		$ipt_n -A ADBYBY -d 240.0.0.0/4 -j RETURN
-		logger -t "adbyby" "添加8118透明代理端口。"
-		$ipt_n -I PREROUTING -p tcp --dport 80 -j ADBYBY
-		iptables-save | grep -E "ADBYBY|^\*|^COMMIT" | sed -e "s/^-A \(OUTPUT\|PREROUTING\)/-I \1 1/" > /tmp/adbyby.save
-		if [ -f "/tmp/adbyby.save" ]
-		then
-			logger -t "adbyby" "保存adbyby防火墙规则成功！"
-		else
-			logger -t "adbyby" "保存adbyby防火墙规则失败！可能会造成重启后过滤广告失效，需要手动关闭再打开ADBYBY！"
+		port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
+		if [ $port -eq 0 ]; then
+			logger "添加 adbyby 透明代理端口 8118 !"
+			iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
 		fi
+
 		if [ ! -n "$(pidof ad_watchcat)" ]
 		then
 			/tmp/adb/ad_watchcat >/dev/null 2>&1 &
@@ -275,9 +263,11 @@ del_rule()
 	then
 		sed -i '/conf-file/d /addn-hosts/d' /etc/storage/dnsmasq/dnsmasq.conf	
 	fi
-	$ipt_n -D PREROUTING -p tcp --dport 80 -j ADBYBY 2>/dev/null
-	$ipt_n -F ADBYBY 2>/dev/null
-	$ipt_n -X ADBYBY 2>/dev/null
+	port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
+	if [[ "$port" -ge 1 ]] ; then
+		logger "adbyby" "找到 $port 个 8118 透明代理端口,正在关闭..."
+		iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
+	fi
 }
 
 adbyby_start()
@@ -325,7 +315,6 @@ adbyby_stop()
 		rm -rf /tmp/adb
 		rm -rf $HOSTS_HOME
 		rm -f /tmp/adbyby.updated
-		rm -f /tmp/adbyby.save
 	fi
 	sleep 5 && logger "adbyby" "Adbyby已关闭."
 	restart_dhcpd
