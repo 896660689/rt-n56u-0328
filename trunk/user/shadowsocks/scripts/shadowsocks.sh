@@ -127,8 +127,8 @@ nameserver 114.114.114.114
 nameserver 182.254.116.116
 nameserver 223.5.5.5
 nameserver 208.67.222.222
-nameserver 240c::6666
 nameserver 2001:da8::666
+nameserver 240c::6666
 EOF
 			chmod 644 $Dnsmasq_d_dns/resolv.conf && chmod 644 /etc/resolv.conf
 			cp -f $Dnsmasq_d_dns/resolv.conf /tmp/resolv.conf
@@ -222,16 +222,11 @@ EOF
 	ipset -! flush gfwlist
 	ipset -! restore < /tmp/ss-gfwlist.ipset 2>/dev/null
 	rm -f /tmp/ss-gfwlist.ipset
-	grep "gfwlist" $Firewall_rules
-	if [ ! "$?" -eq "0" ]
+	port=$(iptables -t nat -L | grep 'ports 1080' | wc -l)
+	if [ $port -eq 0 ]
 	then
-		sed -i '/^\s*$/d; /gfwlist/d' $Firewall_rules
-		cat >> $Firewall_rules <<EOF
-
-iptables -t nat -I PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
-iptables -t nat -I OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
-
-EOF
+		iptables -t nat -I PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
+		iptables -t nat -I OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 	fi
 	## iptables -t nat -I PREROUTING -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 	#/usr/bin/ss-gfw.sh 2>&1 &
@@ -255,7 +250,7 @@ func_gfw_pdnsd(){
 		then
 			cat > $Config_Pdnsd <<EOF
 global {
-	perm_cache = 1024;
+	perm_cache = 768;
 	cache_dir = "/var/pdnsd";
 	pid_file = "/var/run/pdnsd.pid";
 	run_as = "$username";
@@ -363,11 +358,6 @@ func_ss_Close(){
 	then
 		sed -i '/listen-address/d; /min-cache/d; /conf-dir/d; /log/d' $Dnsmasq_dns
 	fi
-	grep "gfwlist" $Firewall_rules
-	if [ "$?" -eq "0" ]
-	then
-		sed -i '/gfwlist/d' $Firewall_rules
-	fi
 	if [ -f /var/run/pdnsd.pid ]
 	then
 		kill $(cat /var/run/pdnsd.pid) >/dev/null 2>&1
@@ -377,6 +367,12 @@ func_ss_Close(){
 	if [ -f /var/run/gfwlist.pid ]
 	then
 		kill -9 $(busybox ps -w | grep gfwlist | grep -v grep | awk '{print $1}') >/dev/null 2>&1 
+	fi
+	port=$(iptables -t nat -L | grep 'ports 1080' | wc -l)
+	if [[ "$port" -ge 1 ]]
+	then
+		iptables -t nat -D PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
+		iptables -t nat -D OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 	fi
 	if [ -f /tmp/gfw-ipset.txt ]
 	then
