@@ -226,17 +226,14 @@ EOF
 
 add_rule()
 {
-	if [ "$wan_mode" = "0" ] ; then
-		grep "8118" $Firewall_rules
-		if [ ! "$?" -eq "0" ]
-		then
-			sed -i '/^\s*$/d; /8118/d' $Firewall_rules
-			cat >> $Firewall_rules <<EOF
-
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
-
-EOF
+	if [ "$wan_mode" = "0" ]
+	then
+		port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
+		if [ $port -eq 0 ]; then
+			logger "添加 adbyby 透明代理端口 8118 !"
+			iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
 		fi
+
 		if [ ! -n "$(pidof ad_watchcat)" ]
 		then
 			/tmp/adb/ad_watchcat >/dev/null 2>&1 &
@@ -252,11 +249,6 @@ EOF
 
 del_rule()
 {
-	port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
-	if [[ "$port" -ge 1 ]] ; then
-		logger "adbyby" "找到 $port 个 8118 透明代理端口,正在关闭..."
-		iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
-	fi
 	grep -q "adbyby" "/etc/storage/cron/crontabs/$http_username"
 	if [ "$?" -eq "0" ]
 	then
@@ -272,10 +264,10 @@ del_rule()
 	then
 		sed -i '/conf-file/d /addn-hosts/d' /etc/storage/dnsmasq/dnsmasq.conf	
 	fi
-	grep "8118" $Firewall_rules
-	if [ "$?" -eq "0" ]
-	then
-		sed -i '/8118/d' $Firewall_rules
+	port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
+	if [[ "$port" -ge 1 ]] ; then
+		logger "adbyby" "找到 $port 个 8118 透明代理端口,正在关闭..."
+		iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
 	fi
 }
 
