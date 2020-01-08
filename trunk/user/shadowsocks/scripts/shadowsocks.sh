@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2019-12-31
+# Compile:by-lanse	2020-01-08
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -416,7 +416,7 @@ func_stop(){
 	[ -f /tmp/shadowsocks_iptables.save ] && rm -f /tmp/shadowsocks_iptables.save
 	[ -d /var/pdnsd ] && rm -rf /var/pdnsd
 	[ -f /tmp/gfw-ipset.txt ] && rm -f /tmp/gfw-ipset.txt
-	cp -f $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
+	mv -f $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
 	[ -d $Dnsmasq_d_dns ] && rm -rf $Dnsmasq_d_dns
 	restart_dhcpd; logger "ShadowsocksR Closed"
 }
