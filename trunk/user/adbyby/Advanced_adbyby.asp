@@ -306,8 +306,8 @@ function changeBgColorrl(obj, num){
                                 <div class="round_bottom">
                                     <div class="row-fluid">
                                         <div id="tabMenu" class="submenuBlock"></div>
-                                        <div class="alert alert-info" style="margin: 10px;">广告屏蔽大师.过滤各种横幅.弹窗.视频广告<br />
-                                            <div>Adblock Host 结合方式运行,屏蔽恶意网站</div>
+                                        <div class="alert alert-info" style="margin: 10px;">广告屏蔽大师.过滤各种横幅.弹窗.视频广告 - Adblock Host 结合方式运行,屏蔽恶意网站<br />
+											<div>AD规则：【<% nvram_get_x("", "adbyby_ltime"); %>】 &nbsp; &nbsp; |&nbsp; 视频规则：【<% nvram_get_x("", "adbyby_vtime"); %>】</div>
                                             <div>Adb List:【 <% nvram_get_x("", "adbyby_adb"); %> 】条 &nbsp; &nbsp; |&nbsp; Hosts AD:【 <% nvram_get_x("", "adbyby_hostsad"); %> 】条 &nbsp; &nbsp; |&nbsp; TV box:【 <% nvram_get_x("", "adbyby_tvbox"); %> 】条</div>
                                         </div>
                                         <table width="50%" align="center" cellpadding="4" cellspacing="0" class="table">

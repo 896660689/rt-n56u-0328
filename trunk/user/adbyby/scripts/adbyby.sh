@@ -7,7 +7,6 @@ http_username=$(nvram get http_username)
 adbyby_update=$(nvram get adbyby_update)
 adbyby_update_hour=$(nvram get adbyby_update_hour)
 adbyby_update_min=$(nvram get adbyby_update_min)
-ipt_n="iptables -t nat"
 wan_mode=$(nvram get adbyby_set)
 Firewall_rules="/etc/storage/post_iptables_script.sh"
 HOSTS_HOME="/etc/storage/dnsmasq.ad"
@@ -170,6 +169,8 @@ add_rules()
 			echo "MD5 match! No need to update!"
 			logger "adbyby" "没有更新的规则,本次无需更新！"
 		fi
+		nvram set adbyby_ltime=`head -1 /tmp/adb/bin/data/lazy.txt | awk -F' ' '{print $3,$4}'`
+		nvram set adbyby_vtime=`head -1 /tmp/adb/bin/data/video.txt | awk -F' ' '{print $3,$4}'`
 		rm -f /tmp/lazy.txt /tmp/video.txt /tmp/local-md5.json /tmp/md5.json
 		logger "adbyby" "Adbyby规则更新完成"
 	fi
@@ -225,14 +226,17 @@ EOF
 
 add_rule()
 {
-	if [ "$wan_mode" = "0" ]
-	then
-		port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
-		if [ $port -eq 0 ]; then
-			logger "添加 adbyby 透明代理端口 8118 !"
-			iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
-		fi
+	if [ "$wan_mode" = "0" ] ; then
+		grep "8118" $Firewall_rules
+		if [ ! "$?" -eq "0" ]
+		then
+			sed -i '/^\s*$/d; /8118/d' $Firewall_rules
+			cat >> $Firewall_rules <<EOF
 
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
+
+EOF
+		fi
 		if [ ! -n "$(pidof ad_watchcat)" ]
 		then
 			/tmp/adb/ad_watchcat >/dev/null 2>&1 &
@@ -248,6 +252,11 @@ add_rule()
 
 del_rule()
 {
+	port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
+	if [[ "$port" -ge 1 ]] ; then
+		logger "adbyby" "找到 $port 个 8118 透明代理端口,正在关闭..."
+		iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
+	fi
 	grep -q "adbyby" "/etc/storage/cron/crontabs/$http_username"
 	if [ "$?" -eq "0" ]
 	then
@@ -263,10 +272,10 @@ del_rule()
 	then
 		sed -i '/conf-file/d /addn-hosts/d' /etc/storage/dnsmasq/dnsmasq.conf	
 	fi
-	port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
-	if [[ "$port" -ge 1 ]] ; then
-		logger "adbyby" "找到 $port 个 8118 透明代理端口,正在关闭..."
-		iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8118
+	grep "8118" $Firewall_rules
+	if [ "$?" -eq "0" ]
+	then
+		sed -i '/8118/d' $Firewall_rules
 	fi
 }
 
@@ -338,3 +347,4 @@ updateadb)
 	echo "check"
 	;;
 esac
+
