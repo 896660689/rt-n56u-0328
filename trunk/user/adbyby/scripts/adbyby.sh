@@ -169,11 +169,11 @@ add_rules()
 			echo "MD5 match! No need to update!"
 			logger "adbyby" "没有更新的规则,本次无需更新！"
 		fi
-		nvram set adbyby_ltime=$(head -1 /tmp/adb/bin/data/lazy.txt | awk -F' ' '{print $3,$4}')
-		nvram set adbyby_vtime=$(head -1 /tmp/adb/bin/data/video.txt | awk -F' ' '{print $3,$4}')
 		rm -f /tmp/lazy.txt /tmp/video.txt /tmp/local-md5.json /tmp/md5.json
 		logger "adbyby" "Adbyby规则更新完成"
 	fi
+	nvram set adbyby_ltime=$(head -1 /tmp/adb/bin/data/lazy.txt | awk -F' ' '{print $3,$4}')
+	nvram set adbyby_vtime=$(head -1 /tmp/adb/bin/data/video.txt | awk -F' ' '{print $3,$4}')
 }
 
 func_abp_up()
