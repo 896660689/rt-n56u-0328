@@ -174,7 +174,7 @@ func_ss_gfw(){
 # 异步log,缓解阻塞，提高性能。默认为5，最大为100
 #log-async=50
 # 缓存最长时间
-min-cache-ttl=2048
+min-cache-ttl=3600
 # 指定服务器'域名''地址'文件夹
 # conf-dir=/etc/storage/dnsmasq.d/conf
 conf-dir=/etc/storage/gfwlist/" >> /tmp/tmp_dnsmasq.conf
@@ -250,7 +250,7 @@ func_gfw_pdnsd(){
 		then
 			cat > $Config_Pdnsd <<EOF
 global {
-	perm_cache = 768;
+	perm_cache = 1024;
 	cache_dir = "/var/pdnsd";
 	pid_file = "/var/run/pdnsd.pid";
 	run_as = "$username";
