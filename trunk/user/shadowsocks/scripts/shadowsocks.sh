@@ -416,7 +416,7 @@ func_stop(){
 	[ -f /tmp/shadowsocks_iptables.save ] && rm -f /tmp/shadowsocks_iptables.save
 	[ -d /var/pdnsd ] && rm -rf /var/pdnsd
 	[ -f /tmp/gfw-ipset.txt ] && rm -f /tmp/gfw-ipset.txt
-	mv -f $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
+	[ -f $Dnsmasq_d_dns/resolv_bak ] && cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
 	[ -d $Dnsmasq_d_dns ] && rm -rf $Dnsmasq_d_dns
 	restart_dhcpd; logger "ShadowsocksR Closed"
 }
