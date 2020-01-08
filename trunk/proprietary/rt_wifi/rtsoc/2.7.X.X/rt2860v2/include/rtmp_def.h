@@ -844,7 +844,7 @@
 
 #define ACT_MACHINE_BASE              0
 
-/* Those PEER_xx_CATE number is based on real Categary value in IEEE spec. 
+/* Those PEER_xx_CATE number is based on real Categary value in IEEE spec.
    Please doesn't modify it by yourself. */
 /*Category */
 #define MT2_PEER_SPECTRUM_CATE              0
@@ -1595,11 +1595,11 @@
 /* The signal threshold (RSSI) over new rate adaption */
 #define SIGNAL_THRESHOLD_OVER_NEW_RATE_ADAPT    -65
 
-/* After Linux 2.6.9, 
- * VLAN module use Private (from user) interface flags (netdevice->priv_flags). 
- * #define IFF_802_1Q_VLAN 0x1         --    802.1Q VLAN device.  in if.h     
+/* After Linux 2.6.9,
+ * VLAN module use Private (from user) interface flags (netdevice->priv_flags).
+ * #define IFF_802_1Q_VLAN 0x1         --    802.1Q VLAN device.  in if.h
  * ref to ip_sabotage_out() [ out->priv_flags & IFF_802_1Q_VLAN ] in br_netfilter.c
- * 
+ *
  * For this reason, we MUST use EVEN value in priv_flags
  */
 #define INT_MAIN			0x0100
@@ -1677,8 +1677,8 @@
 #define INF_P2P_DEV_NAME		"p2p"
 
 #ifdef RALINK_ATE
-/* 
-	Use bitmap to allow coexist of ATE_TXFRAME 
+/*
+	Use bitmap to allow coexist of ATE_TXFRAME
 	and ATE_RXFRAME(i.e.,to support LoopBack mode).
 */
 #define fATE_IDLE					0x00
@@ -2021,3 +2021,4 @@ do{									\
 	RtmpOSTaskInit(__pTask, __pTaskName, __pAd, &(__pAd)->RscTaskMemList, &(__pAd)->RscSemMemList);
 
 #endif /* __RTMP_DEF_H__ */
+

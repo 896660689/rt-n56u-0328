@@ -2458,10 +2458,10 @@ VOID RTMPWPARemoveAllKeys(RTMP_ADAPTER *pAd)
 VOID RTMPSetDefaultChannel(
 	IN	PRTMP_ADAPTER	pAd
 	)
-{		
-	if ((pAd->CommonCfg.PhyMode == PHY_11A) || (pAd->CommonCfg.PhyMode == PHY_11ABG_MIXED) 
+{
+	if ((pAd->CommonCfg.PhyMode == PHY_11A) || (pAd->CommonCfg.PhyMode == PHY_11ABG_MIXED)
 #ifdef DOT11_N_SUPPORT
-		|| (pAd->CommonCfg.PhyMode == PHY_11ABGN_MIXED) || (pAd->CommonCfg.PhyMode == PHY_11AN_MIXED) 
+		|| (pAd->CommonCfg.PhyMode == PHY_11ABGN_MIXED) || (pAd->CommonCfg.PhyMode == PHY_11AN_MIXED)
 		|| (pAd->CommonCfg.PhyMode == PHY_11AGN_MIXED) || (pAd->CommonCfg.PhyMode == PHY_11N_5G)
 #endif /* DOT11_N_SUPPORT */
 
@@ -2976,7 +2976,7 @@ RTMP_STRING *GetAuthMode(CHAR auth)
         		3.) UI needs to prepare at least 4096bytes to get the results
     ==========================================================================
 */
-#define	LINE_LEN	(4+33+20+23+9+7+7+3)	/* Channel+SSID+Bssid+Security+Signal+WiressMode+ExtCh+NetworkType*/
+#define	LINE_LEN	(4+33+20+23+9+9+7+3)	/* Channel+SSID+Bssid+Security+Signal+WiressMode+ExtCh+NetworkType*/
 #ifdef AIRPLAY_SUPPORT
 #define IS_UNICODE_SSID_LEN  (4)
 #endif /* AIRPLAY_SUPPORT */
@@ -3001,9 +3001,9 @@ VOID RTMPCommSiteSurveyData(
 	RTMP_STRING SecurityStr[32] = {0};
 	NDIS_802_11_ENCRYPTION_STATUS	ap_cipher = Ndis802_11EncryptionDisabled;
 	NDIS_802_11_AUTHENTICATION_MODE	ap_auth_mode = Ndis802_11AuthModeOpen;
-#ifdef AIRPLAY_SUPPORT	
+#ifdef AIRPLAY_SUPPORT
 	BOOLEAN isUniCodeSsid = FALSE;
-#endif /* AIRPLAY_SUPPORT */	
+#endif /* AIRPLAY_SUPPORT */
 
 		/*Channel*/
 		sprintf(msg+strlen(msg),"%-4d", pBss->Channel);
@@ -3017,10 +3017,10 @@ VOID RTMPCommSiteSurveyData(
 	{
 		INT idx = 0;
 
-#ifdef AIRPLAY_SUPPORT		
+#ifdef AIRPLAY_SUPPORT
 		isUniCodeSsid = TRUE;
 #endif /* AIRPLAY_SUPPORT */
-		
+
 		sprintf(Ssid, "0x");
 		for (idx = 0; (idx < 15) && (idx < pBss->SsidLen); idx++)
 			sprintf(Ssid + 2 + (idx*2), "%02X", (UCHAR)pBss->Ssid[idx]);
@@ -3220,7 +3220,7 @@ VOID RTMPIoctlGetSiteSurvey(
 
 #ifdef AIRPLAY_SUPPORT
 	max_len += IS_UNICODE_SSID_LEN;
-#endif /* AIRPLAY_SUPPORT */	
+#endif /* AIRPLAY_SUPPORT */
 
 	TotalLen = sizeof(CHAR)*((MAX_LEN_OF_BSS_TABLE)*max_len) + 100;
 
@@ -3296,9 +3296,9 @@ VOID RTMPIoctlGetSiteSurvey(
 
 		if((strlen(msg)+100 ) >= BufLen)
 			break;
-			
+
 #ifdef AIRPLAY_SUPPORT
-		if (TargetSsidLen > 0) 
+		if (TargetSsidLen > 0)
 		{
 			if (strcmp(pBss->Ssid, TargetSsid) != 0)
 				continue;
@@ -3394,7 +3394,7 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	if (pObj->ioctl_if_type == INT_APCLI)
 	{
 		STA_TR_ENTRY *tr_entry;
-		
+
 		if (wrq_len < sizeof(RT_802_11_MAC_ENTRY))
 			return;
 		if (pObj->ioctl_if >= MAX_APCLI_NUM)
@@ -3411,14 +3411,14 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		if (IS_ENTRY_APCLI(pEntry) && (pEntry->Sst == SST_ASSOC) && (tr_entry->PortSecured == WPA_802_1X_PORT_SECURED))
 		{
 			RT_802_11_MAC_ENTRY MacEntry;
-			
+
 			pDst = &MacEntry;
 			copy_mac_table_entry(pDst, pEntry);
-			
+
 			wrq->u.data.length = sizeof(RT_802_11_MAC_ENTRY);
 			copy_to_user(wrq->u.data.pointer, pDst, wrq->u.data.length);
 		}
-		
+
 		return;
 	}
 #endif
@@ -3439,14 +3439,14 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		if (IS_ENTRY_WDS(pEntry))
 		{
 			RT_802_11_MAC_ENTRY MacEntry;
-			
+
 			pDst = &MacEntry;
 			copy_mac_table_entry(pDst, pEntry);
-			
+
 			wrq->u.data.length = sizeof(RT_802_11_MAC_ENTRY);
 			copy_to_user(wrq->u.data.pointer, pDst, wrq->u.data.length);
 		}
-		
+
 		return;
 	}
 #endif
@@ -5991,7 +5991,7 @@ INT Show_MacTable_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		else if (rtstrcasecmp(arg, "ap") == TRUE)
 			ent_type = ENTRY_AP;
         else if (rtstrcasecmp(arg, "apcli") == TRUE)
-                ent_type = ENTRY_APCLI;	
+                ent_type = ENTRY_APCLI;
 		else
 			ent_type = ENTRY_NONE;
 	}
@@ -6112,7 +6112,7 @@ static INT dump_ps_table(RTMP_ADAPTER *pAd, UINT32 ent_type, BOOLEAN bReptCli)
 #else /* DATA_QUEUE_RESERVE */
 			printk("\t%-6u", 0);
 			printk("\t%-6u", 0);
-#endif /* !DATA_QUEUE_RESERVE */		
+#endif /* !DATA_QUEUE_RESERVE */
 #ifdef UAPSD_SUPPORT
 		printk("\t%d,%d,%d,%d",
 			(int)pEntry->bAPSDCapablePerAC[QID_AC_BE], pEntry->bAPSDCapablePerAC[QID_AC_BK], pEntry->bAPSDCapablePerAC[QID_AC_VI], pEntry->bAPSDCapablePerAC[QID_AC_VO]);
@@ -6555,7 +6555,7 @@ INT32 ShowPseInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	HW_IO_READ32(pAd, FC_FFC, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("Free page counter status = 0x%x\n", GET_FREE_PAGE_CNT(Value)));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("Free for all(FFA) counter status = 0x%x\n", GET_FFA_CNT(Value)));
-	
+
 	HW_IO_READ32(pAd, FC_FRP, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("Reserve priority:\n"));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P0(HIF) = 0x%x, ", GET_RSRV_PRI_P0(Value)));
@@ -6563,7 +6563,7 @@ INT32 ShowPseInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P2 RQ0(Rx Data) = 0x%x, ", GET_RSRV_PRI_P2_RQ0(Value)));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P2 RQ1(RxV) = 0x%x, ", GET_RSRV_PRI_P2_RQ1(Value)));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P2 RQ2(TxS)  = 0x%x\n", GET_RSRV_PRI_P2_RQ2(Value)));
-	
+
 	HW_IO_READ32(pAd, FC_P0, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P0(HIF):\n"));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tmin reserve setting = 0x%x\n", GET_MIN_RSRV_P0(Value)));
@@ -6572,7 +6572,7 @@ INT32 ShowPseInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\treserve pages = 0x%x\n", GET_RSRV_CNT_P0(Value)));
 	HW_IO_READ32(pAd, FC_SP0P1, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tused pages = 0x%x\n", GET_SRC_CNT_P0(Value)));
-	
+
 	HW_IO_READ32(pAd, FC_P1, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P1(MCU):\n"));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tmin reserve setting = 0x%x\n", GET_MIN_RSRV_P1(Value)));
@@ -6581,7 +6581,7 @@ INT32 ShowPseInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\treserve pages = 0x%x\n", GET_RSRV_CNT_P1(Value)));
 	HW_IO_READ32(pAd, FC_SP0P1, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tused pages = 0x%x\n", GET_SRC_CNT_P1(Value)));
-	
+
 	HW_IO_READ32(pAd, FC_P2Q0, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P2 RQ0(Rx Data):\n"));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tmin reserve setting = 0x%x\n", GET_MIN_RSRV_P2_RQ0(Value)));
@@ -6599,7 +6599,7 @@ INT32 ShowPseInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\treserve pages = 0x%x\n", GET_RSRV_CNT_P2_RQ1(Value)));
 	HW_IO_READ32(pAd, FC_SP2Q0Q1, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tused pages = 0x%x\n", GET_SRC_CNT_P2_RQ1(Value)));
-		
+
 	HW_IO_READ32(pAd, FC_P2Q2, &Value);
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("P2 RQ2(TxS):\n"));
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tmin reserve setting = 0x%x\n", GET_MIN_RSRV_P2_RQ2(Value)));
@@ -7468,9 +7468,9 @@ INT show_trinfo_proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 #ifdef RTMP_PCI_SUPPORT
 			MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("PDMA Info\n"));
 			MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tPDMAMonitorEn=%d, TxRCounter = %lu, TxDMACheckTimes = %d,  RxRCounter = %lu, RxDMACheckTimes = %d, PDMARFailCount = %lu\n", pAd->PDMAWatchDogEn, pAd->TxDMAResetCount, pAd->TxDMACheckTimes, pAd->RxDMAResetCount, pAd->RxDMACheckTimes, pAd->PDMAResetFailCount));
-#endif			
+#endif
 			MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("PSE Info\n"));
-			MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tPSEMonitorEn=%d, RCounter = %lu, RxPseCheckTimes = %d, PSETriggerType1Count = %lu, PSETriggerType2Count = %lu, PSERFailCount = %lu\n", 
+			MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tPSEMonitorEn=%d, RCounter = %lu, RxPseCheckTimes = %d, PSETriggerType1Count = %lu, PSETriggerType2Count = %lu, PSERFailCount = %lu\n",
 				pAd->PSEWatchDogEn, pAd->PSEResetCount, pAd->RxPseCheckTimes, pAd->PSETriggerType1Count, pAd->PSETriggerType2Count, pAd->PSEResetFailCount));
 #ifdef DMA_RESET_SUPPORT
 			MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("\tACHitCount=%lu, MgtHitCount=%lu\n", pAd->ACHitCount, pAd->MgtHitCount));
@@ -7697,7 +7697,7 @@ INT Set_WifiFwd_Proc(
 		if (wf_fwd_pro_active_hook)
 			wf_fwd_pro_active_hook();
 	}
-	
+
 	return TRUE;
 }
 
@@ -7706,7 +7706,7 @@ INT Set_WifiFwdAccessSchedule_Proc(
 	IN RTMP_STRING *arg)
 {
 	int active = simple_strtol(arg, 0, 10);
-	
+
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("%s::active=%d\n", __FUNCTION__, active));
 
 	if (active == 0) {
@@ -7716,7 +7716,7 @@ INT Set_WifiFwdAccessSchedule_Proc(
 		if (wf_fwd_access_schedule_active_hook)
 			wf_fwd_access_schedule_active_hook();
 	}
-	
+
 	return TRUE;
 }
 
@@ -7725,7 +7725,7 @@ INT Set_WifiFwdHijack_Proc(
 	IN RTMP_STRING *arg)
 {
 	int active = simple_strtol(arg, 0, 10);
-	
+
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("%s::active=%d\n", __FUNCTION__, active));
 
 	if (active == 0) {
@@ -7735,7 +7735,7 @@ INT Set_WifiFwdHijack_Proc(
 		if (wf_fwd_hijack_active_hook)
 			wf_fwd_hijack_active_hook();
 	}
-	
+
 	return TRUE;
 }
 
@@ -7744,7 +7744,7 @@ INT Set_WifiFwdRepDevice(
 	IN RTMP_STRING *arg)
 {
 	int rep = simple_strtol(arg, 0, 10);
-	
+
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("%s::rep=%d\n", __FUNCTION__, rep));
 
 	if (wf_fwd_get_rep_hook)
@@ -7768,7 +7768,7 @@ INT Set_WifiFwdDeleteEntry(
 	IN RTMP_STRING *arg)
 {
 	int idx = simple_strtol(arg, 0, 10);
-	
+
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("%s::idx=%d\n", __FUNCTION__, idx));
 
 	if (wf_fwd_delete_entry_hook)
@@ -7792,7 +7792,7 @@ INT Set_PacketSourceDeleteEntry(
 	IN RTMP_STRING *arg)
 {
 	int idx = simple_strtol(arg, 0, 10);
-	
+
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_OFF, ("%s::idx=%d\n", __FUNCTION__, idx));
 
 	if (packet_source_delete_entry_hook)
@@ -7932,7 +7932,7 @@ INT Set_MonitorMode_Proc(RTMP_ADAPTER *pAd,RTMP_STRING *arg)
 	pAd->monitor_ctrl.CurrentMonitorMode = simple_strtol(arg, 0, 10);
 	if(pAd->monitor_ctrl.CurrentMonitorMode > MONITOR_MODE_FULL || pAd->monitor_ctrl.CurrentMonitorMode < MONITOR_MODE_OFF)
 		pAd->monitor_ctrl.CurrentMonitorMode = MONITOR_MODE_OFF;
-		
+
 	MTWF_LOG(DBG_CAT_ALL, DBG_SUBCAT_ALL, DBG_LVL_ERROR,
 			("set Current Monitor Mode = %d , range(%d ~ %d)\n"
 			, pAd->monitor_ctrl.CurrentMonitorMode,MONITOR_MODE_OFF,MONITOR_MODE_FULL));
@@ -7942,17 +7942,17 @@ INT Set_MonitorMode_Proc(RTMP_ADAPTER *pAd,RTMP_STRING *arg)
 		case MONITOR_MODE_OFF:			//reset to normal
 			pAd->monitor_ctrl.bMonitorOn = FALSE;
 			AsicSetRxFilter(pAd);
-			
+
 			/* ASIC supporsts sniffer function with replacing RSSI with timestamp.
-			RTMP_IO_READ32(pAd, MAC_SYS_CTRL, &Value); 
-			Value |= (0x80); 
+			RTMP_IO_READ32(pAd, MAC_SYS_CTRL, &Value);
+			Value |= (0x80);
 			RTMP_IO_WRITE32(pAd, MAC_SYS_CTRL, Value); */
 			break;
-			
+
 		case MONITOR_MODE_REGULAR_RX:			//report probe_request only , normal rx filter
 			pAd->monitor_ctrl.bMonitorOn = TRUE;
 			break;
-		
+
 		case MONITOR_MODE_FULL:			//fully report, Enable Rx with promiscuous reception
 			pAd->monitor_ctrl.bMonitorOn = TRUE;
 			AsicSetRxFilter(pAd);

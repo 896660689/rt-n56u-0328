@@ -4117,7 +4117,7 @@ max_len += OWETRANSIE_LINE_LEN;
 //	sprintf(msg + strlen(msg), "Total=%-4d", pAdapter->ScanTab.BssNr);
 //	sprintf(msg + strlen(msg), "\n");
 	sprintf(msg + strlen(msg), "%-4s%-33s%-20s%-23s%-9s%-9s%-7s%-3s\n",
-			"Ch", "SSID", "BSSID", "Security", "Signal(%)", "W-Mode", " ExtCH", " NT");
+		"Ch", "SSID", "BSSID", "Security", "Signal(%)", "W-Mode", " ExtCH", " NT");
 #ifdef WSC_INCLUDED
 	sprintf(msg + strlen(msg) - 1, "%-4s%-5s\n", " WPS", " DPID");
 #endif /* WSC_INCLUDED */
@@ -4261,7 +4261,7 @@ VOID RTMPIoctlGetSiteSurvey(
 	sprintf(msg+strlen(msg), "Total=%-4d", pAdapter->ScanTab.BssNr);
 	sprintf(msg+strlen(msg), "%s", "\n");
 	sprintf(msg+strlen(msg), "%-4s%-4s%-33s%-20s%-23s%-9s%-7s%-7s%-3s\n",
-	    "No", "Ch", "SSID", "BSSID", "Security", "Siganl(%)", "W-Mode", " ExtCH", " NT");
+	    "Ch", "SSID", "BSSID", "Security", "Siganl(%)", "W-Mode", " ExtCH", " NT");
 
 	sprintf(msg+strlen(msg)-1, "%-11s%-10s%-6s%-6s%-6s%-7s\n", " STA_COUNT", " MED_UTIL", " SNR0", " SNR1", " SNR2", " SNR3");	/*change anand for SNR.	Anjan: TODO: SNR2, SNR3 */
 	sprintf(msg+strlen(msg)-1, "%-4s\n", " Nss");
@@ -12360,7 +12360,7 @@ VOID	BTMActionFrameListExit(RTMP_ADAPTER *pAd)
 
 	DlListInit(&pBtmActionFrameList->BTMActionFrameList);
 	RTMP_SEM_EVENT_UP(&pBtmActionFrameList->BTMActionFrameListLock);
-	RTMP_SEM_EVENT_DESTORY(&pBtmActionFrameList->BTMActionFrameListLock);	
+	RTMP_SEM_EVENT_DESTORY(&pBtmActionFrameList->BTMActionFrameListLock);
 }
 #endif
 
@@ -13974,3 +13974,4 @@ INT32 ShowRssiThInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	return TRUE;
 }
 #endif /* end of ETSI_RX_BLOCKER_SUPPORT */
+
