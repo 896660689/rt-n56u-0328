@@ -184,18 +184,18 @@ static int can_be_ascii_utf8(const uint8_t *str, int sz)
 static int is_valid_hex_string(uint8_t *input)
 {
 	int i;
-	int input_len, input_hex_len;
+	int input_len, input_hex_len, is_valid_ascii_or_Chinese;
 	char *input_ptr;
 
 	//detect from index 2, skip char "0x"
 	input_ptr = input + 2;
 	input_len = strlen(input);
 	input_hex_len = input_len - 2;
-	int is_valid_ascii_or_Chinese = 1;
+	is_valid_ascii_or_Chinese = 1;
 	//0xAA
 	if (input_len > 4 && input_len % 2 == 0 && input[0] == '0' && input[1] == 'x')
 	{
-		for (i = 2; i < input_len; i += 2)
+		for (i = 0; i < input_hex_len; i += 2, input_ptr += 2)
 		{
 			if (!( ((*input_ptr >= '0' && *input_ptr <= '9') || ( *input_ptr >= 'A' && *input_ptr <= 'F'))
 				&& ((*(input_ptr + 1) >= '0' && *(input_ptr + 1) <= '9') || ( *(input_ptr + 1) >= 'A' && *(input_ptr + 1) <= 'F'))) )
@@ -241,7 +241,7 @@ char_to_ascii(char *output, uint8_t *input)
 	}
 	else
 	{
-		for (i = 0; i < strlen(input); i++)
+		for (i = 0; i < input_len; i++)
 		{
 			if ((input[i] >= '0' && input[i] <= '9')
 				||(input[i] >= 'A' && input[i] <= 'Z')
@@ -262,7 +262,7 @@ char_to_ascii(char *output, uint8_t *input)
 			}
 		}
 	}
-	*ptr = '\0';
+	*(ptr) = '\0';
 }
 
 int do_f(const char *path, webs_t wp)

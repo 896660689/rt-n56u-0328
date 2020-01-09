@@ -4261,7 +4261,7 @@ VOID RTMPIoctlGetSiteSurvey(
 	sprintf(msg+strlen(msg), "Total=%-4d", pAdapter->ScanTab.BssNr);
 	sprintf(msg+strlen(msg), "%s", "\n");
 	sprintf(msg+strlen(msg), "%-4s%-4s%-33s%-20s%-23s%-9s%-7s%-7s%-3s\n",
-	    "Ch", "SSID", "BSSID", "Security", "Siganl(%)", "W-Mode", " ExtCH", " NT");
+	    "No", "Ch", "SSID", "BSSID", "Security", "Siganl(%)", "W-Mode", " ExtCH", " NT");
 
 	sprintf(msg+strlen(msg)-1, "%-11s%-10s%-6s%-6s%-6s%-7s\n", " STA_COUNT", " MED_UTIL", " SNR0", " SNR1", " SNR2", " SNR3");	/*change anand for SNR.	Anjan: TODO: SNR2, SNR3 */
 	sprintf(msg+strlen(msg)-1, "%-4s\n", " Nss");

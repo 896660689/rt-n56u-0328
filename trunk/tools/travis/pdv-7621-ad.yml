@@ -8,7 +8,7 @@ compiler:
 env:
     global:
       - targets="K2P K2P-5.0"
-      - toolchain_url="https://github.com/896660689/padavan-toolchain/releases/download/1214/toolchain-3.4.x.tar.gz"
+      - toolchain_url="https://github.com/896660689/padavan-toolchain/releases/download/0109/toolchain-3.4.x.tar.gz"
 
 addons:
     apt:
