@@ -134,6 +134,11 @@ EOF
 			cp -f $Dnsmasq_d_dns/resolv.conf /tmp/resolv.conf
 			mv -f /tmp/resolv.conf /etc/resolv.conf
 		fi
+		grep "240c" /etc/resolv.conf
+		if [ ! "$?" -eq "0" ]
+		then
+			cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
+		fi
 		restart_dns; sleep 3
 	else
 		if [ -f "$Dnsmasq_d_dns/resolv_bak" ]
