@@ -123,18 +123,18 @@ func_ss_dns(){
 		then
 			cat > $Dnsmasq_d_dns/resolv.conf <<EOF
 nameserver 127.0.0.1
+nameserver 101.6.6.6
 nameserver 114.114.114.114
 nameserver 182.254.116.116
-nameserver 223.5.5.5
+nameserver 202.141.162.123
 nameserver 208.67.222.222
 nameserver 2001:da8::666
-nameserver 240c::6666
 EOF
 			chmod 644 $Dnsmasq_d_dns/resolv.conf && chmod 644 /etc/resolv.conf
 			cp -f $Dnsmasq_d_dns/resolv.conf /tmp/resolv.conf
 			mv -f /tmp/resolv.conf /etc/resolv.conf
 		fi
-		grep "240c" /etc/resolv.conf
+		grep "208.67" /etc/resolv.conf
 		if [ ! "$?" -eq "0" ]
 		then
 			cp -rf $Dnsmasq_d_dns/resolv.conf /etc/resolv.conf
@@ -145,7 +145,7 @@ EOF
 		then
 			cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
 		else
-			sed -i '/208.67/d; /240c/d; /182.254/d; /2001/d' /etc/resolv.conf
+			sed -i '/208.67/d; /101.6.6.6/d; /182.254/d; /202.141.162.123/d'; /2001/d' /etc/resolv.conf
 		fi
 	fi
 }
