@@ -145,7 +145,7 @@ EOF
 		then
 			cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
 		else
-			sed -i '/208.67/d; /101.6.6.6/d; /182.254/d; /202.141.162.123/d'; /2001/d' /etc/resolv.conf
+			sed -i '/208.67/d; /101.6.6.6/d; /182.254/d; /202.141.162.123/d; /2001/d' /etc/resolv.conf
 		fi
 	fi
 }
