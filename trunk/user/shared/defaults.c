@@ -524,6 +524,8 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_update_chnroute", "0" },
 	{ "ss_update_gfwlist", "0" },
 
+	{ "reboot_mode", "0" },
+
 	/* DHCP server parameters */
 	{ "dhcp_start", "192.168.2.2" },	/* First assignable DHCP address */
 	{ "dhcp_end", "192.168.2.80" },		/* Last assignable DHCP address */
