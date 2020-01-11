@@ -519,7 +519,7 @@ struct nvram_pair router_defaults[] = {
 	{ "ss-tunnel_remote", "8.8.4.4:53" },
 	{ "ss-tunnel_mtu", "1492" },
 
-	{ "ss_watchcat", "1" },
+	{ "ss_watchcat", "0" },
 	{ "ss_dns", "0" },
 	{ "ss_update_chnroute", "0" },
 	{ "ss_update_gfwlist", "0" },
