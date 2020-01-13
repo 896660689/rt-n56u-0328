@@ -122,22 +122,21 @@ func_ss_dns(){
 		if [ ! -f "$Dnsmasq_d_dns/resolv.conf" ]
 		then
 			cat > $Dnsmasq_d_dns/resolv.conf <<EOF
-nameserver 127.0.0.1
-nameserver 101.6.6.6
-nameserver 114.114.114.114
-nameserver 182.254.116.116
-nameserver 202.141.162.123
-nameserver 208.67.222.222
-nameserver 2001:da8::666
+127.0.0.1
+101.6.6.6
+114.114.114.114
+182.254.116.116
+202.141.162.123
+208.67.222.222
+2001:da8::666
 EOF
 			chmod 644 $Dnsmasq_d_dns/resolv.conf && chmod 644 /etc/resolv.conf
-			cp -f $Dnsmasq_d_dns/resolv.conf /tmp/resolv.conf
-			mv -f /tmp/resolv.conf /etc/resolv.conf
 		fi
 		grep "208.67" /etc/resolv.conf
 		if [ ! "$?" -eq "0" ]
 		then
-			cp -rf $Dnsmasq_d_dns/resolv.conf /etc/resolv.conf
+			awk '!/^$/&&!/^#/{printf("nameserver %s'" "'\n",$0)}' $Dnsmasq_d_dns/resolv.conf >> /tmp/resolv.conf
+			mv -f /tmp/resolv.conf /etc/resolv.conf
 		fi
 		restart_dns; sleep 3
 	else
@@ -248,7 +247,7 @@ func_gfw_pdnsd(){
 		then
 			cat > $Config_Pdnsd <<EOF
 global {
-	perm_cache = 1024;
+	perm_cache = 768;
 	cache_dir = "/var/pdnsd";
 	pid_file = "/var/run/pdnsd.pid";
 	run_as = "$username";
