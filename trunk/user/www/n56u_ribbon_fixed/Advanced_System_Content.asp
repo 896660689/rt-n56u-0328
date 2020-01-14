@@ -388,7 +388,7 @@ function openLink(s) {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th>Restart_mode</th>
+                                            <th><#Adm_System_logf#></th>
                                             <td>
                                                 <select name="log_float_ui" class="input">
                                                     <option value="0" <% nvram_match_x("", "log_float_ui", "0","selected"); %>><#checkbox_No#></option>
