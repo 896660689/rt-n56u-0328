@@ -164,11 +164,6 @@ ifneq ($(STORAGE_ENABLED),y)
 	rm -rf $(INSTALLDIR)/www/images/AiDisk
 	rm -rf $(INSTALLDIR)/www/images/Tree
 endif
-ifeq ($(CONFIG_FIRMWARE_WEBUI_HIDE_VPN),y)
-	rm -f $(INSTALLDIR)/www/vpn_clients.asp
-	rm -f $(INSTALLDIR)/www/vpncli.asp
-	rm -f $(INSTALLDIR)/www/vpnsrv.asp
-endif
 
 clean:
 	@echo "Clean www romfs"

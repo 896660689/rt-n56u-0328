@@ -372,15 +372,6 @@ function openLink(s) {
                                             <th colspan="2" style="background-color: #E3E3E3;"><#t2Misc#></th>
                                         </tr>
                                         <tr>
-                                            <th>重启方式</th>
-                                            <td>
-                                                <select name="reboot_mode" class="input">
-                                                    <option value="0" <% nvram_match_x("", "reboot_mode", "0","selected"); %>>系统默认</option>
-                                                    <option value="1" <% nvram_match_x("", "reboot_mode", "1","selected"); %>>mtd_write -r unlock mtd1</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <th width="50%"><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this,11,1)"><#LANHostConfig_x_ServerLogEnable_itemname#></a></th>
                                             <td>
                                                 <input type="text" maxlength="15" class="input" size="15" name="log_ipaddr" style="width: 145px" value="<% nvram_get_x("", "log_ipaddr"); %>" onKeyPress="return is_ipaddr(this,event);" />&nbsp;:
