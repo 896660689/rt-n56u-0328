@@ -276,12 +276,21 @@ Adm_System_http_proto=Web 服务器协议:
 Adm_System_http_lport=内网 Web 服务访问端口:
 Adm_System_https_lport=内网 Web 服务 HTTPS 访问端口:
 Adm_System_https_clist=HTTPS 允许的 SSL 密码列表:
+<<<<<<< HEAD
 Adm_System_https_wopen=允许外网 HTTPS 访问Web服务
 Adm_System_https_wport=外网 HTTPS 访问 Web 服务端口:
 Adm_System_https_certs=Web 服务器 HTTPS 证书
 Adm_System_https_query=确定要创建新的 HTTPS 服务证书？\n\n注意:\n-这将会覆盖原证书。
 Adm_System_udpxy_wopen=允许外网访问 UDP-HTTP 代理
 Adm_System_udpxy_wport=外网 UDP-HTTP 代理端口 (udpxy):
+=======
+Adm_System_https_wopen=允许外网访问 HTTPS 管理
+Adm_System_https_wport=外网 HTTPS 访问 Web 服务端口:
+Adm_System_https_certs=Web 服务器 HTTPS 证书
+Adm_System_https_query=确定要创建新的 HTTPS 服务证书?\n\n注意:\n-这将会覆盖原证书。
+Adm_System_udpxy_wopen=允许外网访问 UDPXY 代理
+Adm_System_udpxy_wport=外网 UDP-HTTP 代理端口 (UDPXY):
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 Adm_System_ntpp=NTP 同步周期:
 Adm_Access_WAN=从外网访问路由器服务
 LAN_STP=启用生成树协议 (STP)
@@ -317,6 +326,7 @@ WAN_TTL_Item1=针对所有包
 WAN_TTL_Item2=针对组播 IPTV 包
 WAN_TTL_Value=路由器 TTL 值
 WAN_TTL_Value_Item0=默认值
+<<<<<<< HEAD
 WAN_TTL_Value_Item1=64 (Unix)
 WAN_TTL_Value_Item2=128 (Windows)
 DDNS_SVR= DDNS 服务器 (FQDN或IP):
@@ -324,6 +334,15 @@ DDNS_URL=用于更新的 URL 路径:
 DDNS_Second=第二 DDNS 服务
 DDNS_Common=DDNS 通用设置
 DDNS_SSL=使用安全 HTTPS 连接
+=======
+WAN_TTL_Value_Item1=64(Unix)
+WAN_TTL_Value_Item2=128(Windows)
+DDNS_SVR=DDNS 服务器 (如 members.3322.net):
+DDNS_URL=DDNS URI (如 /dyndns/update?system=dyndns&hostname=):
+DDNS_Second=副动态域名服务 (DDNS) 设置
+DDNS_Common=动态域名服务 (DDNS) 通用设置
+DDNS_SSL=使用 HTTPS 安全连接?
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 DDNS_Source=我的互联网 IPv4 地址源:
 DDNS_AddrExt=自动检测外部 IP
 DDNS_AddrWAN=WAN 接口地址
@@ -339,8 +358,8 @@ STB_IsolationItem1=隔离路由器和 CPU 端口
 STB_IsolationItem2=隔离 WAN 桥接端口
 UntagVLAN=无标签 VLAN
 FirewallConfigSynFlood=阻止 SYN 洪水攻击
-NFilter_desc=Linux Netfilter 主框架配置。
-NFilterConfig=Netfilter 设置
+NFilter_desc=网络过滤主框架配置。
+NFilterConfig=网络过滤设置
 NFilterMaxConn=最大连接数:
 NFilterNatType=NAT 类型 (仅UDP):
 NFilterNatLoop=NAT 环回地址
@@ -454,6 +473,7 @@ StorageSMBD=SMB 服务器 (Windows网络邻居)
 StorageFTPD=FTP 服务器
 StorageNFSD=NFS 服务器
 StorageEnableNFSD=启用 NFS 服务器
+<<<<<<< HEAD
 StorageAllowOptw=允许运行 Optware:
 StorageFFly=iTunes媒体服务器 (Firefly)
 StorageEnableFFly=启用 iTunes 媒体服务器
@@ -473,6 +493,28 @@ InetCheckModeItem0=仅 WebUI 显示
 InetCheckModeItem1=持续检测
 InetCheckHosts=监测主机列表(TCP)
 InetCheckHostIP4=远程服务器地址和端口
+=======
+StorageAllowOptw=启用 Optware
+WebControl=控制台
+StorageFFly=iTunes 媒体服务器 (Firefly)
+StorageEnableFFly=启用 iTunes 媒体服务器:
+StorageTorrent=BT 下载
+StorageTorrent_itemdesc=第一次使用 transmission 前，请在目标分区创建 [transmission] 目录。
+StorageEnableTRMD=启用 Transmission:
+StoragePPortTRMD=传入端口:
+StorageRPortTRMD=RPC 控制端口:
+StorageAria=Aria2下载
+StorageAria_itemdesc=第一次使用 aria 前，请在目标分区创建 [aria] 目录。
+StorageEnableAria=启用 Aria2:
+Console_warn=警告！只能运行可以立即返回结果的命令，使用 top、ping、traceroute 等命令将会使网页停止响应。
+Scripts_desc=当特定事件发生时执行自定义脚本。
+InetCheck_desc=网络监测器用于监控路由器的联网状态。
+InetCheckMode=监测模式
+InetCheckModeItem0=打开 WebUI 时
+InetCheckModeItem1=持续监测
+InetCheckHosts=监测主机列表 (TCP)
+InetCheckHostIP4=IP 地址和端口
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 InetCheckPoll=监测设置
 InetCheckPeriod=连接成功/失败后的检测间隔(秒):
 InetCheckTimeout=TCP 连接超时时间(s):
@@ -546,11 +588,19 @@ PrinterPortRAW=启用 TCP/IP RAW 端口
 IPTV_desc=多播路由和 IPTV
 IPTVBase=IPTV 转换控制
 IPTVProxy=IPTV 代理服务器
+<<<<<<< HEAD
 IPTVQLeave=实现快速频道切换
 IPTVMulticast=多播流量
 IPTVXUA=可扩展的 UPnP 代理 (xUPNPd)，Web 端口:
 IPTVXExt=使用外部 udpxy 的 xUPNPd
 IPTVIGMP=强制 IGMP 协议版本:
+=======
+IPTVQLeave=快速频道切换
+IPTVMulticast=组播流量
+IPTVXUA=可扩展 UPNP 代理 (xUPNPd) 端口:
+IPTVXExt=为 xUPNPd 启用外部 UDPXY?
+IPTVIGMP=限制 IGMP 协议版本:
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 Switch_desc=内部交换机上的物理 WAN 和 LAN 以太网端口的配置。
 SwitchBase=基本设置
 SwitchJumbo=接收端口之间的巨型帧:
@@ -915,12 +965,21 @@ menu5_2_4=IPTV
 menu5_2_5=以太网交换机
 menu5_2_6=网络唤醒
 menu5_3_1=外网设置
+<<<<<<< HEAD
 menu5_3_2=带宽管理 (QoS)
 menu5_3_3=IPv6 设置
 menu5_3_4=端口转发 (UPnP)
 menu5_3_5=隔离区 (DMZ)
 menu5_3_6=动态域名解析 (DDNS)
 menu5_4_1=网络共享 (Samba)
+=======
+menu5_3_2=QoS
+menu5_3_3=IPv6 协议
+menu5_3_4=端口映射 (UPnP)
+menu5_3_5=端口转发 (DMZ)
+menu5_3_6=动态域名解析
+menu5_4_1=网上邻居
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 menu5_4_2=FTP 共享
 menu5_4_3=其它设置
 menu5_4_4=USB 网卡
@@ -929,9 +988,15 @@ menu5_5_1=通用设置
 menu5_5_2=网址过滤
 menu5_5_3=MAC 访问控制
 menu5_5_4=网络服务过滤
+<<<<<<< HEAD
 menu5_5_5=Netfilter
 menu5_6_1=连接模式
 menu5_6_2=系统设置
+=======
+menu5_5_5=网络过滤
+menu5_6_1=工作模式
+menu5_6_2=系统
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 menu5_6_3=固件升级
 menu5_6_4=恢复保存设置
 menu5_6_5=服务设置
@@ -985,10 +1050,17 @@ Wireless_name=无线 SSID:
 Wireless_Radio=无线信号
 WEPKey=WEP密钥:
 WPA-PSKKey=WPA-PSK 密钥:
+<<<<<<< HEAD
 LAN_IP=内部网络 IP
 MAC_Address=MAC地址
 ConnectionStatus=连接状态:
 WAN_IP=外部网络 IP
+=======
+LAN_IP=IP 地址:
+MAC_Address=MAC 地址:
+ConnectionStatus=联网状态:
+WAN_IP=IP 地址:
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 Connectiontype=联网类型
 Gateway=网关:
 DNS=DNS:
@@ -1005,21 +1077,37 @@ Computer_Name=名称
 MAC_Vendor=制造商
 MAC_Wakeup=唤醒
 ConnectedClient=已连接设备
+<<<<<<< HEAD
 BlockedClient=黑名单设备
 Type=类型
 Nodata=无数据
 Block=禁止
+=======
+BlockedClient=已阻止设备
+Type=类型
+Nodata=列表为空
+Block=阻止
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 unBlock=允许
 Priority=优先级
 Priority_Level_1=高
 Priority_Level_2=一般
 Priority_Level_3=低
+<<<<<<< HEAD
 block_Comfirm1=确定要禁止
 block_Comfirm2=加入黑名单的客户端将无法通过路由器连接到互联网。
 unblock_Comfirm1=确定要将客户端
 unblock_Comfirm2=从黑名单列表移除？
 macfilter_alert_str1=已经修改为[接受]。如果要禁止客户端，您需要将其修改为[拒绝]。
 Modelname=型号
+=======
+block_Comfirm1=确定要阻止
+block_Comfirm2=被阻止的设备将无法通过 ZVMODELVZ 访问互联网。
+unblock_Comfirm1=确定要将设备
+unblock_Comfirm2=从已阻止设备列表移除?
+macfilter_alert_str1=已经修改为 [接受]。如果要阻止客户端，你需要将其修改为 [拒绝]。
+Modelname=型号名
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 Manufacturer=制造商
 Totalspace=总容量
 Availablespace=可用容量
@@ -1068,9 +1156,15 @@ AiDisk_Step2_helptitle=设置 DDNS 服务
 AiDisk_Step3_helptitle=设置共享磁盘
 AiDisk_Step1_help=提供三种常用的共享方式，弹指之间为您建立共享的帐号。<p>选择「不需要帐号密码」，不需要帐号密码即可由 FTP 访问您的 USB 硬盘。</p><p>选择「需要帐号才能访问」，将额外建立 Family 这个帐号，仅提供下载的权限。</p><p>选择「只有我可以访问」，我们为您创建一组 admin 账号，提供完整的访问权限与基本的密码保护。</p><p>注:进行权限设定，将会清除您原来设定的帐号。 </p>
 AiDisk_Step1_help2=注:账号管理功能无法在 NTFS 格式的硬盘中使用。
+<<<<<<< HEAD
 AiDisk_Step2_help=华硕 DDNS 服务让您可以快速创建一组简单易记的网址，即使您的主机采用动态地址，其它人也可以更方便的通过 FTP 访问您的外接 USB 硬盘。<p>倘若您需要其它服务商的 DDNS 设置，请至<a href='/Advanced_DDNS_Content.asp' target='_top'>动态域名解析 (DDNS)</a>进行设置</p>
 AiDisk_Step3_help=<a href='../Advanced_AiDisk_samba.asp' target='_top'>以网上邻居共享硬盘</a>: 更多专业的网上邻居共享设置。<br/><a href='../Advanced_AiDisk_ftp.asp' target='_top'>以 FTP 共享硬盘</a>: 更多专业的 FTP 服务器设置。
 Step2_method=我的 FTP 服务器
+=======
+AiDisk_Step2_help=使用华硕 DDNS 服务可以快速创建一个使用动态 IP 地址的域名。<p>若需使用其它服务商的 DDNS 服务，请打开<a href='/Advanced_DDNS_Content.asp' target='_top'>动态域名解析</a>进行设置</p>
+AiDisk_Step3_help=<a href='../Advanced_AiDisk_samba.asp' target='_top'>网上邻居</a>: 更多专业的网上邻居设置。<br/><a href='../Advanced_AiDisk_ftp.asp' target='_top'>FTP 共享</a>: 更多专业的 FTP 服务器设置。
+Step2_method=FTP 服务器共享设置：
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 Step2_method1=匿名访问
 Step2_method2=需要账号才能访问
 Step2_method3=管理员访问
@@ -1097,8 +1191,13 @@ DDNSterm_agreeword=我同意使用此服务
 DDNS_termofservice_Title=使用条款
 Time=时间
 linktodisk=在局域网共享:
+<<<<<<< HEAD
 linktodisk_no_1=未启用网上邻居共享，请在[USB应用] / [网络邻居共享]开启此功能。
 linktodisk_no_2=您的浏览器不支持以超链接的方式打开网络邻居。
+=======
+linktodisk_no_1=未启用网上邻居，请在 [USB 应用] / [网上邻居] 开启此功能。
+linktodisk_no_2=你的浏览器不支持以超链接的方式打开网上邻居。
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 AiDisk_linktoFTP_fromInternet=FTP 地址:
 linktoFTP_no_1=未启用 FTP 服务器，请在[USB应用] / [FTP共享]设置并开启此功能。
 linktoFTP_no_2=未启用[动态域名解析]，请在[外部网络] / [动态域名解析]开启此功能。
@@ -1261,9 +1360,14 @@ CTL_Cancel=取消
 CTL_apply=应用本页设置
 CTL_apply1=应用所有设置
 CTL_finish=保存
+<<<<<<< HEAD
 CTL_refresh=更新
 BTN_REBOOT=重新启动
 BTN_LOGOUT=注销
+=======
+CTL_refresh=刷新
+BTN_REBOOT=重启
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 CTL_upload=上传
 CTL_next=下一步
 CTL_prev=上一步
@@ -1303,7 +1407,7 @@ JS_DHCP3=新的 IP 地址池与子网掩码不符，您希望其自动调整吗�
 BOP_isp_desc=您的 ISP 运营商可能会需要以下数据以便确认您的账号。如果没有，就请按「下一步」省略。
 OP_desc1=路由器支持多种满足不同需求的操作模式。请选择能符合您现况的模式。
 PASS_new=新密码:
-PASS_retype=再次输入新密码:
+PASS_retype=确认新密码:
 FW_desc1=请按以下步骤进行操作:
 FW_desc2=检查固件源码更新可在 <a href="ZVDWURLVZ" target="blank">ASUS RT-N56U 固件定制网站</a>查看是否有固件更新。
 FW_desc3=下载适当的固件版本到您的本地机器。
@@ -1762,6 +1866,7 @@ FirewallConfig_display2_sectiondesc=开启防火墙保护您的内部网络不�
 FirewallConfig_LanWanFirewallEnable_itemname=启用网络服务过滤 
 FirewallConfig_LanWanFirewallEnable_itemdesc=该选项可让您通过指定 IP 或通信端口号,来决定允许哪些入端口与出端口流量。
 FirewallConfig_FirewallEnable_itemname=启用防火墙
+<<<<<<< HEAD
 FirewallConfig_FirewallEnable_itemdesc=关闭防火墙会撤销所有相关功能。
 FirewallConfig_DoSEnable_itemname=启用 DDoS 防护
 FirewallConfig_x_WanWebEnable_itemname=允许从互联网设置路由器
@@ -1781,6 +1886,27 @@ IPConnection_BattleNet_sectionname=特殊应用
 IPConnection_BattleNet_sectiondesc=某些应用程序需要特殊的处理程序来穿越IP共享器。默认是关闭。
 IPConnection_BattleNet_itemname=星际争霸 (Battle.Net)
 IPConnection_BattleNet_itemdesc=选择「是」，允许同时间在LAN中可有多位玩家一起参与 Starcraft 的在线游戏。
+=======
+FirewallConfig_FirewallEnable_itemdesc=开启或关闭路由器的防火墙。
+FirewallConfig_DoSEnable_itemname=启用 DoS 防护
+FirewallConfig_x_WanWebEnable_itemname=允许外网访问 HTTP 管理
+FirewallConfig_x_WanWebEnable_itemdesc=启用后可以从外网访问路由器设置页面，默认的端口为 8080。
+FirewallConfig_x_WanWebPort_itemname=外网端口
+FirewallConfig_x_WanWebPort_itemdesc=指定从外网 ZVMODELVZ 设置页面时使用的端口 (1024:65535)，默认为 8080。
+FirewallConfig_x_WanLPREnable_itemname=响应 LPR请求?
+FirewallConfig_x_WanLPREnable_itemdesc=允许 ZVMODELVZ 响应来自外部网络的 LPR 请求 (LPR request)。
+FirewallConfig_x_NatLogEnable_itemname=启用外网访问日志?
+FirewallConfig_x_NatLogEnable_itemdesc=此功能可让你记录来自外网的所有网络访问。
+FirewallConfig_WanLanLog_itemname=记录的封包类型:
+FirewallConfig_WanLanLog_itemdesc=LAN 与 WAN 之间需要记录的封包类型。
+FirewallConfig_x_WanPingEnable_itemname=响应来自外网的 PING
+FirewallConfig_x_WanPingEnable_itemdesc=允许 ZVMODELVZ 响应来自外部网络的 Ping 请求 (ICMP Ping)。
+WLANConfig11b_display5_sectiondesc=无线网络传输与效率相关设置，建议采用我们调校好的默认值。
+IPConnection_BattleNet_sectionname=特殊应用设置
+IPConnection_BattleNet_sectiondesc=某些应用程序需要特殊的处理程序来穿越 IP 共享器。默认是关闭。
+IPConnection_BattleNet_itemname=星际争霸 (Battle.Net):
+IPConnection_BattleNet_itemdesc=启用后允许内网多位玩家同时参与 Starcraft 的在线游戏。
+>>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 t1Logout=注销
 JS_logout=确定要注销？
 Not_authpage_re_login=重新登录
@@ -1904,5 +2030,7 @@ Settings=设置
 ConClients=已连接客户端
 IPLocal=IP 地址 (本地)
 IPRemote=IP 地址 (远程)
+ChnRoute=大陆白名单
+GfwList=列表黑名单
 Login=登录
 
