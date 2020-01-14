@@ -524,11 +524,8 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_update_chnroute", "0" },
 	{ "ss_update_gfwlist", "0" },
 
-<<<<<<< HEAD
 	{ "reboot_mode", "0" },
 
-=======
->>>>>>> a8d904c35d3c00578a350cd95bb1dc90fe39c722
 	/* DHCP server parameters */
 	{ "dhcp_start", "192.168.2.2" },	/* First assignable DHCP address */
 	{ "dhcp_end", "192.168.2.80" },		/* Last assignable DHCP address */
@@ -791,17 +788,6 @@ struct nvram_pair router_defaults[] = {
 	{ "vpnc_ov_ciph", "3" },
 	{ "vpnc_ov_clzo", "2" },
 	{ "vpnc_ov_atls", "0" },
-
-	/* xTun */
-	{ "xTun_iface", "tun0" },
-	{ "xTun_cidr", "10.0.1.2/24" },
-	{ "xTun_server", "server.me" },
-	{ "xTun_port", "1082" },
-	{ "xTun_tcp", "0" },
-	{ "xTun_key", "password" },
-
-	{ "xTun_dns", "1.1.1.1" },
-	{ "xTun_black_list", "/etc/storage/xTun_black_list" },
 
 	{ 0, 0 }
 };
