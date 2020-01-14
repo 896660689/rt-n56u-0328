@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-01-08
+# Compile:by-lanse	2020-01-15
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -247,7 +247,7 @@ func_gfw_pdnsd(){
 		then
 			cat > $Config_Pdnsd <<EOF
 global {
-	perm_cache = 768;
+	perm_cache = 936;
 	cache_dir = "/var/pdnsd";
 	pid_file = "/var/run/pdnsd.pid";
 	run_as = "$username";
