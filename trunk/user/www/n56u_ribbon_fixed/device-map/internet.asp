@@ -56,7 +56,7 @@ function initial(){
 
 	fill_info();
 
-	if ($j('tr:visible').length > 13)
+	if ($j('tr:visible').length > 15)
 		$("row_more_links").style.display = "none";
 
 	id_update_wanip = setTimeout("update_wanip();", 2500);
