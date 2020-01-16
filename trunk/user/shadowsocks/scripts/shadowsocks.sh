@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-01-15
+# Compile:by-lanse	2020-01-16
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -137,7 +137,7 @@ EOF
 		if [ ! "$?" -eq "0" ]
 		then
 			awk '!/^$/&&!/^#/{printf("nameserver %s'" "'\n",$0)}' $Dnsmasq_d_dns/resolv.conf >> /tmp/resolv.conf
-			if [ ! "$Dns_ipv6" = "dhcp6" ]
+			if [ "$Dns_ipv6" = "" ]
 			then
 				sed -i '/2001/d' /tmp/resolv.conf
 			fi
