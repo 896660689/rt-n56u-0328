@@ -10,6 +10,7 @@ Dnsmasq_dns="/etc/storage/dnsmasq/dnsmasq.conf"
 Dnsmasq_d_dns="/etc/storage/dnsmasq.d/dns"
 route_vlan=$(/sbin/ifconfig br0 |grep "inet addr"| cut -f 2 -d ":"|cut -f 1 -d " ")
 username=$(nvram get http_username)
+Dns_ipv6=$(nvram get ip6_service)
 ss_type=$(nvram get ss_type)		#0=ss;1=ssr
 
 if [ "${ss_type:-0}" = "0" ] ; then
@@ -136,6 +137,10 @@ EOF
 		if [ ! "$?" -eq "0" ]
 		then
 			awk '!/^$/&&!/^#/{printf("nameserver %s'" "'\n",$0)}' $Dnsmasq_d_dns/resolv.conf >> /tmp/resolv.conf
+			if [ ! "$Dns_ipv6" = "dhcp6" ]
+			then
+				sed -i '/2001/d' /tmp/resolv.conf
+			fi
 			mv -f /tmp/resolv.conf /etc/resolv.conf
 		fi
 		restart_dns; sleep 3
