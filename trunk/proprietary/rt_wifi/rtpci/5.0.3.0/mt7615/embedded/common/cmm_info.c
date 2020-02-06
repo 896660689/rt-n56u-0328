@@ -3660,7 +3660,7 @@ RTMP_STRING *GetAuthMode(CHAR auth)
 			3.) UI needs to prepare at least 4096bytes to get the results
     ==========================================================================
 */
-#define	LINE_LEN	(4+33+20+23+9+9+7+3)	/* Channel+SSID+Bssid+Security+Signal+WiressMode+ExtCh+NetworkType*/
+#define	LINE_LEN	(4+73+20+23+9+9+7+3)	/* Channel+SSID+Bssid+Security+Signal+WiressMode+ExtCh+NetworkType*/
 
 
 #ifdef WSC_INCLUDED
@@ -3698,7 +3698,7 @@ VOID RTMPCommSiteSurveyData(
 			sprintf(Ssid + 2 + (idx * 2), "%02X", (UCHAR)pBss->Ssid[idx]);
 	}
 
-	sprintf(msg + strlen(msg), "%-33s", Ssid);
+	sprintf(msg + strlen(msg), "%-73s", Ssid);
 	/*BSSID*/
 	sprintf(msg + strlen(msg), "%02x:%02x:%02x:%02x:%02x:%02x   ",
 			pBss->Bssid[0],
@@ -4116,7 +4116,7 @@ max_len += OWETRANSIE_LINE_LEN;
 	sprintf(msg, "\n");
 //	sprintf(msg + strlen(msg), "Total=%-4d", pAdapter->ScanTab.BssNr);
 //	sprintf(msg + strlen(msg), "\n");
-	sprintf(msg + strlen(msg), "%-4s%-33s%-20s%-23s%-9s%-9s%-7s%-3s\n",
+	sprintf(msg + strlen(msg), "%-4s%-73s%-20s%-23s%-9s%-9s%-7s%-3s\n",
 		"Ch", "SSID", "BSSID", "Security", "Signal(%)", "W-Mode", " ExtCH", " NT");
 #ifdef WSC_INCLUDED
 	sprintf(msg + strlen(msg) - 1, "%-4s%-5s\n", " WPS", " DPID");
@@ -4260,7 +4260,7 @@ VOID RTMPIoctlGetSiteSurvey(
 	sprintf(msg, "%s", "\n");
 	sprintf(msg+strlen(msg), "Total=%-4d", pAdapter->ScanTab.BssNr);
 	sprintf(msg+strlen(msg), "%s", "\n");
-	sprintf(msg+strlen(msg), "%-4s%-4s%-33s%-20s%-23s%-9s%-7s%-7s%-3s\n",
+	sprintf(msg+strlen(msg), "%-4s%-4s%-73s%-20s%-23s%-9s%-9s%-7s%-3s\n",
 	    "No", "Ch", "SSID", "BSSID", "Security", "Siganl(%)", "W-Mode", " ExtCH", " NT");
 
 	sprintf(msg+strlen(msg)-1, "%-11s%-10s%-6s%-6s%-6s%-7s\n", " STA_COUNT", " MED_UTIL", " SNR0", " SNR1", " SNR2", " SNR3");	/*change anand for SNR.	Anjan: TODO: SNR2, SNR3 */
@@ -13151,11 +13151,6 @@ INT	Set_Led_Proc(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 		if (i >= 8)
 			break;
 	}
-
-	printk("\n%s\n", __func__);
-
-	for (j = 0; j < i; j++)
-		printk("%02x\n", (UINT)led_param[j]);
 
 #if defined(MT7615) || defined(MT7622)
 	if (IS_MT7615(pAd))
