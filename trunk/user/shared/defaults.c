@@ -193,7 +193,7 @@ struct nvram_pair router_defaults[] = {
 	{ "wl_TxPower", "90" },
 	{ "wl_TxBurst", "1" },
 	{ "wl_PktAggregate", "1" },
-	{ "wl_APSDCapable", "1" },
+	{ "wl_APSDCapable", "0" },
 	{ "wl_HT_OpMode", "0" },
 #if BOARD_HAS_5G_11AC
 	{ "wl_HT_BW", "2" },
