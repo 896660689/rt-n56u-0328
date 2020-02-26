@@ -3,7 +3,7 @@ SRC_NAME=openssl-1.0.2t
 # openssl use CROSS_COMPILE prefix
 CC=gcc $(CPUFLAGS)
 
-COPTS=-ffunction-sections -fdata-sections -Wl,--gc-sections -I$(DESTDIR)/include
+COPTS=-ffunction-sections -fdata-sections -I$(DESTDIR)/include
 COPTS+=$(if $(CONFIG_IPV6),-DOPENSSL_USE_IPV6=1,)
 COPTS+=-DOPENSSL_SMALL_FOOTPRINT
 
