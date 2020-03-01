@@ -464,7 +464,11 @@ function show_menu(L1, L2, L3){
 		menuL2_title[4] = "";
 		menuL2_link[5] = "";  //remove Firewall
 		menuL2_title[5] = "";
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
 		if (lan_proto == '1'){
 			tabtitle[2].splice(2,1);
 			tablink[2].splice(2,1);
