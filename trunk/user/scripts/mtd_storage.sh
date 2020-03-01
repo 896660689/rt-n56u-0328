@@ -302,12 +302,7 @@ modprobe xt_set
 #drop caches
 sync && echo 3 > /proc/sys/vm/drop_caches
 
-<<<<<<< HEAD
 ## Mount SATA disk
-=======
-# Mount SATA disk
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
-#mdev -s
 
 EOF
 		chmod 755 "$script_started"
