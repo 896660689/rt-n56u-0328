@@ -339,13 +339,10 @@ STB_IsolationItem1=隔离路由器和 CPU 端口
 STB_IsolationItem2=隔离 WAN 桥接端口
 UntagVLAN=无标签 VLAN
 FirewallConfigSynFlood=阻止 SYN 洪水攻击
-<<<<<<< HEAD
 NFilter_desc=网址过滤主框架配置。
 NFilterConfig=网址过滤设置
-=======
 NFilter_desc=Linux Netfilter 主框架配置。
 NFilterConfig=Netfilter 设置
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
 NFilterMaxConn=最大连接数:
 NFilterNatType=NAT 类型 (仅UDP):
 NFilterNatLoop=NAT 环回地址
@@ -934,15 +931,9 @@ menu5_5_1=通用设置
 menu5_5_2=网址过滤
 menu5_5_3=MAC 访问控制
 menu5_5_4=网络服务过滤
-<<<<<<< HEAD
 menu5_5_5=网址过滤
 menu5_6_1=连接模式
 menu5_6_2=系统设置
-=======
-menu5_5_5=Netfilter
-menu5_6_1=工作模式
-menu5_6_2=系统
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
 menu5_6_3=固件升级
 menu5_6_4=恢复保存设置
 menu5_6_5=服务设置
@@ -1915,10 +1906,5 @@ Settings=设置
 ConClients=已连接客户端
 IPLocal=IP 地址 (本地)
 IPRemote=IP 地址 (远程)
-<<<<<<< HEAD
-=======
-ChnRoute=ChnRoute
-GfwList=GfwList
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
 Login=登录
 
