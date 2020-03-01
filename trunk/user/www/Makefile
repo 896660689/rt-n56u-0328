@@ -164,27 +164,6 @@ ifneq ($(STORAGE_ENABLED),y)
 	rm -rf $(INSTALLDIR)/www/images/AiDisk
 	rm -rf $(INSTALLDIR)/www/images/Tree
 endif
-<<<<<<< HEAD
-=======
-ifneq ($(CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT),y)
-	rm -f $(INSTALLDIR)/www/scutclient.asp
-	rm -f $(INSTALLDIR)/www/scutclient_log.asp
-	rm -f $(INSTALLDIR)/www/scutclient_action.asp
-endif
-ifneq ($(CONFIG_FIRMWARE_INCLUDE_MENTOHUST),y)
-	rm -f $(INSTALLDIR)/www/mentohust.asp
-	rm -f $(INSTALLDIR)/www/mentohust_log.asp
-	rm -f $(INSTALLDIR)/www/mentohust_action.asp
-endif
-ifneq ($(CONFIG_FIRMWARE_INCLUDE_DNSFORWARDER),y)
-	rm -f $(INSTALLDIR)/www/dns-forwarder.asp
-endif
-ifneq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
-	rm -f $(INSTALLDIR)/www/Shadowsocks.asp
-	rm -f $(INSTALLDIR)/www/Shadowsocks_action.asp
-	rm -f $(INSTALLDIR)/www/Shadowsocks_log.asp
-endif
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
 
 clean:
 	@echo "Clean www romfs"
