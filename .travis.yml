@@ -30,15 +30,9 @@ after_script:
 
 env:
     global:
-<<<<<<< HEAD
       - targets="K2"
-      - toolchain_url="https://github.com/896660689/padavan-toolchain/releases/download/0109/toolchain-3.4.x.tar.gz"
-      - secure: "GGHrKCkSvtNDttSd6jMV8cm6Cqv0LvpKz4s55N/Nl3WduMV0W/sixAquQ6a3/MNIvfosVsE9J+etT6lIeKap1X1awnLzpTU2shi7jJN7pBwh/aomsKPpuGFF4w56cQKJqi7It3l6T/Xd02r059mbQkfx3H0MyjXlwcIf1rPhtnksxAQ7tFYmLMuCClahgN42+JL6Brmy2gkL3kY7W0rtUd6SZ7H16gTW+Rm1eJMU1kBMku9wz3cgu9jLuBrgE6RgDDE5nMfVimJbEWo2pkVJH2sTWu3nvZ3S+3WNHNJvkpb08Sx7NCB9IYrWQgzNHRd0YkptksDJ1qZNepaO03uHPZfscLl9O8UinJpkp1DCwnQK9yQ3SbbZy2S1i492c+93z2reTSrXu+PIe1U12tVmXx5Vk7RbWuErHW9+Uq1fYbqK9GvPtZbpHusiphA+5WeaNyRCO+9axjn9pGVnsaBWjyH2pKV4N7o1pQIydmPgxqmQe45y/oZ0rMIsLyUEImvCkDg4tfig22NierCbhT+LFnu1fHE1RpS2kzrwXmy/w5UNVAP3zF+hS59YVuSnRgP0sKuRZyTeHHGrIgNAdAv5fSjsGgHtYaKnMXoypXMETZAJFdnDGOJM5AYNhVAgWd59YcF4AaF0xZwz0w8t9q4rq1p50KJxu6sZW5XvhlqrOr0="
-=======
-      - targets="PSG1208 PSG1218 NEWIFI-MINI MI-MINI MI-3 OYE-001"
       - toolchain_url="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz"
-      - secure: URLT7NCfQa0gh0Uty8uZqvvD9D8RolF0eKwXLIsCy+3w4pd4Qiwe6N/zRew41UZ+cC7PXjZeysc0XjuY58DncW9zEWgFAcfcrikkBaZEZhk6iAu4Y8AgYS5qMynLR6h8SE/QhThJBjIUQGhBNdP9Cze6smqlK0Q1gHbFndfndxcAuf7HaaJPvpV4enV5yyouyC4JBXLkth4yAyidZjHclZeSLzSQQxvU68X2fFLazNRcmqZb2GW8DUx/lCVllScgIFaPXkWlzZEgeESE3kDLoum1zTkf/btJswX+d/mxMOrJiYx/ur+NXhBGyE7yaPCoc+4cpg+R7mPKIGVyJ6WPgQm7lrcn2QWTtYmEizZ0qiCK7yU1hPbOe6VU9QfrbUNVoalYI4Hx0stmiZV1Vpx73L5oy/ZQEAayS7rhSBntN6KozgRPrA/ZqrE6mI1Ky6lQAYfsekqivZq7nNfyV7VSX4A3iZ73NY4LEXrbuordSWIpW9RuIt0i6zfBUD4nDN6PlYnrL7lp4Nq/14TI/x2eq95TQ/+zYk0pT4svp2OKUyOp89k2Y2R25BHCyOVynkwNSk6zN9IgmTyD5TQTV2ceIj61mGbnKkn2+8wWfaSq2IdKmttBfxkVpWlSA7qfCign4WuigClt5Ng7935zIT9UqzIftoESPWaseNy1prbItjk=
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
+      - secure: "GGHrKCkSvtNDttSd6jMV8cm6Cqv0LvpKz4s55N/Nl3WduMV0W/sixAquQ6a3/MNIvfosVsE9J+etT6lIeKap1X1awnLzpTU2shi7jJN7pBwh/aomsKPpuGFF4w56cQKJqi7It3l6T/Xd02r059mbQkfx3H0MyjXlwcIf1rPhtnksxAQ7tFYmLMuCClahgN42+JL6Brmy2gkL3kY7W0rtUd6SZ7H16gTW+Rm1eJMU1kBMku9wz3cgu9jLuBrgE6RgDDE5nMfVimJbEWo2pkVJH2sTWu3nvZ3S+3WNHNJvkpb08Sx7NCB9IYrWQgzNHRd0YkptksDJ1qZNepaO03uHPZfscLl9O8UinJpkp1DCwnQK9yQ3SbbZy2S1i492c+93z2reTSrXu+PIe1U12tVmXx5Vk7RbWuErHW9+Uq1fYbqK9GvPtZbpHusiphA+5WeaNyRCO+9axjn9pGVnsaBWjyH2pKV4N7o1pQIydmPgxqmQe45y/oZ0rMIsLyUEImvCkDg4tfig22NierCbhT+LFnu1fHE1RpS2kzrwXmy/w5UNVAP3zF+hS59YVuSnRgP0sKuRZyTeHHGrIgNAdAv5fSjsGgHtYaKnMXoypXMETZAJFdnDGOJM5AYNhVAgWd59YcF4AaF0xZwz0w8t9q4rq1p50KJxu6sZW5XvhlqrOr0="
 
 git:
     depth: 3
