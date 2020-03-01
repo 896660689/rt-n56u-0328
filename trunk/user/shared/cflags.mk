@@ -228,7 +228,4 @@ endif
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_IPSET),y)
 CFLAGS += -DUSE_IPSET
 endif
-<<<<<<< HEAD
 
-=======
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
