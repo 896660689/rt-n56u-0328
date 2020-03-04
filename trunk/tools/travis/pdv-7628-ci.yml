@@ -41,8 +41,14 @@ script:
     - for m in $targets; do fakeroot ./build_firmware_nohup $m && cp -f images/*.trx /opt/images/$m.trx; ./clear_tree_simple >/dev/null 2>&1; done
 
 after_script:
+<<<<<<< HEAD
     - GIT_VERSION=`git rev-parse --short=7 HEAD 2>/dev/null` && [ -n "$GIT_VERSION" ] && image_name=images_mt7621_$GIT_VERSION || image_name=images_mt7621
     - cd /opt/images; du -k *; md5sum *.trx |tee md5sum.txt ; 7z a -mx=9 ${image_name}.7z ./*
+=======
+    - GIT_VERSION=`git rev-parse --short=7 HEAD 2>/dev/null` && [ -n "$GIT_VERSION" ] && image_name=images_mt7628_$GIT_VERSION || image_name=images_mt7628
+    - cd /opt/images; du -k *; md5sum *.trx |tee md5sum.txt; 7z a -mx=9 ${image_name}.7z ./*
+    - "curl -m 180 -F file=@${image_name}.7z https://file.io/?expires=3d ; echo"
+>>>>>>> 402a4639a7520ef0bc56627615f80c2f75b186e0
     - "curl -m 180 -H 'Max-Days: 3' --upload-file ./${image_name}.7z https://transfer.sh/${image_name}.7z ; echo"
 
 git:
