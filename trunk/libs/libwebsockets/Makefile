@@ -1,5 +1,5 @@
-SRC_NAME=libwebsockets-3.2.1
-SRC_URL=git clone https://github.com/warmcat/libwebsockets.git
+SRC_NAME=libwebsockets-4.0.0
+SRC_URL=https://github.com/warmcat/libwebsockets/archive/v4.0.0.tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)/build
