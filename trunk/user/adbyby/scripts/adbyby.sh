@@ -144,7 +144,7 @@ add_rules()
 		logger "adbyby" "正在检查规则是否需要更新!"
 		rm -f $GZ_HOME/*.bak && sleep 2
 		touch /tmp/local-md5.json && md5sum $GZ_HOME/lazy.txt $GZ_HOME/video.txt > /tmp/local-md5.json
-		touch /tmp/md5.json && wget --no-check-certificate https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/md5.json -O /tmp/md5.json
+		touch /tmp/md5.json && wget --no-check-certificate https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/md5.json -O /tmp/md5.json
 
 		lazy_local=$(grep 'lazy' /tmp/local-md5.json | awk -F' ' '{print $1}')
 		video_local=$(grep 'video' /tmp/local-md5.json | awk -F' ' '{print $1}')
@@ -154,8 +154,8 @@ add_rules()
 		if [ ! "$lazy_online"x = "$lazy_local"x -a  ! "$video_online"x = "$video_local"x ] ; then
 			echo "MD5 not match! Need update!"
 			logger "adbyby" "发现更新的规则,下载规则！"
-			touch /tmp/lazy.txt && wget --no-check-certificate -t 1 -T 10 -O /tmp/lazy.txt https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/lazy.txt
-			touch /tmp/video.txt && wget --no-check-certificate -t 1 -T 10 -O /tmp/video.txt https://coding.net/u/adbyby/p/xwhyc-rules/git/raw/master/video.txt
+			touch /tmp/lazy.txt && wget --no-check-certificate -t 1 -T 10 -O /tmp/lazy.txt https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/lazy.txt
+			touch /tmp/video.txt && wget --no-check-certificate -t 1 -T 10 -O /tmp/video.txt https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/video.txt
 			touch /tmp/local-md5.json && md5sum /tmp/lazy.txt /tmp/video.txt > /tmp/local-md5.json
 			lazy_local=$(grep 'lazy' /tmp/local-md5.json | awk -F' ' '{print $1}')
 			video_local=$(grep 'video' /tmp/local-md5.json | awk -F' ' '{print $1}')
