@@ -153,6 +153,7 @@ get_eeprom_params(void)
 #else
 	i_offset = OFFSET_MAC_ADDR_INIC;
 #endif
+	memset(buffer, 0xff, ETHER_ADDR_LEN);
 	i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, i_offset, buffer, ETHER_ADDR_LEN);
 	if (i_ret >= 0 && !(buffer[0] & 0x01))
 		ether_etoa(buffer, macaddr_wl);
