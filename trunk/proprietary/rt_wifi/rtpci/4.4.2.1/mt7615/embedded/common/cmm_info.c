@@ -3202,11 +3202,6 @@ USHORT RTMPGetLastTxRate(PRTMP_ADAPTER pAd, MAC_TABLE_ENTRY *pEntry)
         return lastTxRate.word;
 }
 
-VOID RTMPIoctlGetMacTableStaInfo(
-	IN PRTMP_ADAPTER pAd,
-	IN RTMP_IOCTL_INPUT_STRUCT *wrq)
-{
-
 static VOID
 copy_mac_table_entry(RT_802_11_MAC_ENTRY *pDst, MAC_TABLE_ENTRY *pEntry)
 {
@@ -3235,7 +3230,6 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	IN PRTMP_ADAPTER pAd,
 	IN RTMP_IOCTL_INPUT_STRUCT *wrq)
 {
-	INT i;
 	INT i, MacTabWCID;
 	RT_802_11_MAC_TABLE *pMacTab = NULL;
 	PRT_802_11_MAC_ENTRY pDst;
