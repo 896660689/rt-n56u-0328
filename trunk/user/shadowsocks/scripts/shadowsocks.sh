@@ -212,7 +212,7 @@ EOF
 91.108.56.0/22
 149.154.172.0/22
 149.154.160.0/20
-149.154.164.0/22" > /tmp/gfw-ipset.txt
+149.154.164.0/22" > /tmp/gfw-ipset.txt && sleep 3
 	fi
 	echo "create gfwlist hash:net family inet hashsize 1024 maxelem 65536" > /tmp/ss-gfwlist.ipset
 	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset
@@ -388,8 +388,8 @@ func_ss_Close(){
 }
 
 func_start(){
-	func_ss_Close
-	func_gen_ss_json
+	func_ss_Close && \
+	func_gen_ss_json && \
 	if [ "$ss_mode" = "2" ]
 	then
 		func_Custom_rules
@@ -400,10 +400,10 @@ func_start(){
 		func_start_ss_rules
 		loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!";}
 	fi
-	func_port_agent_mode
+	func_port_agent_mode && sleep 3
 	func_ss_dns
 	func_ss_watchcat
-	restart_dhcpd; sleep 3 && restart_firewall
+	restart_dhcpd; sleep 3 && restart_firewall >/dev/null 2>&1 &
 }
 
 func_stop(){
