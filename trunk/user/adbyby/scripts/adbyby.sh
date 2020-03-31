@@ -274,7 +274,7 @@ del_rule()
 adbyby_start()
 {
 	if [ "$adbyby_enable" = "1" ] ; then
-		del_rule
+		sleep 5 && del_rule
 		if [ ! -f "$AD_HOME/bin/adbyby" ] ; then
 			logger "adbyby" "adbyby程序文件不存在,正在解压..." && sleep 15
 			tar -xzvf "/etc_ro/adbyby.tar.gz" -C "/tmp"
@@ -282,13 +282,13 @@ adbyby_start()
 		fi
 		sed -i '/conf-file/d /addn-hosts/d' /etc/storage/dnsmasq/dnsmasq.conf
 		add_cron && \
-		sleep 3 && Black_white_list
+		sleep 5 && Black_white_list
 		if [ "$wan_mode" = "0" ] ; then
 			if [ ! -n "$(pidof adbyby)" ] ; then
 				$AD_HOME/bin/adbyby &>/dev/null &
 			fi
-			add_rules
-			add_rule
+			add_rules && \
+			add_rule && \
 			sleep 3 && logger "adbyby" "Adbyby启动完成."
 		elif [ "$wan_mode" = "1" ] ; then
 			killall -q adbyby
@@ -296,7 +296,7 @@ adbyby_start()
 				kill -9 "$(pidof ad_watchcat)"
 			fi
 		fi
-		add_hosts
+		add_hosts && \
 		func_abp_mod && sleep 3; restart_dhcpd
 	fi
 }
@@ -306,7 +306,7 @@ adbyby_stop()
 	if [ -n "$(pidof ad_watchcat)" ] ; then
 		kill -9 "$(pidof ad_watchcat)"
 	fi
-	del_rule
+	del_rule && sleep 5
 	killall -q adbyby >/dev/null 2>&1
 	if [ "$adbyby_enable" = "0" ] ; then
 		nvram set adbyby_adb=$(grep -v '^!' /etc/storage/dnsmasq.ad/dnsmasq.adblock | wc -l)
