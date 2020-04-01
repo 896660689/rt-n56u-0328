@@ -420,7 +420,7 @@ restart_all_sysctl(void)
 }
 
 void
-char_to_ascii(char *output, char *input)
+char_to_ascii(char *output, uint8_t *input)
 {
 	int i;
 	char tmp[10];
