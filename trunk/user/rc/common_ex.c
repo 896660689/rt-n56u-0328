@@ -148,40 +148,12 @@ get_eeprom_params(void)
 	char productid[25];
 	char fwver[8], fwver_sub[32];
 
-	memset(buffer, 0xff, ETHER_ADDR_LEN);
-#if defined (VENDOR_TPLINK)
-	i_ret = flash_mtd_read("Romfile", 0xf100, buffer, ETHER_ADDR_LEN);
-	// Try Factory partition
-	if (i_ret < 0)
-		i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, 0xf100, buffer, ETHER_ADDR_LEN);
-	if (i_ret >=0 && !(buffer[0] & 0x01)) {
-		ether_etoa(buffer, macaddr_lan);
-		ether_etoa(buffer, macaddr_rt);
-		i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_WSOC, buffer_compare, ETHER_ADDR_LEN);
-		if (i_ret >= 0 && memcmp(buffer, buffer_compare, ETHER_ADDR_LEN) != 0) {
-			// write mac to ralink eeprom 2,4 Ghz
-			flash_mtd_write(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_WSOC, buffer, ETHER_ADDR_LEN);
-		}
-		buffer[5] += 1;
-		ether_etoa(buffer, macaddr_wan);
-		buffer[5] -= 2;
-		ether_etoa(buffer, macaddr_wl);
-#if defined (BOARD_HAS_5G_RADIO)
-		i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_INIC, buffer_compare, ETHER_ADDR_LEN);
-		if (i_ret >= 0 && memcmp(buffer, buffer_compare, ETHER_ADDR_LEN) != 0) {
-			// write mac to ralink eeprom 5 Ghz
-			flash_mtd_write(MTD_PART_NAME_FACTORY, OFFSET_MAC_ADDR_INIC, buffer, ETHER_ADDR_LEN);
-		}
-#endif
-	} else {
-		// no Romfile partition or error. Switch to ralink standart
-	}
-#endif
 #if (BOARD_5G_IN_SOC || !BOARD_HAS_5G_RADIO)
 	i_offset = OFFSET_MAC_ADDR_WSOC;
 #else
 	i_offset = OFFSET_MAC_ADDR_INIC;
 #endif
+	memset(buffer, 0xff, ETHER_ADDR_LEN);
 	i_ret = flash_mtd_read(MTD_PART_NAME_FACTORY, i_offset, buffer, ETHER_ADDR_LEN);
 	if (i_ret >= 0 && !(buffer[0] & 0x01))
 		ether_etoa(buffer, macaddr_wl);
@@ -447,41 +419,29 @@ restart_all_sysctl(void)
 #endif
 }
 
-
-/* dell 2017-0410 cn */
-
 void
-char_to_ascii(char *output, uint8_t *input)
+char_to_ascii(char *output, char *input)
 {
 	int i;
 	char tmp[10];
 	char *ptr;
-	int input_len;
 
 	ptr = output;
-	input_len = strlen(input);
 
-	if (is_valid_hex_string(input))
-	{
-		for (i = 0; i < strlen(input); i++)
-		{
-			if ((input[i] >= '0' && input[i] <= '9')
-				||(input[i] >= 'A' && input[i] <= 'Z')
-				||(input[i] >= 'a' && input[i] <= 'z')
-				|| input[i] == '!' || input[i] == '*'
-				|| input[i] == '(' || input[i] == ')'
-				|| input[i] == '_' || input[i] == '-'
-				|| input[i] == '\'' || input[i] == '.')
-			{
-				*ptr = input[i];
-				ptr ++;
-			}
-			else
-			{
-				sprintf(tmp, "%%%.02X", input[i]);
-				strcpy(ptr, tmp);
-				ptr += 3;
-			}
+	for ( i= 0; i<strlen(input); i++ ) {
+		if ((input[i]>= '0' && input[i] <='9')
+		   ||(input[i]>= 'A' && input[i]<='Z')
+		   ||(input[i] >= 'a' && input[i]<='z')
+		   || input[i] == '!' || input[i] == '*'
+		   || input[i] == '(' || input[i] == ')'
+		   || input[i] == '_' || input[i] == '-'
+		   || input[i] == '\'' || input[i] == '.') {
+			*ptr = input[i];
+			ptr ++;
+		} else {
+			sprintf(tmp, "%%%.02X", input[i]);
+			strcpy(ptr, tmp);
+			ptr += 3;
 		}
 	}
 	*(ptr) = '\0';
