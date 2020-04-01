@@ -241,7 +241,7 @@ char_to_ascii(char *output, uint8_t *input)
 	}
 	else
 	{
-		for (i = 0; i < i<input_len; i++)
+		for (i = 0; i < strlen(input); i++)
 		{
 			if ((input[i] >= '0' && input[i] <= '9')
 				||(input[i] >= 'A' && input[i] <= 'Z')
@@ -262,7 +262,7 @@ char_to_ascii(char *output, uint8_t *input)
 			}
 		}
 	}
-	*ptr = '\0';
+	*(ptr) = '\0';
 }
 
 int do_f(const char *path, webs_t wp)
