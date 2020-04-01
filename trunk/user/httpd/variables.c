@@ -811,7 +811,7 @@
 			{"ss_obfs","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
 			{"ss_obfs_param","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
 			{"ss_watchcat","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
-			{"ss_dns","",NULL, EVM_RESTART_SHADOWSOCKS|EVM_RESTART_SS_TUNNEL},
+			{"ss_dns","",NULL, FALSE},
 			{"ss_update_chnroute","",NULL, FALSE},
 			{"ss_update_gfwlist","",NULL, FALSE},
 			{"ss-tunnel_enable","",NULL, EVM_RESTART_SS_TUNNEL},
