@@ -29,6 +29,38 @@ Contributors of this project are not responsible for what happens next.
 ***
 
 - 已适配除官方适配外的以下机型
+<<<<<<< HEAD
+=======
+>- PSG1208
+>- PSG1218
+>- 5K-W20 (USB)
+>- OYE-001 (USB)
+>- NEWIFI-MINI (USB)
+>- MI-MINI (USB)
+>- MI-3 (USB)
+>- MI-R3G (USB)
+>- HC5661A
+>- HC5761A (USB)
+>- HC5861B
+>- 360P2 (USB)
+>- MI-NANO
+>- MZ-R13
+>- MZ-R13P
+>- RT-AC1200GU (USB)
+>- XY-C1 (USB)
+>- WR1200JS (USB)
+>- NEWIFI3 (USB)
+>- B70 (USB)
+>- A3004NS (USB)
+>- K2P
+>- K2P-USB (USB)
+>- JCG-836PRO (USB)
+>- JCG-AC860M (USB)
+>- DIR-882 (USB)
+>- DIR-878
+>- MR2600 (USB)
+>- WDR7300
+>>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 
 >- K2_256_USB (256M)
 >- K2P/K2P_5.3 (128M)
@@ -55,16 +87,25 @@ cd /opt/rt-n56u/toolchain-mipsel
 ./build_toolchain
 =======
 
-# 可以从源码编译工具链，这需要一些时间：
-# Manjaro/ArchLinux用户请使用gcc-8
+# （推荐）使用脚本下载预编译的工具链：
+sh dl_toolchain.sh
+
+# 或者，也可以从源码编译工具链，这需要一些时间：
+# Manjaro/ArchLinux 用户请使用gcc-8
+# sudo pacman -S gcc8
+# sudo ln -sf /usr/bin/gcc-8 /usr/local/bin/gcc
+# sudo ln -sf /usr/bin/g++-8 /usr/local/bin/g++
 ./clean_toolchain
 ./build_toolchain
 
+<<<<<<< HEAD
 # 或者下载预编译的工具链：
 mkdir -p toolchain-3.4.x
 wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
 tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
 >>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
+=======
+>>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 ```
 * (可选) 修改机型配置文件
 ```shell

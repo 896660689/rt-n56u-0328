@@ -233,3 +233,10 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_IPSET),y)
 CFLAGS += -DUSE_IPSET
 endif
 
+<<<<<<< HEAD
+=======
+ifeq ($(CONFIG_32M_REBOOT_FIXUP),y)
+CFLAGS += -DMTD_FLASH_32M_REBOOT_BUG
+endif
+
+>>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f

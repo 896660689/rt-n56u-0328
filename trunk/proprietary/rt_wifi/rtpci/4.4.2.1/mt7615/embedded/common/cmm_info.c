@@ -3243,7 +3243,11 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	if (pObj->ioctl_if_type == INT_APCLI)
 	{
 		STA_TR_ENTRY *tr_entry;
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 		if (wrq_len < sizeof(RT_802_11_MAC_ENTRY))
 			return;
 		if (pObj->ioctl_if >= MAX_APCLI_NUM)
@@ -3260,6 +3264,7 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		if (IS_ENTRY_APCLI(pEntry) && (pEntry->Sst == SST_ASSOC) && (tr_entry->PortSecured == WPA_802_1X_PORT_SECURED))
 		{
 			RT_802_11_MAC_ENTRY MacEntry;
+<<<<<<< HEAD
 
 			pDst = &MacEntry;
 			copy_mac_table_entry(pDst, pEntry);
@@ -3268,6 +3273,16 @@ VOID RTMPIoctlGetMacTableStaInfo(
 			copy_to_user(wrq->u.data.pointer, pDst, wrq->u.data.length);
 		}
 
+=======
+			
+			pDst = &MacEntry;
+			copy_mac_table_entry(pDst, pEntry);
+			
+			wrq->u.data.length = sizeof(RT_802_11_MAC_ENTRY);
+			copy_to_user(wrq->u.data.pointer, pDst, wrq->u.data.length);
+		}
+		
+>>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 		return;
 	}
 #endif
