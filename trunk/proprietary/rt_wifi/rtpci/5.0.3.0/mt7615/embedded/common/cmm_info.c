@@ -4430,17 +4430,6 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		if (IS_ENTRY_APCLI(pEntry) && (pEntry->Sst == SST_ASSOC) && (tr_entry->PortSecured == WPA_802_1X_PORT_SECURED))
 		{
 			RT_802_11_MAC_ENTRY MacEntry;
-
-			pDst = &MacEntry;
-			copy_mac_table_entry(pDst, pEntry);
-
-			wrq->u.data.length = sizeof(RT_802_11_MAC_ENTRY);
-			copy_to_user(wrq->u.data.pointer, pDst, wrq->u.data.length);
-		}
-
-		return;
-	}
-#endif
 			
 			pDst = &MacEntry;
 			copy_mac_table_entry(pDst, pEntry);
