@@ -3243,6 +3243,7 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	if (pObj->ioctl_if_type == INT_APCLI)
 	{
 		STA_TR_ENTRY *tr_entry;
+
 		if (wrq_len < sizeof(RT_802_11_MAC_ENTRY))
 			return;
 		if (pObj->ioctl_if >= MAX_APCLI_NUM)
@@ -3263,13 +3264,6 @@ VOID RTMPIoctlGetMacTableStaInfo(
 			pDst = &MacEntry;
 			copy_mac_table_entry(pDst, pEntry);
 
-			wrq->u.data.length = sizeof(RT_802_11_MAC_ENTRY);
-			copy_to_user(wrq->u.data.pointer, pDst, wrq->u.data.length);
-		}
-			
-			pDst = &MacEntry;
-			copy_mac_table_entry(pDst, pEntry);
-			
 			wrq->u.data.length = sizeof(RT_802_11_MAC_ENTRY);
 			copy_to_user(wrq->u.data.pointer, pDst, wrq->u.data.length);
 		}
