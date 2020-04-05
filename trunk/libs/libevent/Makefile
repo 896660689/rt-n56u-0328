@@ -47,4 +47,3 @@ install:
 romfs:
 	cp -fP $(DESTDIR)/lib/libevent-2.1.so* $(ROMFSDIR)/lib
 
-	cp -fP $(DESTDIR)/lib/libevent-2.1.so* $(ROMFSDIR)/lib
