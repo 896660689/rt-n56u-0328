@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-01-16
+# Compile:by-lanse	2020-04-06
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -124,7 +124,7 @@ func_ss_dns(){
 		then
 			cat > $Dnsmasq_d_dns/resolv.conf <<EOF
 127.0.0.1
-101.6.6.6
+223.5.5.5
 114.114.114.114
 182.254.116.116
 202.141.162.123
@@ -149,7 +149,7 @@ EOF
 		then
 			cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
 		else
-			sed -i '/208.67/d; /101.6.6.6/d; /182.254/d; /202.141.162.123/d; /2001/d' /etc/resolv.conf
+			sed -i '/208.67/d; /223.5.5.5/d; /182.254/d; /202.141.162.123/d; /2001/d' /etc/resolv.conf
 		fi
 	fi
 }
@@ -206,13 +206,14 @@ EOF
 	then
 		echo "8.8.4.4
 208.67.222.222
-91.108.12.0/22
-91.108.8.0/22
 91.108.4.0/22
+91.108.8.0/22
+91.108.12.0/22
+91.108.16.0/22
 91.108.56.0/22
-149.154.172.0/22
 149.154.160.0/20
-149.154.164.0/22" > /tmp/gfw-ipset.txt && sleep 3
+149.154.164.0/22
+149.154.172.0/22" > /tmp/gfw-ipset.txt && sleep 3
 	fi
 	echo "create gfwlist hash:net family inet hashsize 1024 maxelem 65536" > /tmp/ss-gfwlist.ipset
 	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset
@@ -252,7 +253,7 @@ func_gfw_pdnsd(){
 		then
 			cat > $Config_Pdnsd <<EOF
 global {
-	perm_cache = 936;
+	perm_cache = 768;
 	cache_dir = "/var/pdnsd";
 	pid_file = "/var/run/pdnsd.pid";
 	run_as = "$username";
