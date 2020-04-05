@@ -1146,7 +1146,6 @@ function setLogStamp(mt){
 }
 
 function setLogData(){
-<<<<<<< HEAD
 	var $j = jQuery.noConflict();
 		$j.get('/log_content.asp', function(data){
 			// fix for ie
@@ -1169,30 +1168,6 @@ function setLogData(){
 				}
 			}
 		});
-=======
-    var $j = jQuery.noConflict();
-    $j.get('/log_content.asp', function(data){
-        // fix for ie
-        if($j.browser.msie && !is_ie11p)
-            data = data.nl2br();
-        if($j("#log_area").val() == ''){
-            $j("#log_area").text(data);
-            $j("#log_area").prop('scrollTop', $j("#log_area").prop('scrollHeight'));
-            $j("#scrATop").val($j("#log_area").prop('scrollTop'));
-        }else{
-            var scrMaxTop = $j("#log_area").prop('scrollHeight')
-            var scrTop = $j("#log_area").prop('scrollTop');
-            $j("#log_area").text(data);
-            var scrITop = scrMaxTop - scrTop;
-            if($j("#scrATop").val() == scrTop || scrITop < 629){
-                $j("#log_area").prop('scrollTop', scrMaxTop);
-                $j("#scrATop").val($j("#log_area").prop('scrollTop'));
-            }else{
-                $j("#log_area").prop('scrollTop', scrTop);
-            }
-        }
-    });
->>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 }
 
 function showClockLogArea(){
