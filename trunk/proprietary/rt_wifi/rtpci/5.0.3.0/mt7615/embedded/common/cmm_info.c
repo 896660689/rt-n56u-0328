@@ -4373,10 +4373,6 @@ USHORT RTMPGetLastTxRate(PRTMP_ADAPTER pAd, MAC_TABLE_ENTRY *pEntry)
 	return lastTxRate.word;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 static VOID
 copy_mac_table_entry(RT_802_11_MAC_ENTRY *pDst, MAC_TABLE_ENTRY *pEntry)
 {
@@ -4418,11 +4414,6 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	if (pObj->ioctl_if_type == INT_APCLI)
 	{
 		STA_TR_ENTRY *tr_entry;
-<<<<<<< HEAD
-
-=======
-		
->>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 		if (wrq_len < sizeof(RT_802_11_MAC_ENTRY))
 			return;
 		if (pObj->ioctl_if >= MAX_APCLI_NUM)
@@ -4439,7 +4430,6 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		if (IS_ENTRY_APCLI(pEntry) && (pEntry->Sst == SST_ASSOC) && (tr_entry->PortSecured == WPA_802_1X_PORT_SECURED))
 		{
 			RT_802_11_MAC_ENTRY MacEntry;
-<<<<<<< HEAD
 
 			pDst = &MacEntry;
 			copy_mac_table_entry(pDst, pEntry);
@@ -4451,7 +4441,6 @@ VOID RTMPIoctlGetMacTableStaInfo(
 		return;
 	}
 #endif
-=======
 			
 			pDst = &MacEntry;
 			copy_mac_table_entry(pDst, pEntry);
@@ -4464,7 +4453,6 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	}
 #endif
 
->>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 	/* allocate memory */
 	os_alloc_mem(NULL, (UCHAR **)&pMacTab, sizeof(RT_802_11_MAC_TABLE));
 
