@@ -389,8 +389,8 @@ func_ss_Close(){
 }
 
 func_start(){
-	func_ss_Close && \
-	func_gen_ss_json && \
+	func_ss_Close
+	func_gen_ss_json
 	if [ "$ss_mode" = "2" ]
 	then
 		func_Custom_rules
