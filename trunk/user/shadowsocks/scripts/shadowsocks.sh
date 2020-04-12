@@ -404,7 +404,7 @@ func_start(){
 	func_port_agent_mode && sleep 3
 	func_ss_dns
 	func_ss_watchcat
-	restart_dhcpd; sleep 3 && restart_firewall >/dev/null 2>&1 &
+	restart_dhcpd; sleep 3 && restart_firewall
 }
 
 func_stop(){
