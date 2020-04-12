@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-04-06
+# Compile:by-lanse	2020-04-12
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -401,7 +401,7 @@ func_start(){
 		func_start_ss_rules
 		loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!";}
 	fi
-	func_port_agent_mode && sleep 3
+	func_port_agent_mode; sleep 3
 	func_ss_dns
 	func_ss_watchcat
 	restart_dhcpd; sleep 3 && restart_firewall
