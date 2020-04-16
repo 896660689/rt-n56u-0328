@@ -185,13 +185,12 @@ conf-dir=/etc/storage/gfwlist/" >> /tmp/tmp_dnsmasq.conf
 		cat > "/etc/storage/ss_pc.sh" <<EOF
 ### 排除走 [ gfwlist ] 代理模式的域名白名单
 ### 只填入网址名称或关键字即可,如下:
-transfer.sh
 speedtest.cn
 
 EOF
 		chmod 644 /etc/storage/ss_pc.sh
 	fi
-	sleep 2
+
 	if [ ! -f "/etc/storage/ss_dom.sh" ] || [ ! -s "/etc/storage/ss_dom.sh" ]
 	then
 		cat > "/etc/storage/ss_dom.sh" <<EOF
@@ -202,7 +201,7 @@ bitbucket.org
 EOF
 		chmod 644 /etc/storage/ss_dom.sh
 	fi
-	sleep 2
+
 	if [ ! -f "/tmp/gfw-ipset.txt" ]
 	then
 		echo "8.8.4.4
@@ -235,7 +234,6 @@ EOF
 	## iptables -t nat -I PREROUTING -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 	#/usr/bin/ss-gfw.sh 2>&1 &
 	$ss_bin -c $ss_json_file -b 0.0.0.0 -l $ss_local_port >/dev/null 2>&1 &
-	mtd_storage.sh save >/dev/null 2>&1 &
 }
 
 func_gfw_pdnsd(){
@@ -254,7 +252,7 @@ func_gfw_pdnsd(){
 		then
 			cat > $Config_Pdnsd <<EOF
 global {
-	perm_cache = 768;
+	perm_cache = 1024;
 	cache_dir = "/var/pdnsd";
 	pid_file = "/var/run/pdnsd.pid";
 	run_as = "$username";
