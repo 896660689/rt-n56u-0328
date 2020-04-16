@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-04-12
+# Compile:by-lanse	2020-04-16
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -179,7 +179,7 @@ conf-dir=/etc/storage/gfwlist/" >> /tmp/tmp_dnsmasq.conf
 			rm /tmp/tmp_dnsmasq.conf
 		fi
 	fi
-
+	sleep 2
 	if [ ! -f "/etc/storage/ss_pc.sh" ] || [ ! -s "/etc/storage/ss_pc.sh" ]
 	then
 		cat > "/etc/storage/ss_pc.sh" <<EOF
@@ -191,7 +191,7 @@ speedtest.cn
 EOF
 		chmod 644 /etc/storage/ss_pc.sh
 	fi
-
+	sleep 2
 	if [ ! -f "/etc/storage/ss_dom.sh" ] || [ ! -s "/etc/storage/ss_dom.sh" ]
 	then
 		cat > "/etc/storage/ss_dom.sh" <<EOF
@@ -202,6 +202,7 @@ bitbucket.org
 EOF
 		chmod 644 /etc/storage/ss_dom.sh
 	fi
+	sleep 2
 	if [ ! -f "/tmp/gfw-ipset.txt" ]
 	then
 		echo "8.8.4.4
@@ -219,7 +220,7 @@ EOF
 	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset
 	ipset -! flush gfwlist
 	ipset -! restore < /tmp/ss-gfwlist.ipset 2>/dev/null
-	rm -f /tmp/ss-gfwlist.ipset
+	rm -f /tmp/ss-gfwlist.ipset; sleep 2
 	grep "gfwlist" $Firewall_rules
 	if [ ! "$?" -eq "0" ]
 	then
@@ -292,7 +293,7 @@ server {
 }
 
 EOF
-			chmod 644 $Config_Pdnsd
+			chmod 644 $Config_Pdnsd; sleep 3
 		fi
 		if [ ! -f "/var/pdnsd/pdnsd" ]; then
 			ln -sf /usr/bin/pdnsd /var/pdnsd/pdnsd
@@ -368,6 +369,7 @@ func_ss_Close(){
 		iptables -t nat -D PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 		iptables -t nat -D OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 	fi
+	sleep 3
 	if [ -f /var/run/pdnsd.pid ]
 	then
 		kill $(cat /var/run/pdnsd.pid) >/dev/null 2>&1
@@ -384,6 +386,7 @@ func_ss_Close(){
 		ipset restore -f /tmp/ss-gfwlist.ipset
 		rm -f /tmp/ss-gfwlist.ipset
 	fi
+	sleep 2
 	killall -q pdnsd; killall -q dns-forwarder; killall -q dnsproxy
 	killall -q $ss_bin; killall -q ss-watchcat
 }
@@ -394,7 +397,7 @@ func_start(){
 	if [ "$ss_mode" = "2" ]
 	then
 		func_Custom_rules
-		func_ss_gfw
+		func_ss_gfw; sleep 3
 		logger "ShadowsocksR gfwlist Start up"
 	else
 		func_start_ss_redir
@@ -412,7 +415,7 @@ func_stop(){
 	/usr/bin/ss-tunnel.sh stop
 	ss-rules -f; loger $ss_bin "stop"
 	func_ss_dns
-	func_ss_Close
+	func_ss_Close; sleep 3
 	[ -f /tmp/ss-redir.json ] && rm -f /tmp/ss-redir.json
 	[ -f /var/run/ss-watchdog.pid ] && rm -rf /var/run/ss-watchdog.pid
 	[ -f /var/log/ss-watchcat.log ] && rm -f /var/log/ss-watchcat.log
