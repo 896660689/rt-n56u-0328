@@ -287,15 +287,16 @@ adbyby_start()
 			if [ ! -n "$(pidof adbyby)" ] ; then
 				$AD_HOME/bin/adbyby &>/dev/null &
 			fi
-			# add_rules
-			add_rule
-			sleep 3 && logger "adbyby" "Adbyby启动完成."
+			add_rules
+			sleep 5; add_rule
+			logger "adbyby" "Adbyby启动完成."
 		elif [ "$wan_mode" = "1" ] ; then
 			killall -q adbyby
 			if [ -n "$(pidof ad_watchcat)" ] ; then
 				kill -9 "$(pidof ad_watchcat)"
 			fi
 		fi
+		sleep 3
 		add_hosts && \
 		func_abp_mod && sleep 3; restart_dhcpd
 	fi
@@ -307,7 +308,7 @@ adbyby_stop()
 		kill -9 "$(pidof ad_watchcat)"
 	fi
 	del_rule; sleep 5
-	killall -q adbyby >/dev/null 2>&1
+	killall -q adbyby
 	if [ "$adbyby_enable" = "0" ] ; then
 		nvram set adbyby_adb=$(grep -v '^!' /etc/storage/dnsmasq.ad/dnsmasq.adblock | wc -l)
 		nvram set adbyby_hostsad=$(grep -v '^!' /etc/storage/dnsmasq.ad/hosts/hosts | wc -l)
