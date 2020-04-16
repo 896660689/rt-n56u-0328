@@ -457,25 +457,24 @@ char_to_ascii(char *output, char *input)
 	char *ptr;
 
 	ptr = output;
-		for (i = 0; i < strlen(input); i++)
+	for (i = 0; i < strlen(input); i++)
+	{
+		if ((input[i] >= '0' && input[i] <= '9')
+			||(input[i] >= 'A' && input[i] <= 'Z')
+			||(input[i] >= 'a' && input[i] <= 'z')
+			|| input[i] == '!' || input[i] == '*'
+			|| input[i] == '(' || input[i] == ')'
+			|| input[i] == '_' || input[i] == '-'
+			|| input[i] == '\'' || input[i] == '.')
 		{
-			if ((input[i] >= '0' && input[i] <= '9')
-				||(input[i] >= 'A' && input[i] <= 'Z')
-				||(input[i] >= 'a' && input[i] <= 'z')
-				|| input[i] == '!' || input[i] == '*'
-				|| input[i] == '(' || input[i] == ')'
-				|| input[i] == '_' || input[i] == '-'
-				|| input[i] == '\'' || input[i] == '.')
-			{
-				*ptr = input[i];
-				ptr ++;
-			}
-			else
-			{
-				sprintf(tmp, "%%%.02X", input[i]);
-				strcpy(ptr, tmp);
-				ptr += 3;
-			}
+			*ptr = input[i];
+			ptr ++;
+		}
+		else
+		{
+			sprintf(tmp, "%%%.02X", input[i]);
+			strcpy(ptr, tmp);
+			ptr += 3;
 		}
 	}
 	*(ptr) = '\0';
