@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2019-12-26
+# Compile:by-lanse	2020-04-16
 
 adbyby_enable=$(nvram get adbyby_enable)
 adbyby_set=$(nvram get adbyby_set)
@@ -185,7 +185,7 @@ func_abp_mod()
 {
 	abp_mode=$(nvram get adbyby_adb_update)
 	if [ ! -s "$AD_HOME/bin/dnsmasq.adblock" ] ; then
-		func_abp_up
+		sleep 3; func_abp_up
 	else
 		if [ "$wan_mode" = "1" ]
 		then
@@ -236,7 +236,7 @@ add_rule()
 
 		if [ ! -n "$(pidof ad_watchcat)" ]
 		then
-			/tmp/adb/ad_watchcat >/dev/null 2>&1 &
+			sleep 3; /tmp/adb/ad_watchcat >/dev/null 2>&1 &
 			logger "Watchdog start up"
 		fi
 	else
@@ -287,7 +287,7 @@ adbyby_start()
 			if [ ! -n "$(pidof adbyby)" ] ; then
 				$AD_HOME/bin/adbyby &>/dev/null &
 			fi
-			add_rules
+			# add_rules
 			add_rule
 			sleep 3 && logger "adbyby" "Adbyby启动完成."
 		elif [ "$wan_mode" = "1" ] ; then
