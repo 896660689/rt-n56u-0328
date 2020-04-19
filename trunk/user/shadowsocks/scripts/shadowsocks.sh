@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-04-16
+# Compile:by-lanse	2020-04-20
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -216,10 +216,10 @@ EOF
 149.154.172.0/22" > /tmp/gfw-ipset.txt
 	fi
 	echo "create gfwlist hash:net family inet hashsize 1024 maxelem 65536" > /tmp/ss-gfwlist.ipset
-	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset
+	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset >/dev/null 2>&1
 	ipset -! flush gfwlist
 	ipset -! restore < /tmp/ss-gfwlist.ipset 2>/dev/null
-	rm -f /tmp/ss-gfwlist.ipset; sleep 2
+	rm -f /tmp/ss-gfwlist.ipset
 	grep "gfwlist" $Firewall_rules
 	if [ ! "$?" -eq "0" ]
 	then
@@ -252,7 +252,7 @@ func_gfw_pdnsd(){
 		then
 			cat > $Config_Pdnsd <<EOF
 global {
-	perm_cache = 1024;
+	perm_cache = 768;
 	cache_dir = "/var/pdnsd";
 	pid_file = "/var/run/pdnsd.pid";
 	run_as = "$username";
@@ -367,7 +367,6 @@ func_ss_Close(){
 		iptables -t nat -D PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 		iptables -t nat -D OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 	fi
-	sleep 3
 	if [ -f /var/run/pdnsd.pid ]
 	then
 		kill $(cat /var/run/pdnsd.pid) >/dev/null 2>&1
@@ -378,15 +377,14 @@ func_ss_Close(){
 	then
 		kill -9 $(busybox ps -w | grep gfwlist | grep -v grep | awk '{print $1}') >/dev/null 2>&1 
 	fi
+	killall -q pdnsd; killall -q dns-forwarder; killall -q dnsproxy
+	killall -q $ss_bin; killall -q ss-watchcat
 	if [ -f /tmp/gfw-ipset.txt ]
 	then
-		awk '!/^$/&&!/^#/{printf("del gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt > /tmp/ss-gfwlist.ipset
+		awk '!/^$/&&!/^#/{printf("del gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt > /tmp/ss-gfwlist.ipset >/dev/null 2>&1
 		ipset restore -f /tmp/ss-gfwlist.ipset
 		rm -f /tmp/ss-gfwlist.ipset
 	fi
-	sleep 2
-	killall -q pdnsd; killall -q dns-forwarder; killall -q dnsproxy
-	killall -q $ss_bin; killall -q ss-watchcat
 }
 
 func_start(){
@@ -395,7 +393,7 @@ func_start(){
 	if [ "$ss_mode" = "2" ]
 	then
 		func_Custom_rules
-		func_ss_gfw; sleep 3
+		func_ss_gfw
 		logger "ShadowsocksR gfwlist Start up"
 	else
 		func_start_ss_redir
@@ -405,7 +403,7 @@ func_start(){
 	func_port_agent_mode; sleep 3
 	func_ss_dns
 	func_ss_watchcat
-	restart_dhcpd; sleep 3 && restart_firewall
+	restart_dhcpd; restart_firewall
 }
 
 func_stop(){
@@ -413,7 +411,7 @@ func_stop(){
 	/usr/bin/ss-tunnel.sh stop
 	ss-rules -f; loger $ss_bin "stop"
 	func_ss_dns
-	func_ss_Close; sleep 3
+	func_ss_Close
 	[ -f /tmp/ss-redir.json ] && rm -f /tmp/ss-redir.json
 	[ -f /var/run/ss-watchdog.pid ] && rm -rf /var/run/ss-watchdog.pid
 	[ -f /var/log/ss-watchcat.log ] && rm -f /var/log/ss-watchcat.log
