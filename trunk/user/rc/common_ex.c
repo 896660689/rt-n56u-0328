@@ -146,7 +146,7 @@ get_eeprom_params(void)
 	char regspec_code[8];
 	char wps_pin[12];
 	char productid[24];
-	char fwver[8], fwver_sub[32];
+	char fwver[10], fwver_sub[36];
 
 	memset(buffer, 0xff, ETHER_ADDR_LEN);
 #if defined (VENDOR_TPLINK)
