@@ -219,8 +219,7 @@ static int is_valid_hex_string(uint8_t *input)
 
 /* dell 2017-0410 cn */
 
-void
-char_to_ascii(char *output, uint8_t *input)
+void char_to_ascii(char *output, uint8_t *input)
 {
 	int i;
 	char tmp[10];
@@ -262,7 +261,7 @@ char_to_ascii(char *output, uint8_t *input)
 			}
 		}
 	}
-	*(ptr) = '\0';
+	*ptr = '\0';
 }
 
 int do_f(const char *path, webs_t wp)
