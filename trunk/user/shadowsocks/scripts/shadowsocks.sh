@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-04-20
+# Compile:by-lanse	2020-04-30
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -391,7 +391,6 @@ func_ss_Close(){
 }
 
 func_start(){
-	func_ss_Close
 	func_gen_ss_json
 	func_gfwlist_list
 	func_port_agent_mode
