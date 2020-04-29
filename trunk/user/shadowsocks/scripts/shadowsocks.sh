@@ -113,73 +113,7 @@ cat > "$ss_json_file" <<EOF
 EOF
 }
 
-func_ss_dns(){
-	if [ "$ss_dns" = "1" ] ; then
-		if [ ! -d "$Dnsmasq_d_dns" ]
-		then
-			mkdir -p -m 755 $Dnsmasq_d_dns
-			cp -f /etc/resolv.conf $Dnsmasq_d_dns/resolv_bak
-		fi
-		if [ ! -f "$Dnsmasq_d_dns/resolv.conf" ]
-		then
-			cat > $Dnsmasq_d_dns/resolv.conf <<EOF
-127.0.0.1
-223.5.5.5
-114.114.114.114
-182.254.116.116
-202.141.162.123
-208.67.222.222
-2001:da8::666
-EOF
-			chmod 644 $Dnsmasq_d_dns/resolv.conf && chmod 644 /etc/resolv.conf
-		fi
-		grep "208.67" /etc/resolv.conf
-		if [ ! "$?" -eq "0" ]
-		then
-			awk '!/^$/&&!/^#/{printf("nameserver %s'" "'\n",$0)}' $Dnsmasq_d_dns/resolv.conf >> /tmp/resolv.conf
-			if [ "$Dns_ipv6" = "" ]
-			then
-				sed -i '/2001/d' /tmp/resolv.conf
-			fi
-			mv -f /tmp/resolv.conf /etc/resolv.conf
-		fi
-		restart_dns; sleep 3
-	else
-		if [ -f "$Dnsmasq_d_dns/resolv_bak" ]
-		then
-			cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
-		else
-			sed -i '/208.67/d; /223.5.5.5/d; /182.254/d; /202.141.162.123/d; /2001/d' /etc/resolv.conf
-		fi
-	fi
-}
-
-func_ss_gfw(){
-	[ -f /tmp/tmp_dnsmasq ] && rm /tmp/tmp_dnsmasq; logger -t "Shadowsocks" " 开始运行..."
-	if [ -f "/etc/storage/dnsmasq/dnsmasq.conf" ]
-	then
-		grep "gfwlist" /etc/storage/dnsmasq/dnsmasq.conf
-		if [ ! "$?" -eq "0" ]
-		then
-			echo -e "\e[1;36m 添加 gfwlist 启动路径 \e[0m\n"
-			sed -i '/listen-address/d; /min-cache/d; /conf-dir/d; /log/d' /etc/storage/dnsmasq/dnsmasq.conf
-			echo -e "\033[41;37m 开始写入启动代码 \e[0m\n"
-			echo "listen-address=${route_vlan},127.0.0.1
-# 开启日志选项
-#log-queries
-#log-facility=/var/log/ss-watchcat.log
-# 异步log,缓解阻塞，提高性能。默认为5，最大为100
-#log-async=50
-# 缓存最长时间
-min-cache-ttl=3600
-# 指定服务器'域名''地址'文件夹
-# conf-dir=/etc/storage/dnsmasq.d/conf
-conf-dir=/etc/storage/gfwlist/" >> /tmp/tmp_dnsmasq.conf
-			cat /tmp/tmp_dnsmasq.conf | sed -E -e "/#/d" >> /etc/storage/dnsmasq/dnsmasq.conf;sleep 3
-			rm /tmp/tmp_dnsmasq.conf
-		fi
-	fi
-	sleep 2
+func_gfwlist_list(){
 	if [ ! -f "/etc/storage/ss_pc.sh" ] || [ ! -s "/etc/storage/ss_pc.sh" ]
 	then
 		cat > "/etc/storage/ss_pc.sh" <<EOF
@@ -201,39 +135,28 @@ bitbucket.org
 EOF
 		chmod 644 /etc/storage/ss_dom.sh
 	fi
+}
 
-	if [ ! -f "/tmp/gfw-ipset.txt" ]
+func_port_agent_mode(){
+	if [ "$ss_router_proxy" = "1" ]
 	then
-		echo "8.8.4.4
-208.67.222.222
-91.108.4.0/22
-91.108.8.0/22
-91.108.12.0/22
-91.108.16.0/22
-91.108.56.0/22
-149.154.160.0/20
-149.154.164.0/22
-149.154.172.0/22" > /tmp/gfw-ipset.txt
-	fi
-	echo "create gfwlist hash:net family inet hashsize 1024 maxelem 65536" > /tmp/ss-gfwlist.ipset
-	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset >/dev/null 2>&1
-	ipset -! flush gfwlist
-	ipset -! restore < /tmp/ss-gfwlist.ipset 2>/dev/null
-	rm -f /tmp/ss-gfwlist.ipset
-	grep "gfwlist" $Firewall_rules
-	if [ ! "$?" -eq "0" ]
+		killall -q pdnsd; killall -q dns-forwarder; killall -q dnsproxy
+		logger "Local agent"
+	elif [ "$ss_router_proxy" = "2" ]
 	then
-		sed -i '/^\s*$/d; /gfwlist/d' $Firewall_rules
-		cat >> $Firewall_rules <<EOF
-
-iptables -t nat -I PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
-iptables -t nat -I OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
-
-EOF
+		/usr/bin/dns-forwarder -b 127.0.0.1 -p $ss_tunnel_local_port -s $ss_tunnel_remote >/dev/null 2>&1 &
+		logger "Use DnsForwarder $ss_tunnel_local_port port"
+	elif [ "$ss_router_proxy" = "3" ]
+	then
+		/usr/bin/dnsproxy -T -p $ss_tunnel_local_port -R 8.8.4.4 >/dev/null 2>&1 &
+		logger "Use Dnsproxy $ss_tunnel_local_port port"
+	elif [ "$ss_router_proxy" = "4" ]
+	then
+		func_gfw_pdnsd
+		logger "Use Pdnsd $ss_tunnel_local_port port"
+	else
+		logger "mode off"
 	fi
-	## iptables -t nat -I PREROUTING -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
-	#/usr/bin/ss-gfw.sh 2>&1 &
-	$ss_bin -c $ss_json_file -b 0.0.0.0 -l $ss_local_port >/dev/null 2>&1 &
 }
 
 func_gfw_pdnsd(){
@@ -300,6 +223,67 @@ EOF
 	fi
 }
 
+func_ss_gfw(){
+	[ -f /tmp/tmp_dnsmasq ] && rm /tmp/tmp_dnsmasq; logger -t "Shadowsocks" " 开始运行..."
+	if [ -f "/etc/storage/dnsmasq/dnsmasq.conf" ]
+	then
+		grep "gfwlist" /etc/storage/dnsmasq/dnsmasq.conf
+		if [ ! "$?" -eq "0" ]
+		then
+			echo -e "\e[1;36m 添加 gfwlist 启动路径 \e[0m\n"
+			sed -i '/listen-address/d; /min-cache/d; /conf-dir/d; /log/d' /etc/storage/dnsmasq/dnsmasq.conf
+			echo -e "\033[41;37m 开始写入启动代码 \e[0m\n"
+			echo "listen-address=${route_vlan},127.0.0.1
+# 开启日志选项
+#log-queries
+#log-facility=/var/log/ss-watchcat.log
+# 异步log,缓解阻塞，提高性能。默认为5，最大为100
+#log-async=50
+# 缓存最长时间
+min-cache-ttl=3600
+# 指定服务器'域名''地址'文件夹
+# conf-dir=/etc/storage/dnsmasq.d/conf
+conf-dir=/etc/storage/gfwlist/" >> /tmp/tmp_dnsmasq.conf
+			cat /tmp/tmp_dnsmasq.conf | sed -E -e "/#/d" >> /etc/storage/dnsmasq/dnsmasq.conf
+			rm /tmp/tmp_dnsmasq.conf
+		fi
+	fi
+
+	if [ ! -f "/tmp/gfw-ipset.txt" ]
+	then
+		echo "8.8.4.4
+208.67.222.222
+91.108.4.0/22
+91.108.8.0/22
+91.108.12.0/22
+91.108.16.0/22
+91.108.56.0/22
+149.154.160.0/20
+149.154.164.0/22
+149.154.172.0/22" > /tmp/gfw-ipset.txt
+	fi
+	echo "create gfwlist hash:net family inet hashsize 1024 maxelem 65536" > /tmp/ss-gfwlist.ipset
+	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset >/dev/null 2>&1
+	ipset -! flush gfwlist
+	ipset -! restore < /tmp/ss-gfwlist.ipset 2>/dev/null
+	rm -f /tmp/ss-gfwlist.ipset
+
+	grep "gfwlist" $Firewall_rules
+	if [ ! "$?" -eq "0" ]
+	then
+		sed -i '/^\s*$/d; /gfwlist/d' $Firewall_rules
+		cat >> $Firewall_rules <<EOF
+
+iptables -t nat -I PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
+iptables -t nat -I OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
+
+EOF
+	fi
+	## iptables -t nat -I PREROUTING -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
+	#/usr/bin/ss-gfw.sh 2>&1 &
+	$ss_bin -c $ss_json_file -b 0.0.0.0 -l $ss_local_port >/dev/null 2>&1 &
+}
+
 func_Custom_rules(){
 	if [ -s "$Storage/ss_pc.sh" ]
 	then
@@ -316,25 +300,44 @@ func_Custom_rules(){
 	rm -f /tmp/ss_dom.txt /tmp/ss_pc.txt
 }
 
-func_port_agent_mode(){
-	if [ "$ss_router_proxy" = "1" ]
-	then
-		killall -q pdnsd; killall -q dns-forwarder; killall -q dnsproxy
-		logger "Local agent"
-	elif [ "$ss_router_proxy" = "2" ]
-	then
-		/usr/bin/dns-forwarder -b 127.0.0.1 -p $ss_tunnel_local_port -s $ss_tunnel_remote >/dev/null 2>&1 &
-		logger "Use DnsForwarder $ss_tunnel_local_port port"
-	elif [ "$ss_router_proxy" = "3" ]
-	then
-		/usr/bin/dnsproxy -T -p $ss_tunnel_local_port -R 8.8.4.4 >/dev/null 2>&1 &
-		logger "Use Dnsproxy $ss_tunnel_local_port port"
-	elif [ "$ss_router_proxy" = "4" ]
-	then
-		func_gfw_pdnsd
-		logger "Use Pdnsd $ss_tunnel_local_port port"
+func_ss_dns(){
+	if [ "$ss_dns" = "1" ] ; then
+		if [ ! -d "$Dnsmasq_d_dns" ]
+		then
+			mkdir -p -m 755 $Dnsmasq_d_dns
+			cp -f /etc/resolv.conf $Dnsmasq_d_dns/resolv_bak
+		fi
+		if [ ! -f "$Dnsmasq_d_dns/resolv.conf" ]
+		then
+			cat > $Dnsmasq_d_dns/resolv.conf <<EOF
+127.0.0.1
+223.5.5.5
+114.114.114.114
+182.254.116.116
+202.141.162.123
+208.67.222.222
+2001:da8::666
+EOF
+			chmod 644 $Dnsmasq_d_dns/resolv.conf && chmod 644 /etc/resolv.conf
+		fi
+		grep "208.67" /etc/resolv.conf
+		if [ ! "$?" -eq "0" ]
+		then
+			awk '!/^$/&&!/^#/{printf("nameserver %s'" "'\n",$0)}' $Dnsmasq_d_dns/resolv.conf >> /tmp/resolv.conf
+			if [ "$Dns_ipv6" = "" ]
+			then
+				sed -i '/2001/d' /tmp/resolv.conf
+			fi
+			mv -f /tmp/resolv.conf /etc/resolv.conf
+		fi
+		restart_dns
 	else
-		logger "mode off"
+		if [ -f "$Dnsmasq_d_dns/resolv_bak" ]
+		then
+			cp -rf $Dnsmasq_d_dns/resolv_bak /etc/resolv.conf
+		else
+			sed -i '/208.67/d; /223.5.5.5/d; /182.254/d; /202.141.162.123/d; /2001/d' /etc/resolv.conf
+		fi
 	fi
 }
 
@@ -360,12 +363,11 @@ func_ss_Close(){
 	then
 		sed -i '/listen-address/d; /min-cache/d; /conf-dir/d; /log/d' $Dnsmasq_dns
 	fi
-	grep "gfwlist" $Firewall_rules
-	if [ "$?" -eq "0" ]
+	if [ -f /tmp/gfw-ipset.txt ]
 	then
-		sed -i '/gfwlist/d' $Firewall_rules
-		iptables -t nat -D PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
-		iptables -t nat -D OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
+		awk '!/^$/&&!/^#/{printf("del gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt > /tmp/ss-gfwlist.ipset >/dev/null 2>&1
+		ipset restore -f /tmp/ss-gfwlist.ipset
+		rm -f /tmp/ss-gfwlist.ipset
 	fi
 	if [ -f /var/run/pdnsd.pid ]
 	then
@@ -379,17 +381,20 @@ func_ss_Close(){
 	fi
 	killall -q pdnsd; killall -q dns-forwarder; killall -q dnsproxy
 	killall -q $ss_bin; killall -q ss-watchcat
-	if [ -f /tmp/gfw-ipset.txt ]
+	grep "gfwlist" $Firewall_rules
+	if [ "$?" -eq "0" ]
 	then
-		awk '!/^$/&&!/^#/{printf("del gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt > /tmp/ss-gfwlist.ipset >/dev/null 2>&1
-		ipset restore -f /tmp/ss-gfwlist.ipset
-		rm -f /tmp/ss-gfwlist.ipset
+		sed -i '/gfwlist/d' $Firewall_rules
+		iptables -t nat -D PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
+		iptables -t nat -D OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $ss_local_port
 	fi
 }
 
 func_start(){
 	func_ss_Close
 	func_gen_ss_json
+	func_gfwlist_list
+	func_port_agent_mode
 	if [ "$ss_mode" = "2" ]
 	then
 		func_Custom_rules
@@ -400,7 +405,6 @@ func_start(){
 		func_start_ss_rules
 		loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!";}
 	fi
-	func_port_agent_mode; sleep 3
 	func_ss_dns
 	func_ss_watchcat
 	restart_dhcpd; restart_firewall
