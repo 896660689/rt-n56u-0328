@@ -214,7 +214,7 @@ server {
 }
 
 EOF
-			chmod 644 $Config_Pdnsd; sleep 3
+			chmod 644 $Config_Pdnsd
 		fi
 		if [ ! -f "/var/pdnsd/pdnsd" ]; then
 			ln -sf /usr/bin/pdnsd /var/pdnsd/pdnsd
