@@ -1,4 +1,4 @@
-SRC_NAME=curl-7.70.0
+SRC_NAME=curl-7.65.3
 SRC_URL=https://github.com/curl/curl/releases/download/curl-7_65_3/curl-7.65.3.tar.xz
 
 LDFLAGS += -Wl,-rpath-link=$(STAGEDIR)/lib
