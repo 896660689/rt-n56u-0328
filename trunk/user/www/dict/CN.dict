@@ -583,20 +583,8 @@ RouterConfig_IPTV_itemname=UDP 代理 (Udpxy)
 RHELP_desc9=使用此功能在几个计算机上同时开启 IPTV 应用程序(例如 VLC)。此功能可将多重播送 UDP 数据流转变成单一播送数据流。进入您想要为 IPTV 程序分配的端口(如 4000)，然后使用这个格式进入播放列表中的地址，观看 IPTV : http://[Router IP]:[Udpxy port]/[protocol]/[channel IP address]:[channel  port] (如http://192.168.1.1:4000/udp/239.255.1.1:5000 或 http://192.168.1.1:4000/rtp/239.255.1.2:5000)。输入 0 关闭此功能。
 WLANConfig11b_TxPower_itemname=发射功率调整:
 WLANConfig11b_TxPower_itemdesc=调整天线功率以增强无线质量。
-<<<<<<< HEAD
 WLANConfig11b_Wireless_Speed_itemname_3=选择(20/40MHz)模式以最大化无线带宽。选用40MHz会提高无线网络的带宽，但它会比20Mhz的稳定性差一些。若您希望获得更加稳定的无线网络连接，请选择默认模式(20MHz)。
-=======
-WLANConfig11b_Wireless_Speed_itemname_3=选择 (20/40MHz) 模式以最大化无线带宽。若无线网络不稳定，请选择默认模式 (20MHz)。
->>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
-WLANConfig11b_KickStaRssiLow_itemname=自动剔除已连接的弱信号设备:
-WLANConfig11b_KickStaRssiLow_itemdesc=自动剔除已连接的弱信号设备（rssi低），默认为0（关闭）。
-WLANConfig11b_AssocReqRssiThres_itemname=自动限制弱信号设备接入:
-WLANConfig11b_AssocReqRssiThres_itemdesc=自动限制弱信号设备接入（rssi低），默认为0（关闭）。
-<<<<<<< HEAD
 hwnat_desc=NAT(网络地址转换)，硬件加速就是通过硬件实现网络地址的快速转换，提高网络浏览速度。硬件加速解决长时间的 P2P 下载还可能导致路由器死机、掉线等问题。(QOS和IPv4 H/W NAT一起工作会出现统计不准)
-=======
-hwnat_desc=网络地址转换 (NAT) 是使用在路由器中的一项进程以将网络封包的地址信息替换为新的。典型的用法就是使用外部网络将路由器连接至内部网络。在内部网络中，每个网络设备都有一个私人的 IP (LAN IP)，但只有一个公用 IP (WAN IP)。欲使网络设备连接至网络，路由器将发送者的私人 IP 地址替换为其在所有输出的数据包中所有的公共 IP 地址。路由器在一个表格中存储了一切所需信息 (NAT 转换表)，这样进入的数据包可被分配至正确的网络设备。
->>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 Date=日期
 Scale=单位
 Last30days=最近30天
@@ -627,17 +615,10 @@ HowToSharebyFTP5=与使用 UTF-8 支持的 FTP 客户端应用程序，显示非
 WLANConfig11n_band_steering=启用智能频段切换
 WLANConfig11n_mumimo=启用MU-MIMO
 WLANConfig11n_txbf=启用波束成形
-<<<<<<< HEAD
 WLANConfig11n_nmode_limition_hint=[n Only]模式下，原WEP或TKIP加密设定将自动调整为 AES 加密，以取得正确的联机。
 WLANConfig11n_automode_limition_hint=自动模式下使用 WEP 或 TKIP 加密时，无线网络最多支持 54 Mbps 的传输速率。
 WLANConfig11n_amsdu=启用AMSDU
 BM_desc_upload=EZQoS 会自动检测您的上行速度，以帮助您调整网络带宽。如果您能通过另一种方式确切上行速度，如在线速度测试中，我们建议您进入<a href='Advanced_QOSUserSpec_Content.asp'>高级设置页面</a>的速度值
-=======
-WLANConfig11n_nmode_limition_hint=[n Only]模式下，原 WEP 或 TKIP 加密设置将自动调整为 AES 加密。
-WLANConfig11n_automode_limition_hint=自动模式下使用 WEP 或 TKIP 加密时，无线网络最高支持 54Mbps 的传输速率。
-WLANConfig11n_amsdu=启用AMSDU
-BM_desc_upload=EZQoS 会自动检测上行速度以便调整网络带宽。若已通过其它方式获取到准确的上行速度(如在线速度测试)，则建议打开<a href='Advanced_QOSUserSpec_Content.asp'>高级设置页面</a>手动修改上行速度值
->>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 WhiteList=白名单
 BlackList=黑名单
 MSSID_profile=网络名称配置
