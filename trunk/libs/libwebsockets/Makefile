@@ -1,4 +1,4 @@
-SRC_NAME=libwebsockets-4.0.0
+SRC_NAME=libwebsockets-4.0.4
 SRC_URL=https://github.com/warmcat/libwebsockets/archive/v4.0.0.tar.gz
 
 all: download_test extract_test config_test
