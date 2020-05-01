@@ -28,6 +28,51 @@ Contributors of this project are not responsible for what happens next.
 
 ***
 
+<<<<<<< HEAD
+=======
+### 特别说明 ###
+* 汉化字典来自：https://github.com/gorden5566/padavan
+* 更新日志：https://www.jianshu.com/p/d76a63a12eae
+
+***
+
+### 固件特点 ###
+- 使用[gorden5566](https://github.com/gorden5566/padavan)的汉化字典
+- aria2前端更换为[AriaNg](https://github.com/mayswind/AriaNg)
+- [curl](https://github.com/curl/curl)可选编译可执行程序 ```CONFIG_FIRMWARE_INCLUDE_CURL```
+- 使用了[PROMETHEUS](http://pm.freize.net/index.html)提供的部分补丁
+- 使用了[Linaro1985/padavan-ng](https://gitlab.com/padavan-ng/padavan-ng)的部分软件包
+- 可选以下插件：
+>- [scutclient](https://github.com/hanwckf/scutclient) ```CONFIG_FIRMWARE_INCLUDE_SCUTCLIENT```
+>- [gdut-drcom](https://github.com/chenhaowen01/gdut-drcom) ```CONFIG_FIRMWARE_INCLUDE_GDUT_DRCOM```
+>- [dogcom](https://github.com/hanwckf/dogcom) ```CONFIG_FIRMWARE_INCLUDE_DOGCOM```
+>- [minieap](https://github.com/hanwckf/minieap) ```CONFIG_FIRMWARE_INCLUDE_MINIEAP```
+>- [njit-client](https://github.com/hanwckf/njit8021xclient) ```CONFIG_FIRMWARE_INCLUDE_NJIT_CLIENT```
+>- [napt66](https://github.com/mzweilin/napt66) ```CONFIG_FIRMWARE_INCLUDE_NAPT66```
+>- [ssr](https://github.com/shadowsocksr-backup/shadowsocksr-libev)/[ss](https://github.com/shadowsocks/shadowsocks-libev) ```CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS```
+>- [ss-server](https://github.com/shadowsocks/shadowsocks-libev) ```CONFIG_FIRMWARE_INCLUDE_SSSERVER```
+>- [softether-vpnserver](https://github.com/SoftEtherVPN/SoftEtherVPN_Stable) ```CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_SERVER```
+>- [softether-vpnclient](https://github.com/SoftEtherVPN/SoftEtherVPN_Stable) ```CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT```
+>- [softether-vpncmd](https://github.com/SoftEtherVPN/SoftEtherVPN_Stable) ```CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CMD```
+>- [dns-forwarder](https://github.com/aa65535/hev-dns-forwarder) ```CONFIG_FIRMWARE_INCLUDE_DNSFORWARDER```
+>- [vlmcsd](https://github.com/hanwckf/vlmcsd) ```CONFIG_FIRMWARE_INCLUDE_VLMCSD```
+>- [ttyd](https://github.com/tsl0922/ttyd) ```CONFIG_FIRMWARE_INCLUDE_TTYD```
+>- [lrzsz](https://ohse.de/uwe/software/lrzsz.html) ```CONFIG_FIRMWARE_INCLUDE_LRZSZ```
+>- [htop](https://hisham.hm/htop/releases/) ```CONFIG_FIRMWARE_INCLUDE_HTOP```
+>- [nano](https://www.nano-editor.org/dist/) ```CONFIG_FIRMWARE_INCLUDE_NANO```
+>- [iperf3](https://github.com/esnet/iperf) ```CONFIG_FIRMWARE_INCLUDE_IPERF3```
+>- [dump1090](https://github.com/hanwckf/dump1090) ```CONFIG_FIRMWARE_INCLUDE_DUMP1090```
+>- [rtl-sdr](https://github.com/osmocom/rtl-sdr) ```CONFIG_FIRMWARE_INCLUDE_RTL_SDR```
+>- [samba3.6](https://gitlab.com/padavan-ng/padavan-ng/tree/master/trunk/user/samba36) ```CONFIG_FIRMWARE_INCLUDE_SMBD36```
+>- [mtr](https://github.com/traviscross/mtr) ```CONFIG_FIRMWARE_INCLUDE_MTR```
+>- [socat](http://www.dest-unreach.org/socat) ```CONFIG_FIRMWARE_INCLUDE_SOCAT```
+>- [srelay](https://socks-relay.sourceforge.io) ```CONFIG_FIRMWARE_INCLUDE_SRELAY```
+>- [mentohust](https://github.com/hanwckf/mentohust-1) ```CONFIG_FIRMWARE_INCLUDE_MENTOHUST```
+>- [frpc](https://github.com/fatedier/frp) ```CONFIG_FIRMWARE_INCLUDE_FRPC```
+>- [frps](https://github.com/fatedier/frp) ```CONFIG_FIRMWARE_INCLUDE_FRPS```
+>- [tunsafe](https://github.com/TunSafe/TunSafe) ```CONFIG_FIRMWARE_INCLUDE_TUNSAFE```
+
+>>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 - 已适配除官方适配外的以下机型
 <<<<<<< HEAD
 =======
@@ -60,19 +105,54 @@ Contributors of this project are not responsible for what happens next.
 >- DIR-878
 >- MR2600 (USB)
 >- WDR7300
+<<<<<<< HEAD
 >>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 
 >- K2_256_USB (256M)
 >- K2P/K2P_5.3 (128M)
+=======
+>- RM2100
+>>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 
 
 ### 编译说明 ###
 
 * 安装依赖包
 ```shell
+# Debian/Ubuntu
 sudo apt update
-sudo apt install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd \
+sudo apt install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd fakeroot \
 cpio git python-docutils gettext automake autopoint texinfo build-essential help2man \
+<<<<<<< HEAD
+=======
+pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget
+
+# CentOS 7
+sudo yum update
+sudo yum install ncurses-* flex byacc bison zlib-* texinfo gmp-* mpfr-* gettext \
+libtool* libmpc-* gettext-* python-docutils nano help2man fakeroot
+sudo yum groupinstall "Development Tools"
+
+# CentOS 8
+sudo yum update
+sudo yum install ncurses-* flex byacc bison zlib-* gmp-* mpfr-* gettext \
+libtool* libmpc-* gettext-* nano fakeroot
+sudo yum groupinstall "Development Tools"
+# CentOS 8不能直接通过yum安装texinfo，help2man，python-docutils。请去官网下载发行的安装包编译安装
+# 以texinfo为例
+# cd /usr/local/src
+# sudo wget http://ftp.gnu.org/gnu/texinfo/texinfo-6.7.tar.gz
+# sudo tar zxvf texinfo-6.7.tar.gz
+# cd texinfo-6.7
+# sudo ./configure
+# sudo make
+# sudo make install
+
+# Archlinux/Manjaro
+sudo pacman -Syu --needed git base-devel cmake gperf ncurses libmpc gmp python-docutils \
+vim rpcsvc-proto fakeroot
+
+>>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 ```
 * 克隆源码
 ```shell
@@ -114,8 +194,13 @@ nano /opt/rt-n56u/trunk/configs/templates/PSG1218.config
 * 清理代码树并开始编译
 ```shell
 cd /opt/rt-n56u/trunk
+<<<<<<< HEAD
 sudo ./clear_tree
 sudo ./build_firmware_modify k2
+=======
+./clear_tree
+fakeroot ./build_firmware_modify PSG1218
+>>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 # 脚本第一个参数为路由型号，在trunk/configs/templates/中
 # 编译好的固件在trunk/images里
 ```

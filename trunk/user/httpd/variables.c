@@ -788,6 +788,62 @@
 #endif
 			{0,0,0,0}
 		};
+<<<<<<< HEAD
+=======
+
+#if defined (APP_SCUT)
+	struct variable variables_ScutclientConf[] = {
+			{"scutclient_enable", "",NULL, EVM_RESTART_SCUT},
+			{"scutclient_debug","",NULL,EVM_RESTART_SCUT },
+			{"scutclient_username","",NULL,EVM_RESTART_SCUT },
+			{"scutclient_password","",NULL,EVM_RESTART_SCUT },
+			{"scutclient_server_auth_ip","",NULL,EVM_RESTART_SCUT },
+			{"scutclient_version","",NULL,EVM_RESTART_SCUT },
+			{"scutclient_hash","",NULL,EVM_RESTART_SCUT },
+			{"scutclient_hostname","",NULL,EVM_RESTART_SCUT },
+			{"scutclient_watchcat","",NULL,FALSE},
+			{"scutclient_wdg_force","",NULL,FALSE},
+			{"scutclient_skip_udp_hb","",NULL,EVM_RESTART_SCUT},
+			{0,0,0,0}
+	};
+#endif
+
+#if defined (APP_MENTOHUST)
+	struct variable variables_mentohustConf[] = {
+			{"mentohust_enable", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_username", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_password", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_nic", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_ip", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_mask", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_gw", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_dns", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_pinghost", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_timeout", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_interval", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_restart_wait", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_maxfail", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_startmode", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_dhcp", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_daemon", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_ver", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_datafile", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_dhcpscript", "", NULL, EVM_RESTART_MENTOHUST},
+			{"mentohust_service", "", NULL, EVM_RESTART_MENTOHUST},
+			{0,0,0,0}
+	};
+#endif
+
+#if defined(APP_DNSFORWARDER)
+	struct variable variables_dnsforwarderConf[] = {
+			{"dns_forwarder_enable", "", NULL, EVM_RESTART_DNSFORWARDER},
+			{"dns_forwarder_bind", "", NULL, EVM_RESTART_DNSFORWARDER},
+			{"dns_forwarder_port", "", NULL, EVM_RESTART_DNSFORWARDER},
+			{"dns_forwarder_server", "", NULL, EVM_RESTART_DNSFORWARDER},
+			{0,0,0,0}
+	};
+#endif
+>>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 
 #if defined(APP_SHADOWSOCKS)
 	struct variable variables_ShadowsocksConf[] = {

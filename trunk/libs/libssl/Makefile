@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 SRC_NAME=openssl-OpenSSL_1_1_1g
+=======
+SRC_NAME=openssl-1.0.2u
+SRC_URL=https://www.openssl.org/source/old/1.0.2/$(SRC_NAME).tar.gz
+>>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 
 # openssl use CROSS_COMPILE prefix
 CC=gcc $(CPUFLAGS)
