@@ -112,7 +112,11 @@ Contributors of this project are not responsible for what happens next.
 >- K2P/K2P_5.3 (128M)
 =======
 >- RM2100
+<<<<<<< HEAD
 >>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
+=======
+>- R2100 
+>>>>>>> 943a74d46e3350bd688093b12b8e507e81785b63
 
 
 ### 编译说明 ###
