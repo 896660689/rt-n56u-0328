@@ -328,35 +328,67 @@ function showTab(curHash){
                                                 </td>
                                             </tr>
 
+                                            <tr> <th colspan="2" style="background-color: #E3E3E3;"><#menu5_16_32#></th> </tr>
+
                                             <tr>
-                                                <th width="50%"><#menu5_16_17#></th>
+                                                <th width="50%"><#ChnRoute#>&nbsp;&nbsp;<span class="label label-info" style="padding: 5px 5px 5px 5px;" id="chnroute_count"></span></th>
+                                                <td style="border-top: 0 none;" colspan="2">
+                                                    <input type="button" id="btn_connect_3" class="btn btn-info" value=<#menu5_17_2#> onclick="submitInternet('Update_chnroute');">
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <th><#menu5_16_19#></th>
                                                 <td>
                                                     <div class="main_itoggle">
-                                                        <div id="ss_udp_on_of">
-                                                            <input type="checkbox" <% nvram_match_x("", "ss_udp", "1", "value=1 checked"); %><% nvram_match_x("", "ss_udp", "0", "value=0"); %>>
+                                                        <div id="ss_update_chnroute_on_of">
+                                                            <input type="checkbox" id="ss_update_chnroute_fake" <% nvram_match_x("", "ss_update_chnroute", "1", "value=1 checked"); %><% nvram_match_x("", "ss_update_chnroute", "0", "value=0"); %>>
                                                         </div>
                                                     </div>
                                                     <div style="position: absolute; margin-left: -10000px;">
-                                                        <input type="radio" value="1" name="ss_udp" id="ss_udp_1" <% nvram_match_x("", "ss_udp", "1", "checked"); %>><#checkbox_Yes#>
-                                                        <input type="radio" value="0" name="ss_udp" id="ss_udp_0" <% nvram_match_x("", "ss_udp", "0", "checked"); %>><#checkbox_No#>
+                                                        <input type="radio" value="1" name="ss_update_chnroute" id="ss_update_chnroute_1" <% nvram_match_x("", "ss_update_chnroute", "1", "checked"); %>><#checkbox_Yes#>
+                                                        <input type="radio" value="0" name="ss_update_chnroute" id="ss_update_chnroute_0" <% nvram_match_x("", "ss_update_chnroute", "0", "checked"); %>><#checkbox_No#>
                                                     </div>
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <th width="50%"><#menu5_16_18#></th>
-                                                <td>
-                                                    <select name="ss_lower_port_only" class="input" style="width: 180px;">
-                                                        <option value="0" ><#menu5_16_18_0#></option>
-                                                        <option value="1" ><#menu5_16_18_1#></option>
-                                                        <option value="2" ><#menu5_16_18_2#></option>
-                                                    </select>
+                                                <th width="50%"><#GfwList#>&nbsp;&nbsp;&nbsp;<span class="label label-info" style="padding: 5px 5px 5px 5px;" id="gfwlist_count"></span></th>
+                                                <td style="border-top: -1 none;" colspan="2">
+                                                    <input type="button" id="btn_connect_4" class="btn btn-info" value=<#menu5_17_2#> onclick="submitInternet('Update_gfwlist');">
                                                 </td>
                                             </tr>
+
                                             <tr>
-                                                <th width="50%">MTU:</th>
+                                                <th><#menu5_16_19#></th>
                                                 <td>
-                                                    <input type="text" maxlength="6" class="input" size="15" name="ss_mtu" style="width: 120px" value="<% nvram_get_x("", "ss_mtu"); %>">
+                                                    <div class="main_itoggle">
+                                                        <div id="ss_update_gfwlist_on_of">
+                                                            <input type="checkbox" id="ss_update_gfwlist_fake" <% nvram_match_x("", "ss_update_gfwlist", "1", "value=1 checked"); %><% nvram_match_x("", "ss_update_gfwlist", "0", "value=0"); %>>
+                                                        </div>
+                                                    </div>
+                                                    <div style="position: absolute; margin-left: -10000px;">
+                                                        <input type="radio" value="1" name="ss_update_gfwlist" id="ss_update_gfwlist_1" <% nvram_match_x("", "ss_update_gfwlist", "1", "checked"); %>><#checkbox_Yes#>
+                                                        <input type="radio" value="0" name="ss_update_gfwlist" id="ss_update_gfwlist_0" <% nvram_match_x("", "ss_update_gfwlist", "0", "checked"); %>><#checkbox_No#>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="3" >
+                                                    <i class="icon-hand-right"></i> <a href="javascript:spoiler_toggle('script9')"><span><#Force_SS_proxy_domain#>:</span></a>
+                                                    <div id="script9" style="display:none;">
+                                                        <textarea rows="8" wrap="off" spellcheck="false" maxlength="314571" class="span12" name="scripts.ss_dom.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.ss_dom.sh",""); %></textarea>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="3" >
+                                                    <i class="icon-hand-right"></i> <a href="javascript:spoiler_toggle('script10')"><span><#Force_SS_proxy_ip#>:</span></a>
+                                                    <div id="script10" style="display:none;">
+                                                        <textarea rows="8" wrap="off" spellcheck="false" maxlength="314571" class="span12" name="scripts.ss_pc.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.ss_pc.sh",""); %></textarea>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </table>
@@ -526,67 +558,36 @@ function showTab(curHash){
                                                 <td id="ss_tunnel_status" colspan="3"></td>
                                             </tr>
 
-                                            <tr> <th colspan="2" style="background-color: #E3E3E3;"><#menu5_16_32#></th> </tr>
-
                                             <tr>
-                                                <th width="50%"><#ChnRoute#>&nbsp;&nbsp;<span class="label label-info" style="padding: 5px 5px 5px 5px;" id="chnroute_count"></span></th>
-                                                <td style="border-top: 0 none;" colspan="2">
-                                                    <input type="button" id="btn_connect_3" class="btn btn-info" value=<#menu5_17_2#> onclick="submitInternet('Update_chnroute');">
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <th><#menu5_16_19#></th>
+                                                <th width="50%"><#menu5_16_17#></th>
                                                 <td>
                                                     <div class="main_itoggle">
-                                                        <div id="ss_update_chnroute_on_of">
-                                                            <input type="checkbox" id="ss_update_chnroute_fake" <% nvram_match_x("", "ss_update_chnroute", "1", "value=1 checked"); %><% nvram_match_x("", "ss_update_chnroute", "0", "value=0"); %>>
+                                                        <div id="ss_udp_on_of">
+                                                            <input type="checkbox" <% nvram_match_x("", "ss_udp", "1", "value=1 checked"); %><% nvram_match_x("", "ss_udp", "0", "value=0"); %>>
                                                         </div>
                                                     </div>
                                                     <div style="position: absolute; margin-left: -10000px;">
-                                                        <input type="radio" value="1" name="ss_update_chnroute" id="ss_update_chnroute_1" <% nvram_match_x("", "ss_update_chnroute", "1", "checked"); %>><#checkbox_Yes#>
-                                                        <input type="radio" value="0" name="ss_update_chnroute" id="ss_update_chnroute_0" <% nvram_match_x("", "ss_update_chnroute", "0", "checked"); %>><#checkbox_No#>
+                                                        <input type="radio" value="1" name="ss_udp" id="ss_udp_1" <% nvram_match_x("", "ss_udp", "1", "checked"); %>><#checkbox_Yes#>
+                                                        <input type="radio" value="0" name="ss_udp" id="ss_udp_0" <% nvram_match_x("", "ss_udp", "0", "checked"); %>><#checkbox_No#>
                                                     </div>
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <th width="50%"><#GfwList#>&nbsp;&nbsp;&nbsp;<span class="label label-info" style="padding: 5px 5px 5px 5px;" id="gfwlist_count"></span></th>
-                                                <td style="border-top: -1 none;" colspan="2">
-                                                    <input type="button" id="btn_connect_4" class="btn btn-info" value=<#menu5_17_2#> onclick="submitInternet('Update_gfwlist');">
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <th><#menu5_16_19#></th>
+                                                <th width="50%"><#menu5_16_18#></th>
                                                 <td>
-                                                    <div class="main_itoggle">
-                                                        <div id="ss_update_gfwlist_on_of">
-                                                            <input type="checkbox" id="ss_update_gfwlist_fake" <% nvram_match_x("", "ss_update_gfwlist", "1", "value=1 checked"); %><% nvram_match_x("", "ss_update_gfwlist", "0", "value=0"); %>>
-                                                        </div>
-                                                    </div>
-                                                    <div style="position: absolute; margin-left: -10000px;">
-                                                        <input type="radio" value="1" name="ss_update_gfwlist" id="ss_update_gfwlist_1" <% nvram_match_x("", "ss_update_gfwlist", "1", "checked"); %>><#checkbox_Yes#>
-                                                        <input type="radio" value="0" name="ss_update_gfwlist" id="ss_update_gfwlist_0" <% nvram_match_x("", "ss_update_gfwlist", "0", "checked"); %>><#checkbox_No#>
-                                                    </div>
+                                                    <select name="ss_lower_port_only" class="input" style="width: 180px;">
+                                                        <option value="0" ><#menu5_16_18_0#></option>
+                                                        <option value="1" ><#menu5_16_18_1#></option>
+                                                        <option value="2" ><#menu5_16_18_2#></option>
+                                                    </select>
                                                 </td>
                                             </tr>
 
                                             <tr>
-                                                <td colspan="3" >
-                                                    <i class="icon-hand-right"></i> <a href="javascript:spoiler_toggle('script9')"><span><#Force_SS_proxy_domain#>:</span></a>
-                                                    <div id="script9" style="display:none;">
-                                                        <textarea rows="8" wrap="off" spellcheck="false" maxlength="314571" class="span12" name="scripts.ss_dom.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.ss_dom.sh",""); %></textarea>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td colspan="3" >
-                                                    <i class="icon-hand-right"></i> <a href="javascript:spoiler_toggle('script10')"><span><#Force_SS_proxy_ip#>:</span></a>
-                                                    <div id="script10" style="display:none;">
-                                                        <textarea rows="8" wrap="off" spellcheck="false" maxlength="314571" class="span12" name="scripts.ss_pc.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.ss_pc.sh",""); %></textarea>
-                                                    </div>
+                                                <th width="50%">MTU:</th>
+                                                <td>
+                                                    <input type="text" maxlength="6" class="input" size="15" name="ss_mtu" style="width: 120px" value="<% nvram_get_x("", "ss_mtu"); %>">
                                                 </td>
                                             </tr>
                                         </table>
