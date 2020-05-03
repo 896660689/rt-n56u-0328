@@ -36,6 +36,8 @@ env:
   jobs:
   - build_variant=mt7621 targets="K2P K2P-5.0"
   - build_variant=mt7620 targets="K2"
+  - build_variant=mt7628 targets="HC5761A"
+
   global:
   - toolchain_url="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz"
 git:
