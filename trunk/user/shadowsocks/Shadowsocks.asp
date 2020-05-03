@@ -200,10 +200,10 @@ function showTab(curHash){
                                             <a id="tab_ss_ssl" href="#ssl"><#menu5_16_31#></a>
                                         </li>
                                         <li>
-                                            <a id="tab_ss_cli" href="#cli"><#menu5_16_32#></a>
+                                            <a id="tab_ss_cli" href="#cli"><#menu5_1_6#></a>
                                         </li>
                                         <li>
-                                            <a id="tab_ss_log" href="#log"><#menu5_1_6#></a>
+                                            <a id="tab_ss_log" href="#log"><#menu5_16_20#></a>
                                         </li>
                                     </ul>
                                 </div>
