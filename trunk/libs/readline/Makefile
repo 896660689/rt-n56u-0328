@@ -1,5 +1,5 @@
 SRC_NAME=readline-8.0
-SRC_URL=http://ftp.gnu.org/gnu/readline/readline-7.0.tar.gz
+SRC_URL=http://ftp.gnu.org/gnu/readline/readline-8.0.tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
