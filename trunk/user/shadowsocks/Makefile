@@ -22,8 +22,7 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 	mkdir -p $(GFWLIST_DIR)
 	( if [ ! -f $(GFWLIST_DIR)/.finish ]; then \
 		cd $(GFWLIST_DIR) && rm -f * && \
-		wget -q -t5 --timeout=20 --no-check-certificate -O- $(GFWLIST_URL) \
-		|sed -e "1,3d" -e '$a server=/transfer.sh/127.0.0.1#5353' -e '$a ipset=/transfer.sh/gfwlist' >> $(GFWLIST_NAME) && \
+		wget -q -t5 --timeout=20 --no-check-certificate -O- $(GFWLIST_URL) >> $(GFWLIST_NAME) && \
 		tar jcf gfwlist.bz2 $(GFWLIST_NAME) && \
 		touch .finish ; \
 	fi )
