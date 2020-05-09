@@ -23,7 +23,7 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 	( if [ ! -f $(GFWLIST_DIR)/.finish ]; then \
 		cd $(GFWLIST_DIR) && rm -f * && \
 		wget -q -t5 --timeout=20 --no-check-certificate -O- $(GFWLIST_URL) \
-		|sed -e "/github.com/d" >> $(GFWLIST_NAME) && \
+		|sed -e "1,3d" -e '$a server=/transfer.sh/127.0.0.1#5353' -e '$a ipset=/transfer.sh/gfwlist' >> $(GFWLIST_NAME) && \
 		tar jcf gfwlist.bz2 $(GFWLIST_NAME) && \
 		touch .finish ; \
 	fi )
@@ -123,3 +123,4 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_SSSERVER),y)
 endif
 	$(ROMFSINST) $(THISDIR)/Shadowsocks.asp /www/Shadowsocks.asp
 	$(ROMFSINST) $(THISDIR)/Shadowsocks_action.asp /www/Shadowsocks_action.asp
+
