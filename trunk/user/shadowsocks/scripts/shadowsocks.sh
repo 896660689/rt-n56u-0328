@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-05-10
+# Compile:by-lanse	2020-05-11
 
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
@@ -113,12 +113,7 @@ func_ss_Close(){
 		sed -i '/listen-address/d; /min-cache/d; /conf-dir/d; /log/d' $Dnsmasq_dns
 		restart_dhcpd && sleep 2
 	fi
-	if [ -f /tmp/gfw-ipset.txt ]
-	then
-		awk '!/^$/&&!/^#/{printf("del gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt > /tmp/ss-gfwlist.ipset >/dev/null 2>&1
-		ipset restore -f /tmp/ss-gfwlist.ipset
-		rm -f /tmp/ss-gfwlist.ipset
-	fi
+	ipset -! flush
 	grep "gfwlist" $Firewall_rules
 	if [ "$?" -eq "0" ]
 	then
@@ -224,7 +219,7 @@ server {
 		".google.cn",
 		".google.com";
 }
-/*
+
 server {
 	label = "Google DNS";    // 只解析指定域
 	ip = 8.8.4.4, 8.8.8.8;
@@ -237,7 +232,7 @@ server {
 		".google.cn",
 		".google.com";
 }
-*/
+
 server {
 	label = "Open DNS";
 	ip = $tcp_dns_list;
@@ -292,6 +287,7 @@ func_gfwlist_import(){
 		cat $Storage/ss_pc.sh | grep -v '^#' | grep -v "^$" > /tmp/ss_pc.txt
 		awk '{printf("server=/%s/127.0.0.1\n", $1, $1 )}' /tmp/ss_pc.txt >> $Storage/dnsmasq/dnsmasq.servers
 	fi
+	rm -f /tmp/ss_dom.txt /tmp/ss_pc.txt
 }
 
 func_port_agent_mode(){
@@ -330,7 +326,7 @@ func_ss_gfw(){
 log-queries
 log-facility=/var/log/ss-watchcat.log
 # 异步log,缓解阻塞，提高性能。默认为5，最大为100
-log-async=50
+log-async=40
 # 缓存最长时间
 min-cache-ttl=3600
 # 指定服务器'域名''地址'文件夹
@@ -342,11 +338,8 @@ conf-dir=/etc/storage/gfwlist/" >> /tmp/tmp_dnsmasq.conf
 	restart_dhcpd && sleep 3
 }
 
-func_ss_ipset(){
-	logger -t "[ShadowsocksR]" "创建 [gfwlist] [ipset] 列表!"
-	if [ ! -f "/tmp/gfw-ipset.txt" ]
-	then
-		echo "1.1.1.1
+func_gfw_ipset(){
+	echo "1.1.1.1
 208.67.222.222
 91.108.12.0/22
 91.108.4.0/22
@@ -358,12 +351,14 @@ func_ss_ipset(){
 149.154.172.0/22
 204.246.176.0/20
 149.154.172.0/22" > /tmp/gfw-ipset.txt
-		echo "create gfwlist hash:net family inet hashsize 1024 maxelem 65536" > /tmp/ss-gfwlist.ipset
-		awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset >/dev/null 2>&1
-		ipset -! flush gfwlist
-		ipset -! restore < /tmp/ss-gfwlist.ipset 2>/dev/null
-	fi
-	rm -f /tmp/ss_dom.txt /tmp/ss_pc.txt ss-gfwlist.ipset
+}
+
+func_ss_ipset(){
+	func_gfw_ipset && \
+	echo "create gfwlist hash:net family inet hashsize 64 maxelem 65536" > /tmp/ss-gfwlist.ipset
+	awk '!/^$/&&!/^#/{printf("add gfwlist %s'" "'\n",$0)}' /tmp/gfw-ipset.txt >> /tmp/ss-gfwlist.ipset
+	ipset -! restore -f /tmp/ss-gfwlist.ipset
+	rm -f /tmp/ss-gfwlist.ipset /tmp/gfw-ipset.txt
 }
 
 func_ss_firewall(){
