@@ -209,31 +209,50 @@ global {
 	query_method = tcp_only;
 	min_ttl = 1h;
 	max_ttl = 1w;
-	timeout = 6;
+	timeout = 10;
 	neg_domain_pol = on;
 }
 
 server {
-	label = "Google DNS";
-	ip = 8.8.4.4, 8.8.8.8;
+	label = "Ch DNS";    // 解析其它server以外域
+	ip = 223.5.5.5, 182.254.116.116;
 	timeout = 4;
 	uptest = none;
-	interval = 8m;
-	purge_cache = off;
+	policy = included;   // 排除以下指定域
+	exclude = ".gmail.com",
+		".google-analytics.com",
+		".google.cn",
+		".google.com";
 }
-
+/*
+server {
+	label = "Google DNS";    // 只解析指定域
+	ip = 8.8.4.4, 8.8.8.8;
+	timeout = 5;
+	uptest = none;
+	edns_query = on;
+	policy = excluded;    // 解析以下指定域
+	include = ".gmail.com",
+		".google-analytics.com",
+		".google.cn",
+		".google.com";
+}
+*/
 server {
 	label = "Open DNS";
 	ip = $tcp_dns_list;
+	reject_policy = fail;    // 以下污染源跳过
 	reject = 208.69.32.0/24,
 		208.69.34.0/24,
 		208.67.219.0/24;
-	reject_policy = fail;
 	port = 5353;
 	timeout = 5;
 	uptest = none;
 	interval = 10m;
-	purge_cache = off;
+	purge_cache = off;    // 以下排除国外DNS解析
+	exclude = ".cn",
+		".qq.com",
+		".baidu.com";
 }
 
 source {
@@ -311,7 +330,7 @@ func_ss_gfw(){
 log-queries
 log-facility=/var/log/ss-watchcat.log
 # 异步log,缓解阻塞，提高性能。默认为5，最大为100
-log-async=40
+log-async=50
 # 缓存最长时间
 min-cache-ttl=3600
 # 指定服务器'域名''地址'文件夹
