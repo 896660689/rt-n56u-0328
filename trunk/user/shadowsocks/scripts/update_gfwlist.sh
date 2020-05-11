@@ -1,17 +1,24 @@
 #!/bin/sh -e
-# Compile:by-lanse	2019-12-12
+# Compile:by-lanse	2020-05-12
 
 TMP_GFW="/tmp/gfwnew.txt"
+TMP_RULE="/tmp/gfw_list.conf"
+TMP_B64="/tmp/gfw.b64"
+GFWLIST_HOME="/etc/storage/gfwlist"
+GFWLIST_HOME_RULE="$GFWLIST_HOME/gfw_list.conf"
+GFWLIST_URL="https://cdn.jsdelivr.net/gh/gfwlist/gfwlist/gfwlist.txt"
+GFWLIST_B_URL="https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist_ipset.conf"
+
 set -e -o pipefail
 [ -f $TMP_GFW ] && rm -rf $TMP_GFW && logger -st "gfwlist" "Starting update..."
 
 generate_china_banned()
 {
-	cat $1 | base64 -d > /tmp/gfw_list.conf
+	cat $1 | base64 -d > $TMP_RULE
 		rm -f $1
-    	sed -i '/^@@|/d' /tmp/gfw_list.conf
+    	sed -i '/^@@|/d' $TMP_RULE
 
-	cat /tmp/gfw_list.conf | sort -u |
+	cat $TMP_RULE | sort -u |
 		sed 's#!.\+##; s#|##g; s#@##g; s#http:\/\/##; s#https:\/\/##;' |
 		sed '/\*/d; /apple\.com/d; /sina\.cn/d; /sina\.com\.cn/d; /baidu\.com/d; /byr\.cn/d; /jlike\.com/d; /weibo\.com/d; /zhongsou\.com/d; /youdao\.com/d; /sogou\.com/d; /so\.com/d; /soso\.com/d; /aliyun\.com/d; /taobao\.com/d; /jd\.com/d; /qq\.com/d' |
 		sed '/^[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+$/d' |
@@ -31,13 +38,14 @@ BEGIN { prev = "________"; } {
 if [ "$1" != "force" ] && [ "$(nvram get ss_update_gfwlist)" != "1" ]; then
 	exit 0
 else
-	[ ! -d "/etc/storage/gfwlist" ] && mkdir -p /etc/storage/gfwlist
-	wget -t 5 -T 10 -c --no-check-certificate -O- https://cdn.jsdelivr.net/gh/gfwlist/gfwlist/gfwlist.txt > /tmp/gfw.b64
-	generate_china_banned /tmp/gfw.b64 \
-	|sed -e "/.*/s/.*/server=\/\.&\/127.0.0.1#5353\nipset=\/\.&\/gfwlist/" -e "/github.com/d" >$TMP_GFW
-	rm -f /tmp/gfw_list.conf
+	[ ! -d "$GFWLIST_HOME" ] && mkdir -p $GFWLIST_HOME
+	[ ! -f "$FWLIST_HOME_RULE" ] && touch $GFWLIST_HOME_RULE
+	curl -k -s -o $TMP_B64 --connect-timeout 10 --retry 3 $GFWLIST_URL
+	generate_china_banned $TMP_B64 \
+	|sed -e "/.*/s/.*/server=\/&\/127.0.0.1#5353\nipset=\/&\/gfwlist/" >$TMP_GFW
+	rm -f $TMP_RULE
 	if [ -s "$TMP_GFW" ] ; then
-		touch /tmp/gfwlist-md5.json && md5sum /etc/storage/gfwlist/gfw_list.conf > /tmp/gfwlist-md5.json
+		touch /tmp/gfwlist-md5.json && md5sum $GFWLIST_HOME_RULE > /tmp/gfwlist-md5.json
 		touch /tmp/gfw-md5.json && md5sum $TMP_GFW > /tmp/gfw-md5.json
 		gfwlist_local=$(grep 'gfwlist' /tmp/gfwlist-md5.json | awk -F' ' '{print $1}')
 		gfwlist_md5=$(grep 'gfw' /tmp/gfw-md5.json | awk -F' ' '{print $1}')
@@ -45,16 +53,16 @@ else
 			logger -t "gfwlist" "No update"
 			rm -f $TMP_GFW
 		else
-			chmod 644 $TMP_GFW && mv -f $TMP_GFW /etc/storage/gfwlist/gfw_list.conf
+			chmod 644 $TMP_GFW && mv -f $TMP_GFW $GFWLIST_HOME_RULE
 			mtd_storage.sh save >/dev/null 2>&1
 			killall -HUP dnsmasq && restart_dhcpd
 			logger -t "gfwlist" "update rule"
 		fi
 		rm -f /tmp/gfwlist-md5.json /tmp/gfw-md5.json
 	else
-		wget -t 5 -T 10 -c --no-check-certificate -O- "https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist_ipset.conf" \
-		|sed -e "/github.com/d" -e '$a server=/transfer.sh/127.0.0.1#5353' -e '$a ipset=/transfer.sh/gfwlist' >> $TMP_GFW
-		chmod 644 $TMP_GFW && mv -f $TMP_GFW /etc/storage/gfwlist/gfw_list.conf; sleep 2
+		wget -t 5 -T 10 -c --no-check-certificate -O- $GFWLIST_B_URL \
+		|sed -e "/test-ipv6/d" -e '$a server=/transfer.sh/127.0.0.1#5353' -e '$a ipset=/transfer.sh/gfwlist' > $TMP_GFW
+		chmod 644 $TMP_GFW && mv -f $TMP_GFW $GFWLIST_HOME_RULE; sleep 2
 		restart_dhcpd
 		logger -t "gfwlist" "update rule"
 	fi
