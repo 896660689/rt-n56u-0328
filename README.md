@@ -28,8 +28,6 @@ Contributors of this project are not responsible for what happens next.
 
 ***
 
-<<<<<<< HEAD
-=======
 ### 特别说明 ###
 * 汉化字典来自：https://github.com/gorden5566/padavan
 * 更新日志：https://www.jianshu.com/p/d76a63a12eae
@@ -72,10 +70,7 @@ Contributors of this project are not responsible for what happens next.
 >- [frps](https://github.com/fatedier/frp) ```CONFIG_FIRMWARE_INCLUDE_FRPS```
 >- [tunsafe](https://github.com/TunSafe/TunSafe) ```CONFIG_FIRMWARE_INCLUDE_TUNSAFE```
 
->>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 - 已适配除官方适配外的以下机型
-<<<<<<< HEAD
-=======
 >- PSG1208
 >- PSG1218
 >- 5K-W20 (USB)
@@ -105,19 +100,10 @@ Contributors of this project are not responsible for what happens next.
 >- DIR-878
 >- MR2600 (USB)
 >- WDR7300
-<<<<<<< HEAD
->>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
-
->- K2_256_USB (256M)
->- K2P/K2P_5.3 (128M)
-=======
 >- RM2100
-<<<<<<< HEAD
->>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
-=======
 >- R2100 
->>>>>>> 943a74d46e3350bd688093b12b8e507e81785b63
 
+***
 
 ### 编译说明 ###
 
@@ -127,9 +113,8 @@ Contributors of this project are not responsible for what happens next.
 sudo apt update
 sudo apt install unzip libtool-bin curl cmake gperf gawk flex bison nano xxd fakeroot \
 cpio git python-docutils gettext automake autopoint texinfo build-essential help2man \
-<<<<<<< HEAD
-=======
-pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget
+pkg-config zlib1g-dev libgmp3-dev libmpc-dev libmpfr-dev libncurses5-dev libltdl-dev wget \
+module-init-tools
 
 # CentOS 7
 sudo yum update
@@ -156,20 +141,15 @@ sudo yum groupinstall "Development Tools"
 sudo pacman -Syu --needed git base-devel cmake gperf ncurses libmpc gmp python-docutils \
 vim rpcsvc-proto fakeroot
 
->>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 ```
 * 克隆源码
 ```shell
-git clone --depth=1 https://gitee.com/896660689/rt-n56u.git /opt/rt-n56u
-#git clone --depth=1 https://github.com/896660689/rt-n56u.git /opt/rt-n56u
+git clone --depth=1 https://gitee.com/hanwckf/rt-n56u.git /opt/rt-n56u
+#git clone --depth=1 https://github.com/hanwckf/rt-n56u.git /opt/rt-n56u
 ```
 * 准备工具链
 ```shell
 cd /opt/rt-n56u/toolchain-mipsel
-<<<<<<< HEAD
-./clean_toolchain
-./build_toolchain
-=======
 
 # （推荐）使用脚本下载预编译的工具链：
 sh dl_toolchain.sh
@@ -182,14 +162,6 @@ sh dl_toolchain.sh
 ./clean_toolchain
 ./build_toolchain
 
-<<<<<<< HEAD
-# 或者下载预编译的工具链：
-mkdir -p toolchain-3.4.x
-wget https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz
-tar -xvf mipsel-linux-uclibc.tar.xz -C toolchain-3.4.x
->>>>>>> 6ea98e38a30400393b18e8f7b3a316c524eb3021
-=======
->>>>>>> e475262725b88b1ac670c59698efa7a1e6ddde1f
 ```
 * (可选) 修改机型配置文件
 ```shell
@@ -198,14 +170,14 @@ nano /opt/rt-n56u/trunk/configs/templates/PSG1218.config
 * 清理代码树并开始编译
 ```shell
 cd /opt/rt-n56u/trunk
-<<<<<<< HEAD
-sudo ./clear_tree
-sudo ./build_firmware_modify k2
-=======
 ./clear_tree
 fakeroot ./build_firmware_modify PSG1218
->>>>>>> e8ebede013140aaba6a5457270a6eeccb9bb5c16
 # 脚本第一个参数为路由型号，在trunk/configs/templates/中
 # 编译好的固件在trunk/images里
 ```
 
+***
+
+### 请参阅 ###
+- https://www.jianshu.com/p/cb51fb0fb2ac
+- https://www.jianshu.com/p/6b8403cdea46
