@@ -288,6 +288,39 @@ is_dhcpd_enabled(int is_ap_mode)
 		return nvram_match("lan_dhcpd_x", "1") && nvram_invmatch("lan_proto_x", "1");
 }
 
+#define DHCP_HOSTS_FILE "/tmp/dhcp.hosts"
+int load_dhcp_hosts(const char *dhcp_conf)
+{
+	int count = 0;
+	FILE *fps = fopen(dhcp_conf, "r");
+	if (fps) {
+		FILE *fpd = fopen(DHCP_HOSTS_FILE, "w");
+		if (fpd) {
+			char line[256];
+			while (fgets(line, sizeof(line), fps)) {
+				if (line[0] == '\0' || line[0] == '\r' || line[0] == '\n' || line[0] == '#' || line[0] == ';')
+					continue;
+
+				char n = 0, seps[256];
+				const char *p;
+				for (p = line; *p; p++) {
+					if (*p == ',')
+						seps[n++] = p - line;
+				}
+				if (n >= 2) {
+					line[seps[n - 1]] = ' ';
+					const char *start = line + seps[n - 2] + 1;
+					fwrite(start, p - start, 1, fpd);
+					count++;
+				}
+			}
+			fclose(fpd);
+		}
+		fclose(fps);
+	}
+	return count;
+}
+
 int
 start_dns_dhcpd(int is_ap_mode)
 {
@@ -346,6 +379,11 @@ start_dns_dhcpd(int is_ap_mode)
 		fprintf(fp, "addn-hosts=%s/hosts\n", storage_dir);
 		fprintf(fp, "servers-file=%s\n", DNS_SERVERS_FILE);
 		fprintf(fp, "dhcp-hostsfile=%s/dhcp.conf\n", storage_dir);
+		char dhcp_conf[256];
+		sprintf(dhcp_conf, "%s/dhcp.conf", storage_dir);
+		if (load_dhcp_hosts(dhcp_conf)) {
+			fprintf(fp, "addn-hosts=%s\n", DHCP_HOSTS_FILE);
+		}
 	} else {
 		is_dns_used = 0;
 		fprintf(fp, "cache-size=%d\n", 0);

@@ -1,0 +1,25 @@
+# 请将误杀的网址添加到在下面白名单
+# 每行输入相应准确的网址或关键词即可:
+
+weixin.qq.com
+m.baidu.com
+github.com
+raw.githubusercontent.com
+tv.sohu.com
+toutiao.com
+jd.com
+tejia.taobao.com
+temai.taobao.com
+ai.m.taobao.com
+ai.taobao.com
+re.taobao.com
+shi.taobao.com
+s.click.taobao.com
+s.click.tmall.com
+ju.taobao.com
+dl.360safe.com
+down.360safe.com
+fd.shouji.360.cn
+zhushou.360.cn
+shouji.360.cn
+hot.m.shouji.360tpcdn.com

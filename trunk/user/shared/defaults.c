@@ -148,7 +148,7 @@ struct nvram_pair router_defaults[] = {
 	{ "http_lanport", "80" },		/* HTTP LAN port to listen on */
 	{ "https_lport", "443" },		/* HTTPS LAN port to listen on */
 	{ "https_clist", DEF_HTTPS_CIPH_LIST },	/* HTTPS SSL cipher list */
-	{ "fw_dos_x", "0" },			// oleg patch
+	{ "fw_dos_x", "1" },			// oleg patch
 	{ "dr_enable_x", "1" },			// oleg patch
 	{ "mr_enable_x", "0" },			// oleg patch
 	{ "mr_qleave_x", "1" },
@@ -406,15 +406,10 @@ struct nvram_pair router_defaults[] = {
 	{ "aria_pport", "16888" },
 	{ "aria_rport", "6800" },
 	{ "aria_ropen", "0" },
-	/*Adbyby PlUS+*/
-	{ "adbyby_enable", "0" },
-	{ "adbyby_set", "0" },
-	{ "adbyby_adb_update", "0" },
-	{ "hosts_ad", "0" },
-	{ "tv_hosts", "0" },
-	{ "adbyby_update", "2" },
-	{ "adbyby_update_hour", "05" },
-	{ "adbyby_update_min", "35" },
+
+	/*autoreboot*/
+	{ "reboot_mode", "0" },
+
 	{ "hdd_spindt", "0" },
 	{ "hdd_apmoff", "0" },
 
@@ -500,48 +495,24 @@ struct nvram_pair router_defaults[] = {
 	{ "dr_staticipaddr_x", "" },
 	{ "dr_staticnetmask_x", "0" },
 	{ "dr_staticgateway_x", "" },
-<<<<<<< HEAD
-=======
 
-#if defined(APP_SCUT)
-	/* scutclient related */
-	{ "scutclient_enable", "0" },
-	{ "scutclient_debug", "0" },
-	{ "scutclient_hostname", "Lenovo-PC" },
-	{ "scutclient_server_auth_ip", "202.38.210.131" },
-	{ "scutclient_skip_udp_hb", "0" },
-	{ "scutclient_version", "4472434f4d0096022a" },
-	{ "scutclient_hash", "2ec15ad258aee9604b18f2f8114da38db16efd00" },
-	{ "scutclient_username", "" },
-	{ "scutclient_password", "" },
-	{ "scutclient_watchcat", "1" },
-	{ "scutclient_wdg_force", "1" },
+#if defined(APP_ADBYBY)
+	/*Adbyby PlUS+*/
+	{ "adbyby_enable", "0" },
+	{ "adbyby_set", "2" },
+	{ "adbyby_adb_update", "0" },
+	{ "hosts_ad", "0" },
+	{ "tv_hosts", "0" },
+	{ "adbyby_update", "2" },
+	{ "adbyby_update_hour", "05" },
+	{ "adbyby_update_min", "35" },
 #endif
 
-#if defined(APP_MENTOHUST)
-	/* mentohust related */
-	{ "mentohust_enable", "0" },
-	{ "mentohust_username", "" },
-	{ "mentohust_password", "" },
-	{ "mentohust_nic", "" },
-	{ "mentohust_ip", "" },
-	{ "mentohust_mask", "" },
-	{ "mentohust_gw", "" },
-	{ "mentohust_dns", "" },
-	{ "mentohust_pinghost", "" },
-	{ "mentohust_timeout", "8" },
-	{ "mentohust_interval", "30" },
-	{ "mentohust_restart_wait", "15" },
-	{ "mentohust_maxfail", "0" },
-	{ "mentohust_startmode", "1" },
-	{ "mentohust_dhcp", "0" },
-	{ "mentohust_daemon", "1" },
-	{ "mentohust_service", "0" },
-	{ "mentohust_ver", "0.00" },
-	{ "mentohust_datafile", "/etc/storage/mentohust/" },
-	{ "mentohust_dhcpscript", "" },
+#if defined(APP_ADGUARGHOME)
+	/* AdguargHome */
+	{ "adg_enable", "0" },
+	{ "adg_redirect", "0" },
 #endif
->>>>>>> d89086f4981dec0bf53a2ba30cfe7ea24427400a
 
 #if defined(APP_TTYD)
 	/* ttyd related */
@@ -550,30 +521,13 @@ struct nvram_pair router_defaults[] = {
 
 	/* NAPT66 */
 	{ "napt66_enable", "0" },
-<<<<<<< HEAD
-
-=======
-#endif
-
-#if defined(APP_VLMCSD)
-	/* vlmcsd */
-	{ "vlmcsd_enable", "0" },
-#endif
-
-#if defined(APP_DNSFORWARDER)
-	/* dns-forwarder */
-	{ "dns_forwarder_enable", "0" },
-	{ "dns_forwarder_port", "5353" },
-	{ "dns_forwarder_bind", "0.0.0.0" },
-	{ "dns_forwarder_server", "8.8.4.4:53" },
 #endif
 
 #if defined(APP_SHADOWSOCKS)
->>>>>>> d89086f4981dec0bf53a2ba30cfe7ea24427400a
 	/* shadowsocks */
 	{ "ss_type", "1" },			//0=ss;1=ssr
 	{ "ss_enable", "0" },
-	{ "ss_mode", "1" },			//0:Agente-Global;1:chnroute;2:gfwlist
+	{ "ss_mode", "1" },			//0:Agente-Global;1:chnroute;2:gfwlist;3:v2ray;4:trojan
 	{ "ss_server", "127.0.0.1" },
 	{ "ss_server_port", "8989" },
 	{ "ss_key", "Secret" },
@@ -581,7 +535,7 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_udp", "0" },
 	{ "ss_local_port", "1080" },
 	{ "ss_mtu", "1492" },
-	{ "ss_router_proxy", "2" },		//0:Kong;1:Self agency;2:dns-forwarder;3:dnsproxy;4:pdnsd
+	{ "ss_router_proxy", "2" },		//0:Kong;1:Self agency;2:dns-forwarder;3:dnsproxy;4:pdnsd;5:dns2tcp
 	{ "ss_lower_port_only", "1" },		//1:22-1023;2:53,80,443
 	{ "ss_timeout", "60"},
 	{ "ss_protocol", "origin"},
@@ -589,22 +543,70 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_obfs", "plain"},
 	{ "ss_obfs_param", ""},
 
+	{ "ss2_server", "127.0.0.1" },
+	{ "ss2_server_port", "8989" },
+	{ "ss2_key", "Secret" },
+	{ "ss2_method", "rc4-md5" },
+	{ "ss2_protocol", "origin"},
+	{ "ss2_proto_param", ""},
+	{ "ss2_obfs", "plain"},
+	{ "ss2_obfs_param", ""},
+
 	{ "ss-tunnel_enable", "0" },
-	{ "ss-tunnel_local_port", "5353" },
+	{ "ss-tunnel_local_port", "5757" },
 	{ "ss-tunnel_remote", "8.8.4.4:53" },
 	{ "ss-tunnel_mtu", "1492" },
 
-<<<<<<< HEAD
 	{ "ss_watchcat", "0" },
 	{ "ss_dns", "0" },
-=======
-	{ "ss_watchcat", "1" },
->>>>>>> d89086f4981dec0bf53a2ba30cfe7ea24427400a
 	{ "ss_update_chnroute", "0" },
 	{ "ss_update_gfwlist", "0" },
 #endif
 
-	{ "reboot_mode", "0" },
+#if defined(APP_WYY)
+	/*UnblockNeteaseMusic*/
+	{ "wyy_enable", "0" },
+	{ "wyy_apptype", "cloud" },
+	{ "wyy_cloudserver", "cdn-shanghai.service.project-openwrt.eu.org:30000:30001" },
+	{ "wyy_musicapptype", "kuwo" },
+	{ "wyy_coustom_server", "" },
+	{ "wyy_coustom_music", "" },
+	{ "wyy_staticnum_x", "0" },
+#endif
+
+#if defined(SmartDns)
+	/*SmartDns*/
+	{ "sdns_enable", "0" },
+	{ "snds_name", "smartdns" },
+	{ "sdns_port", "6053" },
+	{ "sdns_tcp_server", "0" },
+	{ "sdns_ipv6_server", "0" },
+	{ "snds_ip_change", "0" },
+	{ "snds_ip_change_time", "30" },
+	{ "sdns_ipv6", "0" },
+	{ "sdns_www", "0" },
+	{ "sdns_exp", "0" },
+	{ "snds_redirect", "0" },
+	{ "snds_cache", "0" },
+	{ "sdns_ttl", "300" },
+	{ "sdns_ttl_min", "60" },
+	{ "sdns_ttl_max", "86400" },
+	{ "sdns_coredump", "0" },
+	{ "sdnss_staticnum_x", "0" },
+	{ "sdnse_enable", "0" },
+	{ "sdnse_port", "7053" },
+	{ "sdnse_tcp", "0" },
+	{ "sdnse_speed", "0" },
+	{ "sdnse_name", "" },
+	{ "sdnse_address", "0" },
+	{ "sdnse_ns", "0" },
+	{ "sdnse_ipset", "0" },
+	{ "sdnse_as", "0" },
+	{ "sdnse_ipc", "0" },
+	{ "sdnse_cache", "0" },
+	{ "ss_white", "0" },
+	{ "ss_black", "0" },
+#endif
 
 	/* DHCP server parameters */
 	{ "dhcp_start", "192.168.2.2" },	/* First assignable DHCP address */
@@ -804,7 +806,7 @@ struct nvram_pair router_defaults[] = {
 #if defined(USE_SFE)
 	{ "sfe_enable", "0" },
 #endif
-	{ "fw_syn_cook", "0" },
+	{ "fw_syn_cook", "1" },
 	{ "fw_mac_drop", "0" },
 	{ "nf_nat_type", "2" },
 	{ "nf_nat_loop", "1" },
@@ -872,22 +874,6 @@ struct nvram_pair router_defaults[] = {
 	{ "vpnc_ov_clzo", "2" },
 	{ "vpnc_ov_atls", "0" },
 
-<<<<<<< HEAD
-=======
-#if defined(APP_XTU)
-	/* xTun */
-	{ "xTun_iface", "tun0" },
-	{ "xTun_cidr", "10.0.1.2/24" },
-	{ "xTun_server", "server.me" },
-	{ "xTun_port", "1082" },
-	{ "xTun_tcp", "0" },
-	{ "xTun_key", "password" },
-
-	{ "xTun_dns", "1.1.1.1" },
-	{ "xTun_black_list", "/etc/storage/xTun_black_list" },
-#endif
-
->>>>>>> d89086f4981dec0bf53a2ba30cfe7ea24427400a
 	{ 0, 0 }
 };
 

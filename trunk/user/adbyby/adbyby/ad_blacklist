@@ -1,0 +1,20 @@
+# 请在下面添加广告黑名单
+# 每行输入要屏蔽广告网址不含http://符号
+
+active.admore.com.cn
+g.163.com
+mtty-cdn.mtty.com
+static-alias-1.360buyimg.com
+image.yzmg.com
+files.jb51.net/image
+common.jb51.net/images
+du.ebioweb.com/ebiotrade/web_images
+www.37cs.com
+fuimg.com
+sinaimg.cn
+ciimg.com
+pic.iidvd.com
+cnzz.com
+statis.api.3g.youku.com
+ad.m.qunar.com
+lives.l.aiseet.atianqi.com

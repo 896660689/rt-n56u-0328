@@ -87,12 +87,14 @@ typedef u_int8_t u8;
 #define EVM_RESTART_ARIA		(1ULL << 42)
 #define EVM_RESTART_SCUT		(1ULL << 43)
 #define EVM_RESTART_TTYD		(1ULL << 50)
-#define EVM_RESTART_SHADOWSOCKS		(1ULL << 52)
-#define EVM_RESTART_SS_TUNNEL		(1ULL << 53)
-#define EVM_RESTART_ADBYBY			(1ULL << 54)
-#define EVM_RESTART_REBOOT		(1ULL << 62)
-
-#define EVM_BLOCK_UNSAFE		(1ULL << 63) /* special case */
+#define EVM_RESTART_SHADOWSOCKS	(1ULL << 51)
+#define EVM_RESTART_SS_TUNNEL		(1ULL << 52)
+#define EVM_RESTART_ADBYBY		(1ULL << 53)
+#define EVM_RESTART_WYY		(1ULL << 54)
+#define EVM_RESTART_SMARTDNS		(1ULL << 55)
+#define EVM_RESTART_ADGUARDHOME	(1ULL << 56)
+#define EVM_RESTART_REBOOT		(1ULL << 60)
+#define EVM_BLOCK_UNSAFE		(1ULL << 61) /* special case */
 
 
 #define EVT_RESTART_FIREWALL		1
@@ -145,7 +147,10 @@ typedef u_int8_t u8;
 #define EVT_RESTART_TTYD		1
 #define EVT_RESTART_SHADOWSOCKS	2
 #define EVT_RESTART_SS_TUNNEL		2
-#define EVT_RESTART_ADBYBY	2
+#define EVT_RESTART_ADBYBY		2
+#define EVT_RESTART_WYY		2
+#define EVT_RESTART_SMARTDNS		1
+#define EVT_RESTART_ADGUARDHOME		1
 #define EVT_RESTART_REBOOT		40
 
 struct variable

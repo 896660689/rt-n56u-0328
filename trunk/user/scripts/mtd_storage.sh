@@ -195,8 +195,7 @@ func_fill()
 	dir_inadyn="$dir_storage/inadyn"
 	dir_crond="$dir_storage/cron/crontabs"
 	dir_wlan="$dir_storage/wlan"
-	dir_chnroute="$dir_storage/chinadns"
-	dir_gfwlist="$dir_storage/gfwlist"
+	dir_shadowsocks="$dir_storage/shadowsocks"
 
 	script_start="$dir_storage/start_script.sh"
 	script_started="$dir_storage/started_script.sh"
@@ -218,8 +217,7 @@ func_fill()
 	user_sswan_ipsec_conf="$dir_sswan/ipsec.conf"
 	user_sswan_secrets="$dir_sswan/ipsec.secrets"
 
-	chnroute_file="/etc_ro/chnroute.bz2"
-	gfwlist_conf_file="/etc_ro/gfwlist.bz2"
+	shadowsocks_folder="/etc_ro/shadowsocks.tar.gz"
 
 	username=$(whoami)
 	[ -z $username ] && username=$(nvram get http_username)
@@ -262,20 +260,9 @@ EOF
 	# create https dir
 	[ ! -d "$dir_httpssl" ] && mkdir -p -m 700 "$dir_httpssl"
 
-	# create chnroute.txt
-	if [ ! -d "$dir_chnroute" ] ; then
-		if [ -f "$chnroute_file" ] ; then
-			mkdir -p "$dir_chnroute" && tar jxf "$chnroute_file" -C "$dir_chnroute"
-			chmod 644 "$dir_chnroute/chnroute.txt"
-		fi
-	fi
-
-	# create gfwlist
-	if [ ! -d "$dir_gfwlist" ] ; then
-		if [ -f "$gfwlist_conf_file" ] ; then
-			mkdir -p "$dir_gfwlist" && tar jxf "$gfwlist_conf_file" -C "$dir_gfwlist"
-			chmod 644 "$dir_gfwlist/gfw_list.conf"
-		fi
+	# create shadowsocks
+	if [ ! -d "$dir_shadowsocks" ] ; then
+			tar zxf "$shadowsocks_folder" -C "$dir_storage"
 	fi
 
 	# create start script
@@ -302,24 +289,18 @@ modprobe xt_set
 #drop caches
 sync && echo 3 > /proc/sys/vm/drop_caches
 
-<<<<<<< HEAD
-## Mount SATA disk
-# mdev -s
-=======
 # Roaming assistant for mt76xx WiFi
 #iwpriv ra0 set KickStaRssiLow=-85
 #iwpriv ra0 set AssocReqRssiThres=-80
 #iwpriv rai0 set KickStaRssiLow=-85
 #iwpriv rai0 set AssocReqRssiThres=-80
 
-# Mount SATA disk
-#mdev -s
->>>>>>> d89086f4981dec0bf53a2ba30cfe7ea24427400a
+## Mount SATA disk
+# mdev -s
 
 #wing <HOST> 443 <PASS>
 #wing 192.168.1.9 1080
 #ipset add gfwlist 8.8.4.4
-
 
 EOF
 		chmod 755 "$script_started"
@@ -531,42 +512,28 @@ dhcp-option=252,"\n"
 #dhcp-boot=pxelinux.0
 
 EOF
-<<<<<<< HEAD
-=======
-	fi
-
-	if [ -f /usr/bin/wing ]; then
-		cat >> "$user_dnsmasq_conf" <<EOF
-# Custom domains to gfwlist
-#server=/mit.edu/127.0.0.1#54
-#ipset=/mit.edu/gfwlist
-#server=/openwrt.org/lede-project.org/127.0.0.1#54
-#ipset=/openwrt.org/lede-project.org/gfwlist
-#server=/github.com/github.io/githubusercontent.com/127.0.0.1#54
-#ipset=/github.com/github.io/githubusercontent.com/gfwlist
-
-EOF
-	fi
-
-	if [ -d $dir_gfwlist ]; then
-		cat >> "$user_dnsmasq_conf" <<EOF
-### gfwlist related (resolve by port 5353)
-#min-cache-ttl=3600
-#conf-dir=/etc/storage/gfwlist
-
-EOF
-	fi
->>>>>>> d89086f4981dec0bf53a2ba30cfe7ea24427400a
 		chmod 644 "$user_dnsmasq_conf"
 	fi
 
 	# create user dns servers
 	if [ ! -f "$user_dhcp_conf" ] ; then
 		cat > "$user_dhcp_conf" <<EOF
+# Custom user hosts for dhcp_hostsfile
+# Example:
 #6C:96:CF:E0:95:55,192.168.1.10,iMac
 
 EOF
 		chmod 644 "$user_dhcp_conf"
+	fi
+
+	if [ -f /usr/bin/wing ]; then
+		cat >> "$user_dnsmasq_conf" <<EOF
+### Custom domains to gfwlist
+#server=/mit.edu/127.0.0.1#5757
+#ipset=/mit.edu/gfwlist
+
+EOF
+		chmod 644 "$user_dnsmasq_conf"
 	fi
 
 	# create user inadyn.conf"
@@ -596,7 +563,7 @@ EOF
 		cat > "$user_hosts" <<EOF
 # Custom user hosts file
 # Example:
-# 192.168.2.80 Boo
+#192.168.2.80 Boo
 
 EOF
 		chmod 644 "$user_hosts"

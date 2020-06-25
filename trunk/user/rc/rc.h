@@ -536,6 +536,16 @@ void start_adbyby(void);
 void restart_adbyby(void);
 void update_adb(void);
 #endif
+#if defined(APP_WYY)
+void stop_wyy(void);
+void start_wyy(void);
+void restart_wyy(void);
+#endif
+#if defined(APP_ADGUARDHOME)
+void stop_adguardhome(void);
+void start_adguardhome(void);
+void restart_adguardhome(void);
+#endif
 
 /* services_ex.c */
 int fill_dnsmasq_servers(void);

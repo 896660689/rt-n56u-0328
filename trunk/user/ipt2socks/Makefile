@@ -1,4 +1,6 @@
-SRC_NAME = ipt2socks-1.1.2
+SRC_NAME = ipt2socks-1.1.3
+#https://github.com/zfl9/ipt2socks/releases
+
 THISDIR = $(shell pwd)
 
 all: extract_test

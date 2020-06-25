@@ -1,0 +1,27 @@
+#!/bin/sh
+
+PIDFILE_v2ray_WATCHDOG="/var/run/v2ray-watchdog.pid"
+echo "$$" > $PIDFILE_v2ray_WATCHDOG
+
+LOGFILE="/tmp/ss-watchcat.log"
+max_log_bytes=3000
+v2_home="/tmp/v2ray"
+
+cd $v2_home && sleep 5
+
+while true; do
+loger(){
+	[ -f $LOGFILE ] && [ $(stat -c %s $LOGFILE) -gt $max_log_bytes ] && sed -i '1,10d' "$LOGFILE"
+	time=$(date "+%H:%M:%S")
+	echo "$time v2ray-watchdog $1" >> $LOGFILE
+}
+
+if [ -n "$(pidof v2ray)" ] ; then
+ 	loger "[v]2ray 正在运行…"
+else
+  	loger "重新启动 [V2ray] !"
+ 	/etc/storage/shadowsocks/v2ray.sh
+fi
+sleep 85
+done
+

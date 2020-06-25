@@ -11,6 +11,4 @@ download_test:
 	fi )
 
 romfs:
-	$(ROMFSINST) $(THISDIR)/redsocks /usr/bin/redsocks
-	$(ROMFSINST) $(THISDIR)/redsocks.sh /usr/bin/redsocks.sh
-	$(ROMFSINST) -p +x /usr/bin/redsocks.sh
+	$(ROMFSINST) -p +x $(THISDIR)/redsocks /usr/bin/redsocks

@@ -334,8 +334,9 @@ function changeBgColorrl(obj, num){
                                                     <select name="adbyby_set" class="input">
                                                         <option value="0" <% nvram_match_x("","adbyby_set", "0","selected"); %>>模式一:全局模式(全部IP过滤)</option>
                                                         <option value="1" <% nvram_match_x("","adbyby_set", "1","selected"); %>>模式二:HOSTS IP 域名屏蔽过滤)</option>
+                                                        <option value="2" <% nvram_match_x("","adbyby_set", "2","selected"); %>>模式三:全局基础版(不含用户规则)</option>
                                                     </select>
-                                                    <div><span style="color:#888;">HOSTS 模式,过滤效果稍差,推荐模式一</span></div>
+                                                    <div><span style="color:#888;">含规则模式运行稍慢,轻便过滤推荐模式三</span></div>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -417,8 +418,16 @@ function changeBgColorrl(obj, num){
                                             </tr>
                                             <tr>
                                                 <td colspan="3" style="border-top: 0 none">
-                                                    <i class="icon-hand-right"></i> <a href="javascript:spoiler_toggle('script13')"><span>用户自定义规则:</span></a>
+                                                    <i class="icon-hand-right"></i> <a href="javascript:spoiler_toggle('script13')"><span>拦截黑(ip):</span></a>
                                                     <div id="script13" style="display:none">
+                                                        <textarea rows="24" wrap="off" spellcheck="false" maxlength="314571" class="span12" name="scripts.ad_black_ip.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.ad_black_ip.sh",""); %></textarea>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" style="border-top: 0 none">
+                                                    <i class="icon-hand-right"></i> <a href="javascript:spoiler_toggle('script14')"><span>用户自定义规则:</span></a>
+                                                    <div id="script14" style="display:none">
                                                         <textarea rows="8" wrap="off" spellcheck="false" maxlength="314571" class="span12" name="scripts.ad_custom.sh" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.ad_custom.sh",""); %></textarea>
                                                     </div>
                                                 </td>

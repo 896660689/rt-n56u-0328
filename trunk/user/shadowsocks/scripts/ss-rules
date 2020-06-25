@@ -146,8 +146,11 @@ gen_special_purpose_ip() {
 		172.16.0.0/12
 		192.0.0.0/24
 		192.0.2.0/24
+		192.31.196.0/24
+		192.52.193.0/24
 		192.88.99.0/24
 		192.168.0.0/16
+		192.175.48.0/24
 		198.18.0.0/15
 		198.51.100.0/24
 		203.0.113.0/24
@@ -240,7 +243,6 @@ while getopts ":s:l:S:L:B:b:W:w:I:d:a:e:oOuUfh" arg; do
 			;;
 		f)
 			flush_rules
-			loger 5 "Flush Success!"
 			exit 0
 			;;
 		h)
@@ -249,9 +251,7 @@ while getopts ":s:l:S:L:B:b:W:w:I:d:a:e:oOuUfh" arg; do
 	esac
 done
 
-if [ -z "$server" -o -z "$local_port" ] ; then
-	usage 2
-fi
+[ -z "$server" -o -z "$local_port" ] && usage 2
 
 if [ "$TPROXY" = 1 ] ; then
 	unset SERVER
@@ -262,6 +262,5 @@ elif [ "$TPROXY" = 2 ] ; then
 fi
 
 flush_rules && ipset_init && ipt_nat && ipt_mangle && export_ipt_rules
-RET=$?
-[ "$RET" = 0 ] && loger 5 "Start Success!" || loger 3 "Start failed!"
-exit $RET
+[ "$?" = 0 ] || loger 3 "Start failed!"
+exit $?

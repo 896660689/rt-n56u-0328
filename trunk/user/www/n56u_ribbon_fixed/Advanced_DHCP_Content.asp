@@ -521,12 +521,8 @@ function changeBgColor(obj, num){
                                         </tr>
                                         <tr id="row_dservers">
                                             <td colspan="2">
-<<<<<<< HEAD
 						<span class="icon-hand-right"></span>
-                                                <a href="javascript:spoiler_toggle('spoiler_dservers')"><span><#CustomConf#> "dnsmasq.servers"</span></a>
-=======
                                                 <a href="javascript:spoiler_toggle('spoiler_dservers')"><span><#CustomConf#> "dhcp.conf"</span></a>
->>>>>>> d89086f4981dec0bf53a2ba30cfe7ea24427400a
                                                 <div id="spoiler_dservers" style="display:none;">
                                                     <textarea rows="16" wrap="off" spellcheck="false" maxlength="16384" class="span12" name="dnsmasq.dhcp.conf" style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("dnsmasq.dhcp.conf",""); %></textarea>
                                                 </div>

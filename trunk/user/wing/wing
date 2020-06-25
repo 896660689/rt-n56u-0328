@@ -1,9 +1,12 @@
 #!/bin/sh
 #PATH=$(cd "${0%/*}"; pwd):$PATH
 
-DNSMASQ_CONF=/etc/storage/dnsmasq/dnsmasq.conf
-GFWLIST_CONF=/etc/storage/dnsmasq/gfwlist.conf
-GFWLIST_CONF_RO=/etc_ro/gfwlist.conf
+DNSMASQ_CONF="/etc/storage/dnsmasq/dnsmasq.conf"
+GFWLIST_CONF="/etc/storage/dnsmasq/gfw_list.conf"
+wing_home/="/tmp/trojan"
+
+SS_LOCAL_PORT_LINK=$(nvram get ss_local_port)
+ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 
 usage()
 {
@@ -18,25 +21,27 @@ usage()
 
 update()
 {
-	curl -k -o $GFWLIST_CONF https://cokebar.github.io/gfwlist2dnsmasq/dnsmasq_gfwlist_ipset.conf || exit 1
-	sed -i 's/#5353/#54/g' $GFWLIST_CONF
+	/etc/storage/shadowsocks/update_gfwlist.sh force &
+	sleep 2
+	if [ ! -f "$wing_home/trojan" ]
+	then
+		[ ! -d "$wing_home" ] && mkdir -p "$wing_home"
+		curl -k -s -o $wing_home/trojan --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/V2/trojan && \
+		chmod 777 "$wing_home/trojan"
+	fi
 }
 
 check()
 {
 	if [ ! -f $GFWLIST_CONF ]; then
-		if [ -f $GFWLIST_CONF_RO ]; then
-			GFWLIST_CONF=$GFWLIST_CONF_RO
-		else
-			update
-		fi
+		update
 	fi
 }
 
 redir()
 {
-	iptables -t nat $1 OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port 1088
-	iptables -t nat $1 PREROUTING -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port 1088
+	iptables -t nat $1 OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $SS_LOCAL_PORT_LINK
+	iptables -t nat $1 PREROUTING -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $SS_LOCAL_PORT_LINK
 }
 
 start()
@@ -57,31 +62,31 @@ start()
 		if [ -z $5 ]; then RUN_TYPE=nat; else RUN_TYPE=$5; fi
 		if [ "$RUN_TYPE" = "nat" ]; then
 			RUN_MODE="Local Transparent"
-			LOCAL_PORT=1088
+			LOCAL_PORT=$SS_LOCAL_PORT_LINK
 			SOCKS_HOST=
 		else
 			RUN_MODE="Local Socks"
-			LOCAL_PORT=1080
+			LOCAL_PORT=$SS_LOCAL_PORT_LINK
 			SOCKS_HOST=127.0.0.1
 			SOCKS_PORT=$LOCAL_PORT
 		fi
-		echo "{\"run_type\":\"$RUN_TYPE\",\"local_addr\":\"0.0.0.0\",\"local_port\":$LOCAL_PORT,\"remote_addr\":\"$TROJAN_HOST\",\"remote_port\":$TROJAN_PORT,\"password\":[\"$TROJAN_PASS\"],\"log_level\":$1,\"ssl\":{\"verify\":false}}" > /tmp/trojan.conf
+		echo "{\"run_type\":\"$RUN_TYPE\",\"local_addr\":\"0.0.0.0\",\"local_port\":$LOCAL_PORT,\"remote_addr\":\"$TROJAN_HOST\",\"remote_port\":$TROJAN_PORT,\"password\":[\"$TROJAN_PASS\"],\"log_level\":$1,\"ssl\":{\"verify\":false}}" > $wing_home/trojan.conf
 		if [ $1 -ge 5 ]; then
-			trojan -c /tmp/trojan.conf &
+			$wing_home/trojan -c $wing_home/trojan.conf &
 		else
-			nohup trojan -c /tmp/trojan.conf &> /tmp/trojan.log &
+			nohup $wing_home/trojan -c $wing_home/trojan.conf &> $wing_home/trojan.log &
 		fi
 	fi
 
 	# ipt2socks
 	if [ ! -z $SOCKS_HOST ]; then
-		IPT2SOCKS_CMD="ipt2socks -s $SOCKS_HOST -p $SOCKS_PORT -b 0.0.0.0 -l 1088 -j `cat /proc/cpuinfo|grep processor|wc -l` -T -4 -R"
+		IPT2SOCKS_CMD="ipt2socks -s $SOCKS_HOST -p $SOCKS_PORT -b 0.0.0.0 -l $SS_LOCAL_PORT_LINK -j `cat /proc/cpuinfo|grep processor|wc -l` -T -4 -R"
 		if [ $1 -ge 5 ]; then
 			$IPT2SOCKS_CMD &
 		elif [ $1 -ge 2 ]; then
-			nohup $IPT2SOCKS_CMD &> /tmp/ipt2socks.log &
+			nohup $IPT2SOCKS_CMD &> $wing_home/ipt2socks.log &
 		else
-			nohup $IPT2SOCKS_CMD -v &> /tmp/ipt2socks.log &
+			nohup $IPT2SOCKS_CMD -v &> $wing_home/ipt2socks.log &
 		fi
 	fi
 
@@ -95,11 +100,11 @@ start()
 	if [ $1 -ge 5 ]; then
 		dns2tcp &
 	elif [ $1 -ge 3 ]; then
-		nohup dns2tcp &> /tmp/dns2tcp.log &
+		nohup dns2tcp &> $wing_home/dns2tcp.log &
 	elif [ $1 -ge 2 ]; then
-		nohup dns2tcp -q &> /tmp/dns2tcp.log &
+		nohup dns2tcp -q &> $wing_home/dns2tcp.log &
 	else
-		nohup dns2tcp -q -v &> /tmp/dns2tcp.log &
+		nohup dns2tcp -q -v &> $wing_home/dns2tcp.log &
 	fi
 
 	# dnsmasq
@@ -118,24 +123,25 @@ stop()
 	redir -D
 	ipset destroy gfwlist
 
-	[ -f /tmp/dns-forwarder.log ] && rm /tmp/dns-forwarder.log && killall dns-forwarder
-	[ -f /tmp/dns2tcp.log ] && rm /tmp/dns2tcp.log && killall dns2tcp
-	[ -f /tmp/ipt2socks.log ] && rm /tmp/ipt2socks.log && killall ipt2socks
-	[ -f /tmp/trojan.log ] && rm /tmp/trojan.* && killall trojan
+	[ -f $wing_home/dns-forwarder.log ] && rm $wing_home/dns-forwarder.log && killall dns-forwarder
+	[ -f $wing_home/trojan ] && rm $wing_home/trojan
+	[ -f $wing_home/dns2tcp.log ] && rm $wing_home/dns2tcp.log && killall dns2tcp
+	[ -f $wing_home/ipt2socks.log ] && rm $wing_home/ipt2socks.log && killall ipt2socks
+	[ -f $wing_home/trojan.log ] && rm $wing_home/trojan.* && killall trojan
 }
 
 status()
 {
-	if [ ${1::1} = t ]; then [ -f /tmp/trojan.log ] && tail -f /tmp/trojan.log; return; fi
-	if [ ${1::4} = dns2 ]; then [ -f /tmp/dns2tcp.log ] && tail -f /tmp/dns2tcp.log; return; fi
-	if [ ${1::4} = ipt2 ]; then [ -f /tmp/ipt2socks.log ] && tail -f /tmp/ipt2socks.log; return; fi
+	if [ ${1::1} = t ]; then [ -f $wing_home/trojan.log ] && tail -f $wing_home/trojan.log; return; fi
+	if [ ${1::4} = dns2 ]; then [ -f $wing_home/dns2tcp.log ] && tail -f $wing_home/dns2tcp.log; return; fi
+	if [ ${1::4} = ipt2 ]; then [ -f $wing_home/ipt2socks.log ] && tail -f $wing_home/ipt2socks.log; return; fi
 
 	([ -z $1 ] || [ ${1::3} = ipt ]) && iptables -t nat -L PREROUTING && iptables -t nat -L OUTPUT
 	([ -z $1 ] || [ ${1::3} = ips ]) && echo && ipset -L gfwlist | more
 
-	[ -z $1 ] && [ -f /tmp/dns2tcp.log ] && echo && cat /tmp/dns2tcp.log | more
-	[ -z $1 ] && [ -f /tmp/ipt2socks.log ] && echo && cat /tmp/ipt2socks.log | more
-	[ -z $1 ] && [ -f /tmp/trojan.log ] && echo && cat /tmp/trojan.log | more
+	[ -z $1 ] && [ -f $wing_home/dns2tcp.log ] && echo && cat $wing_home/dns2tcp.log | more
+	[ -z $1 ] && [ -f $wing_home/ipt2socks.log ] && echo && cat $wing_home/ipt2socks.log | more
+	[ -z $1 ] && [ -f $wing_home/trojan.log ] && echo && cat $wing_home/trojan.log | more
 
 	([ -z $1 ] || [ ${1::1} = d ]) && tail -f /tmp/syslog.log
 }
@@ -180,5 +186,4 @@ case "$1" in
 		start 5 $1 $2 $3 $4
 		;;
 esac
-
 

@@ -240,13 +240,13 @@ ej_nat_table(int eid, webs_t wp, int argc, char **argv)
 		while (fgets(line, sizeof(line), fp) != NULL) {
 			tmp[0] = 0;
 			if (sscanf(line,
-			    "%15s%*[ \t]"		// target
-			    "%15s%*[ \t]"		// prot
-			    "%*s%*[ \t]"		// opt
-			    "%18s%*[ \t]"		// source
-			    "%18s%*[ \t]"		// destination
-			    "%255[^\n]",		// options
-			    target, proto, src, dst, tmp) < 4)
+				"%15s%*[ \t]"		// target
+				"%15s%*[ \t]"		// prot
+				"%*s%*[ \t]"		// opt
+				"%18s%*[ \t]"		// source
+				"%18s%*[ \t]"		// destination
+				"%255[^\n]",		// options
+				target, proto, src, dst, tmp) < 4)
 				continue;
 
 			if (strcmp(target, "DNAT"))
@@ -493,91 +493,91 @@ ralink_get_range_info(iwrange *	range, char* buffer, int length)
   /* For new versions, we can check the version directly, for old versions
    * we use magic. 300 bytes is a also magic number, don't touch... */
   if (length < 300)
-    {
-      /* That's v10 or earlier. Ouch ! Let's make a guess...*/
-      range_raw->range.we_version_compiled = 9;
-    }
+	{
+	  /* That's v10 or earlier. Ouch ! Let's make a guess...*/
+	  range_raw->range.we_version_compiled = 9;
+	}
 
   /* Check how it needs to be processed */
   if (range_raw->range.we_version_compiled > 15)
-    {
-      /* This is our native format, that's easy... */
-      /* Copy stuff at the right place, ignore extra */
-      memcpy((char *) range, buffer, sizeof(iwrange));
-    }
+	{
+	  /* This is our native format, that's easy... */
+	  /* Copy stuff at the right place, ignore extra */
+	  memcpy((char *) range, buffer, sizeof(iwrange));
+	}
   else
-    {
-      /* Zero unknown fields */
-      bzero((char *) range, sizeof(struct iw_range));
+	{
+	  /* Zero unknown fields */
+	  bzero((char *) range, sizeof(struct iw_range));
 
-      /* Initial part unmoved */
-      memcpy((char *) range,
-	     buffer,
-	     iwr15_off(num_channels));
-      /* Frequencies pushed futher down towards the end */
-      memcpy((char *) range + iwr_off(num_channels),
-	     buffer + iwr15_off(num_channels),
-	     iwr15_off(sensitivity) - iwr15_off(num_channels));
-      /* This one moved up */
-      memcpy((char *) range + iwr_off(sensitivity),
-	     buffer + iwr15_off(sensitivity),
-	     iwr15_off(num_bitrates) - iwr15_off(sensitivity));
-      /* This one goes after avg_qual */
-      memcpy((char *) range + iwr_off(num_bitrates),
-	     buffer + iwr15_off(num_bitrates),
-	     iwr15_off(min_rts) - iwr15_off(num_bitrates));
-      /* Number of bitrates has changed, put it after */
-      memcpy((char *) range + iwr_off(min_rts),
-	     buffer + iwr15_off(min_rts),
-	     iwr15_off(txpower_capa) - iwr15_off(min_rts));
-      /* Added encoding_login_index, put it after */
-      memcpy((char *) range + iwr_off(txpower_capa),
-	     buffer + iwr15_off(txpower_capa),
-	     iwr15_off(txpower) - iwr15_off(txpower_capa));
-      /* Hum... That's an unexpected glitch. Bummer. */
-      memcpy((char *) range + iwr_off(txpower),
-	     buffer + iwr15_off(txpower),
-	     iwr15_off(avg_qual) - iwr15_off(txpower));
-      /* Avg qual moved up next to max_qual */
-      memcpy((char *) range + iwr_off(avg_qual),
-	     buffer + iwr15_off(avg_qual),
-	     sizeof(struct iw_quality));
-    }
+	  /* Initial part unmoved */
+	  memcpy((char *) range,
+		 buffer,
+		 iwr15_off(num_channels));
+	  /* Frequencies pushed futher down towards the end */
+	  memcpy((char *) range + iwr_off(num_channels),
+		 buffer + iwr15_off(num_channels),
+		 iwr15_off(sensitivity) - iwr15_off(num_channels));
+	  /* This one moved up */
+	  memcpy((char *) range + iwr_off(sensitivity),
+		 buffer + iwr15_off(sensitivity),
+		 iwr15_off(num_bitrates) - iwr15_off(sensitivity));
+	  /* This one goes after avg_qual */
+	  memcpy((char *) range + iwr_off(num_bitrates),
+		 buffer + iwr15_off(num_bitrates),
+		 iwr15_off(min_rts) - iwr15_off(num_bitrates));
+	  /* Number of bitrates has changed, put it after */
+	  memcpy((char *) range + iwr_off(min_rts),
+		 buffer + iwr15_off(min_rts),
+		 iwr15_off(txpower_capa) - iwr15_off(min_rts));
+	  /* Added encoding_login_index, put it after */
+	  memcpy((char *) range + iwr_off(txpower_capa),
+		 buffer + iwr15_off(txpower_capa),
+		 iwr15_off(txpower) - iwr15_off(txpower_capa));
+	  /* Hum... That's an unexpected glitch. Bummer. */
+	  memcpy((char *) range + iwr_off(txpower),
+		 buffer + iwr15_off(txpower),
+		 iwr15_off(avg_qual) - iwr15_off(txpower));
+	  /* Avg qual moved up next to max_qual */
+	  memcpy((char *) range + iwr_off(avg_qual),
+		 buffer + iwr15_off(avg_qual),
+		 sizeof(struct iw_quality));
+	}
 
   /* We are now checking much less than we used to do, because we can
    * accomodate more WE version. But, there are still cases where things
    * will break... */
   if (!iw_ignore_version_sp)
-    {
-      /* We don't like very old version (unfortunately kernel 2.2.X) */
-      if (range->we_version_compiled <= 10)
+	{
+	  /* We don't like very old version (unfortunately kernel 2.2.X) */
+	  if (range->we_version_compiled <= 10)
 	{
 	  fprintf(stderr, "Warning: Driver for device %s has been compiled with an ancient version\n", "raxx");
 	  fprintf(stderr, "of Wireless Extension, while this program support version 11 and later.\n");
 	  fprintf(stderr, "Some things may be broken...\n\n");
 	}
 
-      /* We don't like future versions of WE, because we can't cope with
-       * the unknown */
-      if (range->we_version_compiled > WE_MAX_VERSION)
+	  /* We don't like future versions of WE, because we can't cope with
+	   * the unknown */
+	  if (range->we_version_compiled > WE_MAX_VERSION)
 	{
 	  fprintf(stderr, "Warning: Driver for device %s has been compiled with version %d\n", "raxx", range->we_version_compiled);
 	  fprintf(stderr, "of Wireless Extension, while this program supports up to version %d.\n", WE_VERSION);
 	  fprintf(stderr, "Some things may be broken...\n\n");
 	}
 
-      /* Driver version verification */
-      if ((range->we_version_compiled > 10) &&
+	  /* Driver version verification */
+	  if ((range->we_version_compiled > 10) &&
 	 (range->we_version_compiled < range->we_version_source))
 	{
 	  fprintf(stderr, "Warning: Driver for device %s recommend version %d of Wireless Extension,\n", "raxx", range->we_version_source);
 	  fprintf(stderr, "but has been compiled with version %d, therefore some driver features\n", range->we_version_compiled);
 	  fprintf(stderr, "may not be available...\n\n");
 	}
-      /* Note : we are only trying to catch compile difference, not source.
-       * If the driver source has not been updated to the latest, it doesn't
-       * matter because the new fields are set to zero */
-    }
+	  /* Note : we are only trying to catch compile difference, not source.
+	   * If the driver source has not been updated to the latest, it doesn't
+	   * matter because the new fields are set to zero */
+	}
 
   /* Don't complain twice.
    * In theory, the test apply to each individual driver, but usually
@@ -595,7 +595,7 @@ int
 wl_ioctl(const char *ifname, int cmd, struct iwreq *pwrq)
 {
 	int ret = 0;
- 	int s;
+	int s;
 
 	/* open socket to kernel */
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -731,11 +731,11 @@ get_apcli_peer_connected(const char *ifname, struct iwreq *p_wrq)
 	if (wl_ioctl(ifname, SIOCGIWAP, p_wrq) >= 0) {
 		p_wrq->u.ap_addr.sa_family = ARPHRD_ETHER;
 		if (p_wrq->u.ap_addr.sa_data[0] ||
-		    p_wrq->u.ap_addr.sa_data[1] ||
-		    p_wrq->u.ap_addr.sa_data[2] ||
-		    p_wrq->u.ap_addr.sa_data[3] ||
-		    p_wrq->u.ap_addr.sa_data[4] ||
-		    p_wrq->u.ap_addr.sa_data[5] ) {
+			p_wrq->u.ap_addr.sa_data[1] ||
+			p_wrq->u.ap_addr.sa_data[2] ||
+			p_wrq->u.ap_addr.sa_data[3] ||
+			p_wrq->u.ap_addr.sa_data[4] ||
+			p_wrq->u.ap_addr.sa_data[5] ) {
 			return 1;
 		}
 	}
@@ -754,7 +754,7 @@ get_apcli_wds_entry(const char *ifname, RT_802_11_MAC_ENTRY *pme)
 	wrq.u.data.flags = 0;
 
 	if (wl_ioctl(ifname, RTPRIV_IOCTL_GET_MAC_TABLE_STRUCT, &wrq) >= 0 &&
-	    wrq.u.data.length == sizeof(RT_802_11_MAC_ENTRY)) { //bug with mt7615 driver
+		wrq.u.data.length == sizeof(RT_802_11_MAC_ENTRY)) { //bug with mt7615 driver
 		return 1;
 	}
 
@@ -1340,9 +1340,9 @@ print_radio_status(webs_t wp, int is_aband)
 
 	if ((op_mode == 1 || op_mode == 2)
 #if defined(USE_RT3352_MII)
-	    && (is_aband)
+		&& (is_aband)
 #endif
-	    ) {
+		) {
 		RT_802_11_MAC_ENTRY me;
 
 		ret += print_apcli_wds_header(wp, "\nWDS Peers\n");
@@ -1474,25 +1474,29 @@ ej_wl_auth_list(int eid, webs_t wp, int argc, char **argv)
 }
 
 
-#define SSURV_LINE_LEN_MIN  (4+33+20+23+9+9+7+3)  /* Channel+SSID+Bssid+Security+Signal+WiressMode+ExtCh+NetworkType*/
-#define SSURV_LINE_LEN_MAX   255
+#define SSURV_LINE_LEN		(4+33+20+23+9+9+7+3)		// Channel+SSID+Bssid+Security+Signal+WiressMode+ExtCh+NetworkType
+#define SSURV_LINE_LEN_WPS	(4+33+20+23+9+7+7+3+4+5)	// Channel+SSID+Bssid+Security+Signal+WiressMode+ExtCh+NetworkType+WPS+PIN
 
-static int
-ej_wl_scan_xg(const char * net_device, int eid, webs_t wp, int argc, char **argv)
+#if BOARD_HAS_5G_RADIO
+int
+ej_wl_scan_5g(int eid, webs_t wp, int argc, char **argv)
 {
 	int retval = 0;
 	int apCount = 0;
 	char data[8192];
 	char ssid_str[128];
-	char site_line[SSURV_LINE_LEN_MAX+1];
+#if defined (USE_WSC_WPS)
+	char site_line[SSURV_LINE_LEN_WPS+1];
+#else
+	char site_line[SSURV_LINE_LEN+1];
+#endif
 	char site_chnl[4];
 	char site_ssid[34];
 	char site_bssid[24];
 	char site_signal[10];
 	struct iwreq wrq;
 	char *sp, *op, *empty;
-	int line_len;
-	size_t x0, x_ch, x_ssid, x_bssid, x_signal;
+	int len, line_len;
 
 	empty = "[\"\", \"\", \"\", \"\"]";
 
@@ -1502,7 +1506,7 @@ ej_wl_scan_xg(const char * net_device, int eid, webs_t wp, int argc, char **argv
 	wrq.u.data.pointer = data;
 	wrq.u.data.flags = 0;
 
-	if (wl_ioctl(net_device, RTPRIV_IOCTL_SET, &wrq) < 0)
+	if (wl_ioctl(IFNAME_5G_MAIN, RTPRIV_IOCTL_SET, &wrq) < 0)
 	{
 		dbg("Site Survey fails\n");
 		return websWrite(wp, "[%s]", empty);
@@ -1511,52 +1515,35 @@ ej_wl_scan_xg(const char * net_device, int eid, webs_t wp, int argc, char **argv
 	sleep(5);
 
 	memset(data, 0, sizeof(data));
-	wrq.u.data.length = sizeof(data) - 1; // save zero in latest byte
+	wrq.u.data.length = sizeof(data);
 	wrq.u.data.pointer = data;
 	wrq.u.data.flags = 0;
-	if (wl_ioctl(net_device, RTPRIV_IOCTL_GSITESURVEY, &wrq) < 0)
+	if (wl_ioctl(IFNAME_5G_MAIN, RTPRIV_IOCTL_GSITESURVEY, &wrq) < 0)
 	{
 		dbg("errors in getting site survey result\n");
 		return websWrite(wp, "[%s]", empty);
 	}
 
-	if (wrq.u.data.length < 4)
-		return websWrite(wp, "[%s]", empty);
-
-	op = (*data != '\n') ? data : data + 1;
-	sp = strchr(op, '\n'); // detect first line (table header)
-	if (!sp || sp == op)
-	{
-		dbg("Site Survey buffer is incorrect\n");
-		return websWrite(wp, "[%s]", empty);
-	}
-	*sp++ = 0; // make first line as zeroterminated and skip \n
-	x0       = (size_t)((char *)NULL - op);
-	x_ch     = (size_t)(strstr(op, "CH "   ) - op);
-	x_ssid   = (size_t)(strstr(op, "SSID " ) - op);
-	x_bssid  = (size_t)(strstr(op, "BSSID ") - op);
-	x_signal = (size_t)(strstr(op, "Signal(%)") - op);
-	if (x_ch == x0 || x_ssid == x0 || x_bssid == x0 || x_signal == x0)
-	{
-		dbg("Site Survey buffer incorrect format\n");
-		return websWrite(wp, "[%s]", empty);
-	}
+#if defined (USE_WSC_WPS)
+	line_len = SSURV_LINE_LEN_WPS;
+#else
+	line_len = SSURV_LINE_LEN;
+#endif
 
 	retval += websWrite(wp, "[");
-	if (strchr(sp, '\n'))
+	if (wrq.u.data.length > 0)
 	{
-		while (*sp)
-		{
-			line_len = (int)(strchr(sp, '\n') - sp);
-			if (line_len < SSURV_LINE_LEN_MIN || line_len >= SSURV_LINE_LEN_MAX)
-				break; // critical error
+		op = sp = wrq.u.data.pointer+line_len+2; // skip \n+\n
+		len = strlen(op);
 
+		while (*sp && ((len - (sp-op)) >= 0))
+		{
 			memcpy(site_line, sp, line_len);
 
-			memcpy(site_chnl, sp+x_ch, 3);
-			memcpy(site_ssid, sp+x_ssid, 33);
-			memcpy(site_bssid, sp+x_bssid, 20);
-			memcpy(site_signal, sp+x_signal, 9);
+			memcpy(site_chnl, sp, 3);
+			memcpy(site_ssid, sp+4, 33);
+			memcpy(site_bssid, sp+37, 20);
+			memcpy(site_signal, sp+80, 9);
 
 			site_line[line_len] = '\0';
 			site_chnl[3] = '\0';
@@ -1591,19 +1578,105 @@ ej_wl_scan_xg(const char * net_device, int eid, webs_t wp, int argc, char **argv
 
 	return retval;
 }
-
-#if BOARD_HAS_5G_RADIO
-int
-ej_wl_scan_5g(int eid, webs_t wp, int argc, char **argv)
-{
-	return ej_wl_scan_xg(IFNAME_5G_MAIN, eid, wp, argc, argv);
-}
 #endif
 
 int
 ej_wl_scan_2g(int eid, webs_t wp, int argc, char **argv)
 {
-	return ej_wl_scan_xg(IFNAME_2G_MAIN, eid, wp, argc, argv);
+	int retval = 0, apCount = 0;
+	char data[8192];
+	char ssid_str[128];
+#if (defined (USE_WSC_WPS) || defined(USE_RT3352_MII))
+	char site_line[SSURV_LINE_LEN_WPS+1];
+#else
+	char site_line[SSURV_LINE_LEN+1];
+#endif
+	char site_chnl[4];
+	char site_ssid[34];
+	char site_bssid[24];
+	char site_signal[10];
+	struct iwreq wrq;
+	char *sp, *op, *empty;
+	int len, line_len;
+
+	empty = "[\"\", \"\", \"\", \"\"]";
+
+	memset(data, 0, 32);
+	strcpy(data, "SiteSurvey=1");
+	wrq.u.data.length = strlen(data)+1;
+	wrq.u.data.pointer = data;
+	wrq.u.data.flags = 0;
+
+	if (wl_ioctl(IFNAME_2G_MAIN, RTPRIV_IOCTL_SET, &wrq) < 0)
+	{
+		dbg("Site Survey fails\n");
+		return websWrite(wp, "[%s]", empty);
+	}
+
+	sleep(5);
+
+	memset(data, 0, sizeof(data));
+	wrq.u.data.length = sizeof(data);
+	wrq.u.data.pointer = data;
+	wrq.u.data.flags = 0;
+	if (wl_ioctl(IFNAME_2G_MAIN, RTPRIV_IOCTL_GSITESURVEY, &wrq) < 0)
+	{
+		dbg("errors in getting site survey result\n");
+		return websWrite(wp, "[%s]",empty);
+	}
+
+#if (defined (USE_WSC_WPS) || defined(USE_RT3352_MII))
+	line_len = SSURV_LINE_LEN_WPS;
+#else
+	line_len = SSURV_LINE_LEN;
+#endif
+	retval += websWrite(wp, "[");
+	if (wrq.u.data.length > 0)
+	{
+		op = sp = wrq.u.data.pointer+line_len+2; // skip \n+\n
+		len = strlen(op);
+
+		while (*sp && ((len - (sp-op)) >= 0))
+		{
+			memcpy(site_line, sp, line_len);
+
+			memcpy(site_chnl, sp, 3);
+			memcpy(site_ssid, sp+4, 33);
+			memcpy(site_bssid, sp+37, 20);
+			memcpy(site_signal, sp+80, 9);
+
+			site_line[line_len] = '\0';
+			site_chnl[3] = '\0';
+			site_ssid[33] = '\0';
+			site_bssid[20] = '\0';
+			site_signal[9] = '\0';
+
+			memset(ssid_str, 0, sizeof(ssid_str));
+			char_to_ascii(ssid_str, trim_r(site_ssid));
+
+			if (!strlen(ssid_str))
+				strcpy(ssid_str, "???");
+
+			if (apCount)
+				retval += websWrite(wp, "%s ", ",");
+
+			retval += websWrite(wp, "[\"%s\", \"%s\", \"%s\", \"%s\"]", ssid_str, trim_r(site_bssid), trim_r(site_chnl), trim_r(site_signal));
+
+//			dbg("%s\n", site_line);
+
+			sp+=line_len+1; // skip \n
+			apCount++;
+		}
+	}
+
+	if (apCount < 1)
+	{
+		retval += websWrite(wp, empty);
+	}
+
+	retval += websWrite(wp, "]");
+
+	return retval;
 }
 
 #if BOARD_HAS_5G_RADIO

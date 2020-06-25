@@ -40,7 +40,7 @@ env:
   global:
   - toolchain_url="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz"
 git:
-  depth: 3
+  depth: 1
 deploy:
   provider: releases
   token:
@@ -52,4 +52,4 @@ deploy:
   on:
     repo: 896660689/rt-n56u
     tags: true
-    
+

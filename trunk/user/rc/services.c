@@ -252,13 +252,13 @@ void restart_ttyd(void){
 
 #if defined(APP_SHADOWSOCKS)
 void stop_ss(void){
-	eval("/usr/bin/shadowsocks.sh","stop");
+	eval("/etc/storage/shadowsocks/ssr-install","stop");
 }
 
 void start_ss(void){
 	int ss_enable = nvram_get_int("ss_enable");
 	if ( ss_enable == 1)
-		eval("/usr/bin/shadowsocks.sh","start");
+		eval("/etc/storage/shadowsocks/ssr-install","start");
 }
 
 void restart_ss(void){
@@ -286,7 +286,7 @@ void update_chnroute(void){
 }
 
 void update_gfwlist(void){
-	eval("/bin/sh","-c","/usr/bin/update_gfwlist.sh force &");
+	eval("/bin/sh","-c","/etc/storage/shadowsocks/update_gfwlist.sh force &");
 }
 
 #endif
@@ -326,6 +326,58 @@ void restart_adbyby(void){
 
 void update_adb(void){
 	eval("/usr/bin/adbyby.sh","updateadb");
+}
+#endif
+
+#if defined(APP_WYY)
+void stop_wyy(void){
+	eval("/usr/bin/unblockmusic.sh","stop");
+}
+
+void start_wyy(void){
+	int wyy_enable = nvram_get_int("wyy_enable");
+	if ( wyy_enable == 1)
+		eval("/usr/bin/unblockmusic.sh","start");
+}
+
+void restart_wyy(void){
+	stop_wyy();
+	start_wyy();
+}
+#endif
+
+#if defined(APP_ADGUARDHOME)
+void stop_adguardhome(void){
+	eval("/usr/bin/adguardhome.sh","stop");
+}
+
+void start_adguardhome(void){
+	int adg_mode = nvram_get_int("adg_enable");
+	if ( adg_mode == 1)
+		eval("/usr/bin/adguardhome.sh","start");
+}
+
+void restart_adguardhome(void){
+	stop_adguardhome();
+	start_adguardhome();
+}
+
+#endif
+
+#if defined(APP_SMARTDNS)
+void stop_smartdns(void){
+	eval("/usr/bin/smartdns.sh","stop");
+}
+
+void start_smartdns(void){
+	int smartdns_mode = nvram_get_int("sdns_enable");
+	if ( smartdns_mode == 1)
+		eval("/usr/bin/smartdns.sh","start");
+}
+
+void restart_smartdns(void){
+	stop_smartdns();
+	start_smartdns();
 }
 #endif
 
@@ -537,6 +589,16 @@ start_services_once(int is_ap_mode)
 #if defined(APP_ADBYBY)
 	start_adbyby();
 #endif
+#if defined(APP_WYY)
+	start_wyy();
+#endif
+#if defined(APP_SMARTDNS)
+	start_smartdns();
+#endif
+#if defined(APP_ADGUARDHOME)
+	start_adguardhome();
+#endif
+
 	start_lltd();
 	start_watchdog_cpu();
 	start_crond();
@@ -571,6 +633,15 @@ stop_services(int stopall)
 #endif
 #if defined(APP_ADBYBY)
 	stop_adbyby();
+#endif
+#if defined(APP_WYY)
+	stop_wyy();
+#endif
+#if defined(APP_SMARTDNS)
+	stop_smartdns();
+#endif
+#if defined(APP_ADGUARDHOME)
+	stop_adguardhome();
 #endif
 	stop_networkmap();
 	stop_lltd();

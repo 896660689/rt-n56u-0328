@@ -816,10 +816,6 @@ int
 init_crontab(void)
 {
 	int ret = 0; //no change
-#if defined (APP_SHADOWSOCKS)
-	ret |= system("/sbin/check_crontab.sh 0 5 a/3 a a update_chnroute.sh");
-	ret |= system("/sbin/check_crontab.sh 0 6 a/2 a a update_gfwlist.sh");
-#endif
 	return ret;
 }
 
@@ -1277,6 +1273,24 @@ handle_notifications(void)
 		else if (strcmp(entry->d_name, RCN_RESTART_UPDATEADB) == 0)
 		{
 			update_adb();
+		}
+#endif
+#if defined(APP_WYY)
+		else if (strcmp(entry->d_name, RCN_RESTART_WYY) == 0)
+		{
+			restart_wyy();
+		}
+#endif
+#if defined(APP_SMARTDNS)
+		else if (strcmp(entry->d_name, RCN_RESTART_SMARTDNS) == 0)
+		{
+			restart_smartdns();
+		}
+#endif
+#if defined(APP_ADGUARDHOME)
+		else if (strcmp(entry->d_name, RCN_RESTART_ADGUARDHOME) == 0)
+		{
+			restart_adguardhome();
 		}
 #endif
 #if defined(APP_SMBD) || defined(APP_NMBD)
