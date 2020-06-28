@@ -299,17 +299,8 @@ func_port_agent_mode(){
         logger -t "[DNS]" "使用 [pdnsd] 解析方式 !"
     elif [ "$ss_router_proxy" = "5" ]
     then
-        logger -t "[DNS]" "下载 [cdn] 域名文件..."
-        curl -k -s -o /tmp/cdn.txt --connect-timeout 10 --retry 3 https://gitee.com/bkye/rules/raw/master/cdn.txt
         /usr/bin/dns2tcp -L127.0.0.1#$ss_tunnel_local_port -R'8.8.8.8#53' &
-        /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 223.5.5.5#53 -t 127.0.0.1#$ss_tunnel_local_port -4 china -m /tmp/cdn.txt >/dev/null 2>&1 &
-        sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE
-        cat >> $DNSMASQ_RURE << EOF
-no-resolv
-server=127.0.0.1#65353
-EOF
-        func_cnng_ipt
-        logger -t "[DNS]" "使用 [chinadns] 解析方式 !"
+        logger -t "[DNS]" "使用 [dns2tcp] 解析方式 !"
     else
         logger -t "[DNS]" "未开启代理解析 !"
     fi
@@ -319,6 +310,18 @@ func_del_ipt(){
     iptables-save -c | grep -v CNNG_OUT | iptables-restore -c
     iptables-save -c | grep -v CNNG_PRE | iptables-restore -c
     iptables-save -c | grep -v UDPCHAIN | iptables-restore -c
+}
+
+func_cnng_file(){
+        logger -t "[DNS]" "下载 [cdn] 域名文件..."
+        curl -k -s -o /tmp/cdn.txt --connect-timeout 10 --retry 3 https://gitee.com/bkye/rules/raw/master/cdn.txt
+        /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 223.5.5.5#53 -t 127.0.0.1#$ss_tunnel_local_port -4 china -m /tmp/cdn.txt >/dev/null 2>&1 &
+        sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE
+        cat >> $DNSMASQ_RURE << EOF
+no-resolv
+server=127.0.0.1#65353
+EOF
+        func_cnng_ipt
 }
 
 func_cnng_ipt(){
@@ -389,7 +392,8 @@ func_start(){
         if [ "$ss_mode" = "3" ]
         then
             logger -t "[v2ray]" "开始部署 [v2ray] 代理模式..."
-            /bin/sh $SSR_HOME/v2ray.sh start
+            /bin/sh $SSR_HOME/v2ray.sh start && \
+            func_cnng_file &
         else
             echo -e "\033[41;37m 部署 [ShadowsocksR] 文件,请稍后...\e[0m\n"
             func_gen_ss_json && \
