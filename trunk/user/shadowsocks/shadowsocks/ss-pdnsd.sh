@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-06-21
+# Compile:by-lanse	2020-06-28
 
 PDNSD_HOUSE="/var/pdnsd"
 PDNSD_FILE="$PDNSD_HOUSE/pdnsd.conf"
@@ -15,16 +15,16 @@ export PATH=$PATH:/var/pdnsd
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib:/var/pdnsd
 
 if [ -f "/usr/bin/pdnsd" ] ; then
-	if [ -n "$(pidof pdnsd)" ] ; then
-		killall pdnsd >/dev/null 2>&1
-	fi
-	if [ ! -d "/var/pdnsd" ] ; then
-		mkdir -p $PDNSD_HOUSE && chmod +X $PDNSD_HOUSE
-		touch $PDNSD_CACHE
-		chown -R nobody:nogroup /var/pdnsd
-	fi
-	[ -f "$PDNSD_FILE" ] && rm -rf $PDNSD_FILE
-	cat > "$PDNSD_FILE" <<EOF
+    if [ -n "$(pidof pdnsd)" ] ; then
+        killall pdnsd >/dev/null 2>&1
+    fi
+    if [ ! -d "/var/pdnsd" ] ; then
+        mkdir -p $PDNSD_HOUSE && chmod +X $PDNSD_HOUSE
+        touch $PDNSD_CACHE
+        chown -R nobody:nogroup /var/pdnsd
+    fi
+    [ -f "$PDNSD_FILE" ] && rm -rf $PDNSD_FILE
+    cat > "$PDNSD_FILE" <<EOF
 global {
     perm_cache = 936;
     cache_dir = "/var/pdnsd";
@@ -77,11 +77,11 @@ rr {
     soa = $ROUTE_VLAN,$USERNAME.$ROUTE_VLAN,42,86400,900,86400,86400;
 }
 EOF
-	chmod 644 $PDNSD_FILE
-	if [ ! -f $PDNSD_HOUSE/pdnsd ] ; then
-		ln -sf /usr/bin/pdnsd $PDNSD_HOUSE/pdnsd
-	fi
-	/var/pdnsd/pdnsd -c $PDNSD_FILE -d
-	sleep 2 && logger "[ PDNSD ]" "Pdnsd Started..."
+    chmod 644 $PDNSD_FILE
+    if [ ! -f $PDNSD_HOUSE/pdnsd ] ; then
+        ln -sf /usr/bin/pdnsd $PDNSD_HOUSE/pdnsd
+    fi
+    /var/pdnsd/pdnsd -c $PDNSD_FILE -d
+    sleep 2 && logger "[ PDNSD ]" "Pdnsd Started..."
 fi
 

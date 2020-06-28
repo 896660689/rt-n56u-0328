@@ -10,55 +10,55 @@ LOGFILE="/tmp/ss-watchcat.log"
 max_log_bytes=3000
 
 loger(){
-	[ -f $LOGFILE ] && [ $(stat -c %s $LOGFILE) -gt $max_log_bytes ] && sed -i '1,10d' "$LOGFILE"
-	time=$(date "+%H:%M:%S")
-	echo "$time ss-watchdog $1" >> $LOGFILE
+    [ -f $LOGFILE ] && [ $(stat -c %s $LOGFILE) -gt $max_log_bytes ] && sed -i '1,10d' "$LOGFILE"
+    time=$(date "+%H:%M:%S")
+    echo "$time ss-watchdog $1" >> $LOGFILE
 }
 
 if [ "$CURRENT" == "backup" ]; then
-	loger "Ssr-备用服务器正在运行..."
-	MAIN=$(cat $SS_JSON.main | awk -F '\"' '/\"server\"/ {print $4}')
-	PM=$(ping -c 3 $MAIN | grep 'loss' | awk -F ',' '{ print $3 }' | awk -F "%" '{ print $1 }')
-	if [ "$PM" -lt "50" ]; then
-		loger "Main server up,$PM% packet loss, switch back."
-		ln -sf $SS_JSON.main $SS_JSON
-		CURRENT=$(ls -l $SS_JSON | awk -F "." '{print $4}')
-		$SS_RUN_SCRIPT restart > /dev/null 2>&1
-		sleep 3
-	else
-		loger "Main server down,$PM% packet loss."
-	fi
+    loger "Ssr-备用服务器正在运行..."
+    MAIN=$(cat $SS_JSON.main | awk -F '\"' '/\"server\"/ {print $4}')
+    PM=$(ping -c 3 $MAIN | grep 'loss' | awk -F ',' '{ print $3 }' | awk -F "%" '{ print $1 }')
+    if [ "$PM" -lt "50" ]; then
+        loger "Main server up,$PM% packet loss, switch back."
+        ln -sf $SS_JSON.main $SS_JSON
+        CURRENT=$(ls -l $SS_JSON | awk -F "." '{print $4}')
+        $SS_RUN_SCRIPT restart > /dev/null 2>&1
+        sleep 3
+    else
+        loger "Main server down,$PM% packet loss."
+    fi
 fi
 
 wget -s -q -T 3 $Global_WEBSITE > /dev/null
 if [ "$?" == "0" ]; then
-	loger "Shadowsocks-运行正常,世界之窗已开启..."
-	exit 0
+    loger "Shadowsocks-运行正常,世界之窗已开启..."
+    exit 0
 else
-	wget -s -q -T 3 $CN_WEBSITE > /dev/null
-	if [ "$?" == "0" ]; then
-		loger "网络正常,Ssr-服务失败,重新启动-Shadowsocks..."
-		$SS_RUN_SCRIPT dog_up > /dev/null 2>&1
-		if [ "$CURRENT" == "main" ]; then
-			sleep 5
-			wget -s -q -T 3 $Global_WEBSITE > /dev/null
-			if [ "$?" == "0" ]; then
-				loger "Shadowsocks-运行正常,世界之窗已开启..."
-				exit 0
-			else
-				if [ "$(nvram get ss2_server)" = "127.0.0.1" ]
-				then
-					loger "未设置备用服务器,稍后重新尝试主服务器…"
-					exit 0
-				else
-					loger "Ssr-主服务器不通,更换备用服务器运行..."
-					ln -sf $SS_JSON.backup $SS_JSON
-					$SS_RUN_SCRIPT dog_up > /dev/null 2>&1
-					exit 0
-				fi
-			fi
-		fi
-	else
-		loger "互联网络未接通-已断网......"
-	fi
+    wget -s -q -T 3 $CN_WEBSITE > /dev/null
+    if [ "$?" == "0" ]; then
+        loger "网络正常,Ssr-服务失败,重新启动-Shadowsocks..."
+        $SS_RUN_SCRIPT dog_up > /dev/null 2>&1
+        if [ "$CURRENT" == "main" ]; then
+            sleep 5
+            wget -s -q -T 3 $Global_WEBSITE > /dev/null
+            if [ "$?" == "0" ]; then
+                loger "Shadowsocks-运行正常,世界之窗已开启..."
+                exit 0
+            else
+                if [ "$(nvram get ss2_server)" = "127.0.0.1" ]
+                then
+                    loger "未设置备用服务器,稍后重新尝试主服务器…"
+                    exit 0
+                else
+                    loger "Ssr-主服务器不通,更换备用服务器运行..."
+                    ln -sf $SS_JSON.backup $SS_JSON
+                    $SS_RUN_SCRIPT dog_up > /dev/null 2>&1
+                    exit 0
+                fi
+            fi
+        fi
+    else
+        loger "互联网络未接通-已断网......"
+    fi
 fi

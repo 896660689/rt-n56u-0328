@@ -2,6 +2,9 @@
 
 PIDFILE_v2ray_WATCHDOG="/var/run/v2ray-watchdog.pid"
 echo "$$" > $PIDFILE_v2ray_WATCHDOG
+SSR_HOME="/etc/storage/shadowsocks"
+Global_WEBSITE="www.youtube.com"
+CN_WEBSITE="www.baidu.com"
 
 LOGFILE="/tmp/ss-watchcat.log"
 max_log_bytes=3000
@@ -11,16 +14,26 @@ cd $v2_home && sleep 5
 
 while true; do
 loger(){
-	[ -f $LOGFILE ] && [ $(stat -c %s $LOGFILE) -gt $max_log_bytes ] && sed -i '1,10d' "$LOGFILE"
-	time=$(date "+%H:%M:%S")
-	echo "$time v2ray-watchdog $1" >> $LOGFILE
+    [ -f $LOGFILE ] && [ $(stat -c %s $LOGFILE) -gt $max_log_bytes ] && sed -i '1,10d' "$LOGFILE"
+    time=$(date "+%H:%M:%S")
+    echo "$time v2ray-watchdog $1" >> $LOGFILE
 }
-
 if [ -n "$(pidof v2ray)" ] ; then
- 	loger "[v]2ray 正在运行…"
+    wget -s -q -T 3 $Global_WEBSITE > /dev/null
+    if [ "$?" == "0" ]; then
+        loger "V2RAY-网络正常,已开启科学上网..."
+    else
+        wget -s -q -T 3 $CN_WEBSITE > /dev/null
+        if [ "$?" == "0" ]; then
+            loger "网络正常,v2ray-服务失败,重新启动-Shadowsocks..."
+            $SSR_HOME/ssr-install restart
+        else
+            loger "互联网络未接通-已断网......"
+        fi
+    fi
 else
-  	loger "重新启动 [V2ray] !"
- 	/etc/storage/shadowsocks/v2ray.sh
+    loger "[V2ray] 未运行，重新启动 !"
+    $SSR_HOME/v2ray.sh
 fi
 sleep 85
 done

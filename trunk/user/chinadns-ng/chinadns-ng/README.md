@@ -1,6 +1,6 @@
 #!/bin/bash
 # github:http://github.com/SuzukiHonoka
-# Compile:by-lanse	2020-06-28
+# Compile:by-lanse	2020-06-25
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -122,8 +122,34 @@ flush_ipt_rules(){
     $ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
     $ipt -A $CHAIN_NAME -m set --match-set china dst -j RETURN
     $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
-    $ipt -I PREROUTING -p tcp -j $CHAIN_NAME
-    $ipt -I OUTPUT -p tcp -j $CHAIN_NAME
+    #$ipt -I PREROUTING -p tcp -j $CHAIN_NAME
+    #$ipt -I OUTPUT -p tcp -j $CHAIN_NAME
+
+    ipt_m="iptables -t mangle"
+
+    $ipt -N CNNG_OUT
+    $ipt -N CNNG_PRE
+    $ipt_m -N CNNG_OUT
+    $ipt_m -N CNNG_PRE
+    $ipt_m -N UDPCHAIN
+
+    $ipt_m -A UDPCHAIN -d 0.0.0.0/8 -j RETURN
+    $ipt_m -A UDPCHAIN -d 10.0.0.0/8 -j RETURN
+    $ipt_m -A UDPCHAIN -d 127.0.0.0/8 -j RETURN
+    $ipt_m -A UDPCHAIN -d 169.254.0.0/16 -j RETURN
+    $ipt_m -A UDPCHAIN -d 172.16.0.0/12 -j RETURN
+    $ipt_m -A UDPCHAIN -d 192.168.0.0/16 -j RETURN
+    $ipt_m -A UDPCHAIN -d 224.0.0.0/4 -j RETURN
+    $ipt_m -A UDPCHAIN -d 240.0.0.0/4 -j RETURN
+
+    $ipt_m -A UDPCHAIN -m set --match-set china dst -j RETURN
+    $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
+    $ipt -A CNNG_OUT -p tcp -j $CHAIN_NAME
+    $ipt_m -A CNNG_OUT -p udp -j UDPCHAIN
+    $ipt -I OUTPUT -j CNNG_OUT
+    $ipt_m -A OUTPUT -j CNNG_OUT
+    $ipt -I PREROUTING -j CNNG_PRE
+    $ipt_m -A PREROUTING -j CNNG_PRE
 
     cat <<-CAT >>$FWI
     iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
@@ -133,6 +159,46 @@ flush_ipt_rules(){
     EOF
 CAT
     return 0
+}
+
+func_del_ipt(){
+	iptables-save -c | grep -v CNNG_OUT | iptables-restore -c
+	iptables-save -c | grep -v CNNG_PRE | iptables-restore -c
+	iptables-save -c | grep -v UDPCHAIN | iptables-restore -c
+}
+
+func_cnng_ipt(){
+if [ "$ss_router_proxy" = "5" ] ; then
+    ipt="iptables -t nat"
+    ipt_m="iptables -t mangle"
+    func_del_ipt
+    $ipt -D PREROUTING -p tcp -j $CHAIN_NAME
+    $ipt -D OUTPUT -p tcp -j $CHAIN_NAME
+
+    $ipt -N CNNG_OUT
+    $ipt -N CNNG_PRE
+    $ipt_m -N CNNG_OUT
+    $ipt_m -N CNNG_PRE
+    $ipt_m -N UDPCHAIN
+
+    $ipt_m -A UDPCHAIN -d 0.0.0.0/8 -j RETURN
+    $ipt_m -A UDPCHAIN -d 10.0.0.0/8 -j RETURN
+    $ipt_m -A UDPCHAIN -d 127.0.0.0/8 -j RETURN
+    $ipt_m -A UDPCHAIN -d 169.254.0.0/16 -j RETURN
+    $ipt_m -A UDPCHAIN -d 172.16.0.0/12 -j RETURN
+    $ipt_m -A UDPCHAIN -d 192.168.0.0/16 -j RETURN
+    $ipt_m -A UDPCHAIN -d 224.0.0.0/4 -j RETURN
+    $ipt_m -A UDPCHAIN -d 240.0.0.0/4 -j RETURN
+
+    $ipt_m -A UDPCHAIN -m set --match-set china dst -j RETURN
+    $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
+    $ipt -A CNNG_OUT -p tcp -j $CHAIN_NAME
+    $ipt_m -A CNNG_OUT -p udp -j UDPCHAIN
+    $ipt -A OUTPUT -j CNNG_OUT
+    $ipt_m -A OUTPUT -j CNNG_OUT
+    $ipt -A PREROUTING -j CNNG_PRE
+    $ipt_m -A PREROUTING -j CNNG_PRE
+fi
 }
 
 func_iptables(){
@@ -161,6 +227,7 @@ func_stop(){
     sleep 2
     fi
     func_clean
+    func_del_ipt
     [ -d "$TMP_HOME" ] && rm -rf "$TMP_HOME"
     logger -t $BINARY_NAME "KILLED"
 }
