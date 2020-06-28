@@ -130,6 +130,7 @@ func_ss_Close(){
     iptables-save -c | grep -v "gfwlist" | iptables-restore -c && sleep 2
     ipset flush gfwlist 2>/dev/null &
     sleep 2
+    func_del_ipt
     if grep -q "ssr-watchcat" "$TIME_SCRIPT"
     then
         sed -i '/ssr-watchcat/d' "$TIME_SCRIPT" >/dev/null 2>&1
@@ -148,7 +149,6 @@ func_ss_Close(){
     then
         sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE &
     fi
-    func_del_ipt
 }
 
 func_ss_down(){
@@ -313,7 +313,7 @@ func_del_ipt(){
 }
 
 func_cnng_file(){
-        logger -t "[DNS]" "下载 [cdn] 域名文件..."
+        logger -t "[CHINADNS-NG]" "下载 [cdn] 域名文件..."
         curl -k -s -o /tmp/cdn.txt --connect-timeout 10 --retry 3 https://gitee.com/bkye/rules/raw/master/cdn.txt
         /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 223.5.5.5#53 -t 127.0.0.1#$ss_tunnel_local_port -4 china -m /tmp/cdn.txt >/dev/null 2>&1 &
         sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE
@@ -354,6 +354,7 @@ func_cnng_ipt(){
         $ipt -I PREROUTING -j CNNG_PRE
         $ipt_m -A PREROUTING -j CNNG_PRE
     fi
+    logger -t "[CHINADNS-NG]" "ipt 规则部署完成..."
 }
 
 func_cron(){
@@ -392,7 +393,7 @@ func_start(){
         if [ "$ss_mode" = "3" ]
         then
             logger -t "[v2ray]" "开始部署 [v2ray] 代理模式..."
-            /bin/sh $SSR_HOME/v2ray.sh start && \
+            /bin/sh $SSR_HOME/v2ray.sh start
             func_cnng_file &
         else
             echo -e "\033[41;37m 部署 [ShadowsocksR] 文件,请稍后...\e[0m\n"
