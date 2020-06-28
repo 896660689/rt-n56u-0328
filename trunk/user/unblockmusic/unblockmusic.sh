@@ -61,7 +61,7 @@ APPTYPE=$(nvram get wyy_apptype)
 #FLAC=$(uci_get_by_type unblockmusic flac_enabled 0)
 
 CLOUD=$(nvram get wyy_cloudserver)
-if [ "$CLOUD" = "coustom" ];then
+if [ "$CLOUD" = "coustom" ]; then
 CLOUD=$(nvram get wyy_coustom_server)
 fi
 cloudadd=$(echo "$CLOUD" | awk -F ':' '{print $1}')
@@ -136,7 +136,7 @@ restart_dhcpd
 get_bin(){
 wyy_bin="/usr/bin/UnblockNeteaseMusic"
 if [ ! -f "$wyy_bin" ]; then
-if [ ! -f "/tmp/UnblockNeteaseMusic" ];then
+if [ ! -f "/tmp/UnblockNeteaseMusic" ]; then
     curl -k -s -o /tmp/UnblockNeteaseMusic --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/unblockmusic/UnblockNeteaseMusic
     if [ ! -f "/tmp/UnblockNeteaseMusic" ]; then
         logger -t "音乐解锁" "二进制文件下载失败，可能是地址失效或者网络异常！"
