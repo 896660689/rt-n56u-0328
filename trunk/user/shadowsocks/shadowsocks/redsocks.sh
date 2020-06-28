@@ -108,28 +108,28 @@ flush_ipt_file(){
 }
 
 flush_ipt_rules(){
-    ipt="iptables -t nat"
-    $ipt -N $CHAIN_NAME
+ipt="iptables -t nat"
+$ipt -N $CHAIN_NAME
 
-    $ipt -A $CHAIN_NAME -d $REMOTE_IP -j RETURN
-    $ipt -A $CHAIN_NAME -d 0.0.0.0/8 -j RETURN
-    $ipt -A $CHAIN_NAME -d 10.0.0.0/8 -j RETURN
-    $ipt -A $CHAIN_NAME -d 127.0.0.0/8 -j RETURN
-    $ipt -A $CHAIN_NAME -d 169.254.0.0/16 -j RETURN
-    $ipt -A $CHAIN_NAME -d 172.16.0.0/12 -j RETURN
-    $ipt -A $CHAIN_NAME -d 192.168.0.0/16 -j RETURN
-    $ipt -A $CHAIN_NAME -d 224.0.0.0/4 -j RETURN
-    $ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
-    $ipt -A $CHAIN_NAME -m set --match-set china dst -j RETURN
-    $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
-    $ipt -I PREROUTING -p tcp -j $CHAIN_NAME
+$ipt -A $CHAIN_NAME -d $REMOTE_IP -j RETURN
+$ipt -A $CHAIN_NAME -d 0.0.0.0/8 -j RETURN
+$ipt -A $CHAIN_NAME -d 10.0.0.0/8 -j RETURN
+$ipt -A $CHAIN_NAME -d 127.0.0.0/8 -j RETURN
+$ipt -A $CHAIN_NAME -d 169.254.0.0/16 -j RETURN
+$ipt -A $CHAIN_NAME -d 172.16.0.0/12 -j RETURN
+$ipt -A $CHAIN_NAME -d 192.168.0.0/16 -j RETURN
+$ipt -A $CHAIN_NAME -d 224.0.0.0/4 -j RETURN
+$ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
+$ipt -A $CHAIN_NAME -m set --match-set china dst -j RETURN
+$ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
+$ipt -I PREROUTING -p tcp -j $CHAIN_NAME
 
-    cat <<-CAT >>$FWI
-    iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
-    iptables-restore -n <<-EOF
-    $(iptables-save | grep -E "$CHAIN_NAME|^\*|^COMMIT" |\
-        sed -e "s/^-A \(OUTPUT\|PREROUTING\)/-I \1 1/")
-    EOF
+cat <<-CAT >>$FWI
+iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
+iptables-restore -n <<-EOF
+$(iptables-save | grep -E "$CHAIN_NAME|^\*|^COMMIT" |\
+	sed -e "s/^-A \(OUTPUT\|PREROUTING\)/-I \1 1/")
+EOF
 CAT
     return 0
 }
