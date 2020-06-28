@@ -123,7 +123,6 @@ flush_ipt_rules(){
     $ipt -A $CHAIN_NAME -m set --match-set china dst -j RETURN
     $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
     $ipt -I PREROUTING -p tcp -j $CHAIN_NAME
-    $ipt -I OUTPUT -p tcp -j $CHAIN_NAME
 
     cat <<-CAT >>$FWI
     iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
