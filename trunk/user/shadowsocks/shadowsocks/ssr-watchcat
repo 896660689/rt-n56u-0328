@@ -2,7 +2,7 @@
 
 SS_JSON="/tmp/ss-redir.json"
 CURRENT=$(ls -l $SS_JSON | awk -F "." '{print $4}')
-SS_RUN_SCRIPT="/etc/storage/shadowsocks/ssr-install"
+SSR_HOME="/etc/storage/shadowsocks"
 Global_WEBSITE="www.youtube.com"
 CN_WEBSITE="www.baidu.com"
 
@@ -23,7 +23,7 @@ if [ "$CURRENT" == "backup" ]; then
         loger "Main server up,$PM% packet loss, switch back."
         ln -sf $SS_JSON.main $SS_JSON
         CURRENT=$(ls -l $SS_JSON | awk -F "." '{print $4}')
-        $SS_RUN_SCRIPT restart > /dev/null 2>&1
+        $SSR_HOME/ssr-install restart > /dev/null 2>&1
         sleep 3
     else
         loger "Main server down,$PM% packet loss."
@@ -38,7 +38,7 @@ else
     wget -s -q -T 3 $CN_WEBSITE > /dev/null
     if [ "$?" == "0" ]; then
         loger "网络正常,Ssr-服务失败,重新启动-Shadowsocks..."
-        $SS_RUN_SCRIPT dog_up > /dev/null 2>&1
+        $SSR_HOME/ssr-install dog_up > /dev/null 2>&1
         if [ "$CURRENT" == "main" ]; then
             sleep 5
             wget -s -q -T 3 $Global_WEBSITE > /dev/null
@@ -53,7 +53,7 @@ else
                 else
                     loger "Ssr-主服务器不通,更换备用服务器运行..."
                     ln -sf $SS_JSON.backup $SS_JSON
-                    $SS_RUN_SCRIPT dog_up > /dev/null 2>&1
+                    $SSR_HOME/ssr-install dog_up > /dev/null 2>&1
                     exit 0
                 fi
             fi
