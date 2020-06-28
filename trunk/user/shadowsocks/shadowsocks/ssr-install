@@ -118,10 +118,6 @@ func_ss_Close(){
     kill -9 $(busybox ps -w | grep dns-forwarder | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     kill -9 $(busybox ps -w | grep dnsproxy | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     kill -9 $(busybox ps -w | grep dns2tcp | grep -v grep | awk '{print $1}') >/dev/null 2>&1
-    if [ -n "$(pidof v2ray-watchdog)" ] ; then
-        killall v2ray-watchdog >/dev/null 2>&1 &
-        sleep 2
-    fi
     if [ -n "$(pidof pdnsd)" ] ; then
         killall pdnsd >/dev/null 2>&1 &
         sleep 2
@@ -137,6 +133,11 @@ func_ss_Close(){
     if grep -q "ssr-watchcat" "$TIME_SCRIPT"
     then
         sed -i '/ssr-watchcat/d' "$TIME_SCRIPT" >/dev/null 2>&1
+        sleep 2
+    fi
+    if grep -q "v2ray-watchdog" "$TIME_SCRIPT"
+    then
+        sed -i '/v2ray-watchdog/d' "$TIME_SCRIPT" >/dev/null 2>&1
         sleep 2
     fi
     if grep -q "gfwlist" "$DNSMASQ_RURE"
@@ -355,7 +356,10 @@ func_cron(){
     if [ "$SS_WATCHCAT" = "1" ] ; then
         if [ "$ss_mode" = "3" ]
         then
-            $SSR_HOME/v2ray-watchdog 2>&1 >/dev/null &
+            sed -i '/v2ray-watchdog/d' "$TIME_SCRIPT"
+            cat >> "$TIME_SCRIPT" << EOF
+*/3 * * * * $SSR_HOME/v2ray-watchdog 2>&1 >/dev/null &
+EOF
         else
             sed -i '/ssr-watchcat/d' "$TIME_SCRIPT"
             cat >> "$TIME_SCRIPT" << EOF
