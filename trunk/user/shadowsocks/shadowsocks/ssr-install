@@ -322,6 +322,7 @@ func_del_ipt(){
 }
 
 func_cnng_ipt(){
+    CHAIN_NAME="REDSOCKS"
     if [ "$ss_router_proxy" = "5" ] ; then
         ipt="iptables -t nat"
         ipt_m="iptables -t mangle"
