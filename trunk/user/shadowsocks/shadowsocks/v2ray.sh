@@ -8,7 +8,6 @@ STORAGE="/etc/storage"
 SSR_HOME="$STORAGE/shadowsocks"
 STORAGE_V2SH="$STORAGE/storage_v2ray.sh"
 SS_LOCAL_PORT_LINK=$(nvram get ss_local_port)
-ss_router_proxy=$(nvram get ss_router_proxy)
 ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 SS_LAN_IP=$(nvram get lan_ipaddr)
 V2_SERVER_ADDRESS=107.167.18.43
@@ -20,11 +19,8 @@ func_download(){
         curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/V2/v2ray_4.25.1 && \
         chmod 777 "$v2_home/v2ray"
     fi
-    if [ "$ss_router_proxy" = "0" ] || [ "$ss_router_proxy" = "5" ]
-    then
-        /bin/bash $SSR_HOME/redsocks.sh start [ $2 ]
-        /bin/bash $SSR_HOME/redsocks.sh iptables $V2_SERVER_ADDRESS && sleep 2
-    fi
+    /bin/bash $SSR_HOME/redsocks.sh start [ $3 ]
+    /bin/bash $SSR_HOME/redsocks.sh iptables $V2_SERVER_ADDRESS && sleep 2
 }
 
 v2_server_file(){
@@ -133,8 +129,8 @@ EOF
 func_Del_rule(){
     if [ -n "$(pidof v2ray)" ] ; then
         killall v2ray >/dev/null 2>&1 &
+        sleep 2
     fi
-    sleep 2
     /bin/bash $SSR_HOME/redsocks.sh stop
 }
 
