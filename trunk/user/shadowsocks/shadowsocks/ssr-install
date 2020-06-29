@@ -326,7 +326,8 @@ EOF
 
 func_cnng_ipt(){
     CHAIN_NAME="REDSOCKS"
-    if [ "$ss_router_proxy" = "5" ] ; then
+    v2_address=$(sed -n "2p" /etc/storage/storage_v2ray.sh |cut -f 2 -d ":")
+    if [ "$ss_mode" = "3" ] ; then
         ipt="iptables -t nat"
         ipt_m="iptables -t mangle"
 
@@ -336,6 +337,7 @@ func_cnng_ipt(){
         $ipt_m -N CNNG_PRE
         $ipt_m -N UDPCHAIN
 
+        $ipt_m -A UDPCHAIN -d $v2_address -j RETURN
         $ipt_m -A UDPCHAIN -d 0.0.0.0/8 -j RETURN
         $ipt_m -A UDPCHAIN -d 10.0.0.0/8 -j RETURN
         $ipt_m -A UDPCHAIN -d 127.0.0.0/8 -j RETURN
