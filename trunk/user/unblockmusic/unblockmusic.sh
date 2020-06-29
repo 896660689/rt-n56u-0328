@@ -1,7 +1,5 @@
 #!/bin/sh
 
-STORAGE_DIR="/etc/storage"
-
 export PATH=$PATH:/etc/storage/unblockmusic
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/unblockmusic
 
@@ -13,9 +11,25 @@ if [ $(nvram get ss_mode) = "2" ] ; then
 fi
 }
 
-check_host() {
-  local host=$1
-  if echo $host | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" >/dev/null; then
+STORAGE_DIR="/etc/storage"
+ENABLE=$(nvram get wyy_enable)
+TYPE=$(nvram get wyy_musicapptype)
+APPTYPE=$(nvram get wyy_apptype)
+#FLAC=$(uci_get_by_type unblockmusic flac_enabled 0)
+
+CLOUD=$(nvram get wyy_cloudserver)
+if [ "$CLOUD" = "coustom" ]; then
+    CLOUD=$(nvram get wyy_coustom_server)
+fi
+cloudadd=$(echo "$CLOUD" | awk -F ':' '{print $1}')
+cloudhttp=$(echo "$CLOUD" | awk -F ':' '{print $2}')
+cloudhttps=$(echo "$CLOUD" | awk -F ':' '{print $3}')
+cloudip=$(check_host $cloudadd)
+ipt_n="iptables -t nat"
+
+check_host(){
+    local host=$1
+    if echo $host | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" >/dev/null; then
         hostip=$host
     elif [ "$host" != "${host#*:[0-9a-fA-F]}" ]; then
         hostip=$host
@@ -30,10 +44,9 @@ check_host() {
     echo -e $hostip
 }
 
-ip_rule()
-{
+ip_rule(){
 num=`nvram get wyy_staticnum_x`
-    if [ $num -ne 0 ]; then
+if [ $num -ne 0 ]; then
     for i in $(seq 1 $num)
     do
         j=`expr $i - 1`
@@ -52,31 +65,13 @@ num=`nvram get wyy_staticnum_x`
             ;;
         esac
     done
-    fi
+fi
 }
 
-ENABLE=$(nvram get wyy_enable)
-TYPE=$(nvram get wyy_musicapptype)
-APPTYPE=$(nvram get wyy_apptype)
-#FLAC=$(uci_get_by_type unblockmusic flac_enabled 0)
-
-CLOUD=$(nvram get wyy_cloudserver)
-if [ "$CLOUD" = "coustom" ]; then
-CLOUD=$(nvram get wyy_coustom_server)
-fi
-cloudadd=$(echo "$CLOUD" | awk -F ':' '{print $1}')
-cloudhttp=$(echo "$CLOUD" | awk -F ':' '{print $2}')
-cloudhttps=$(echo "$CLOUD" | awk -F ':' '{print $3}')
-
-cloudip=$(check_host $cloudadd)
-
-ipt_n="iptables -t nat"
-
-add_rule()
-{
-  ipset -! -N music hash:ip
-  ipset -! -N music_http hash:ip
-  ipset -! -N music_https hash:ip
+add_rule(){
+    ipset -! -N music hash:ip
+    ipset -! -N music_http hash:ip
+    ipset -! -N music_https hash:ip
     $ipt_n -N CLOUD_MUSIC
     $ipt_n -A CLOUD_MUSIC -d 0.0.0.0/8 -j RETURN
     $ipt_n -A CLOUD_MUSIC -d 10.0.0.0/8 -j RETURN
@@ -87,35 +82,34 @@ add_rule()
     $ipt_n -A CLOUD_MUSIC -d 224.0.0.0/4 -j RETURN
     $ipt_n -A CLOUD_MUSIC -d 240.0.0.0/4 -j RETURN
     if [ "$APPTYPE" != "cloud" ]; then
-    $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_http src --dport 80 -j REDIRECT --to-ports 5200
-    $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_https src --dport 443 -j REDIRECT --to-ports 5201
-  else
-    $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_http src --dport 80 -j DNAT --to $cloudip:$cloudhttp
-    $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_https src --dport 443 -j DNAT --to $cloudip:$cloudhttps
+        $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_http src --dport 80 -j REDIRECT --to-ports 5200
+        $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_https src --dport 443 -j REDIRECT --to-ports 5201
+    else
+        $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_http src --dport 80 -j DNAT --to $cloudip:$cloudhttp
+        $ipt_n -A CLOUD_MUSIC -p tcp -m set ! --match-set music_https src --dport 443 -j DNAT --to $cloudip:$cloudhttps
     fi
     $ipt_n -I PREROUTING -p tcp -m set --match-set music dst -j CLOUD_MUSIC
     iptables -I OUTPUT -d 223.252.199.10 -j DROP
-
     ip_rule
 }
 
 del_rule(){
-    $ipt_n -D PREROUTING -p tcp -m set --match-set music dst -j CLOUD_MUSIC 2>/dev/null
-    $ipt_n -F CLOUD_MUSIC  2>/dev/null
-    $ipt_n -X CLOUD_MUSIC  2>/dev/null
+    kill -9 $(busybox ps -w | grep UnblockNeteaseMusic | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+    kill -9 $(busybox ps -w | grep logcheck.sh | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+    iptables-save -c | grep -v CLOUD_MUSIC | iptables-restore -c && sleep 2
     iptables -D OUTPUT -d 223.252.199.10 -j DROP 2>/dev/null
-
     ipset -X music_http 2>/dev/null
     ipset -X music_https 2>/dev/null
-
-    rm -rf $STORAGE_DIR/unblockmusic/dnsmasq.music
-    sed -i '/dnsmasq.music/d' /etc/storage/dnsmasq/dnsmasq.conf
-    restart_dhcpd
+    if grep -q "dnsmasq.music" "$STORAGE_DIR/dnsmasq/dnsmasq.conf"
+    then
+        sed -i '/dnsmasq.music/d' $STORAGE_DIR/dnsmasq/dnsmasq.conf
+        restart_dhcpd && sleep 2
+    fi
 }
 
 set_firewall(){
     mkdir -p $STORAGE_DIR/unblockmusic/dnsmasq.music
-      cat > "$STORAGE_DIR/unblockmusic/dnsmasq.music/dnsmasq-163.conf" <<EOF
+    cat > "$STORAGE_DIR/unblockmusic/dnsmasq.music/dnsmasq-163.conf" <<EOF
 ipset=/.music.163.com/music
 ipset=/interface.music.163.com/music
 ipset=/interface3.music.163.com/music
@@ -124,31 +118,34 @@ ipset=/apm3.music.163.com/music
 ipset=/clientlog.music.163.com/music
 ipset=/clientlog3.music.163.com/music
 EOF
-      chmod 644 "$STORAGE_DIR/unblockmusic/dnsmasq.music/dnsmasq-163.conf"
-sed -i '/dnsmasq.music/d' /etc/storage/dnsmasq/dnsmasq.conf
-cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
+    chmod 644 "$STORAGE_DIR/unblockmusic/dnsmasq.music/dnsmasq-163.conf"
+    if grep -q "dnsmasq.music" "$STORAGE_DIR/dnsmasq/dnsmasq.conf"
+    then
+        sed -i '/dnsmasq.music/d' $STORAGE_DIR/dnsmasq/dnsmasq.conf
+    fi
+    cat >> $STORAGE_DIR/dnsmasq/dnsmasq.conf << EOF
 conf-dir=$STORAGE_DIR/unblockmusic/dnsmasq.music/
 EOF
-add_rule
-restart_dhcpd
+    restart_dhcpd && sleep 2
+    add_rule
 }
 
 get_bin(){
 wyy_bin="/usr/bin/UnblockNeteaseMusic"
 if [ ! -f "$wyy_bin" ]; then
-if [ ! -f "/tmp/UnblockNeteaseMusic" ]; then
-    curl -k -s -o /tmp/UnblockNeteaseMusic --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/unblockmusic/UnblockNeteaseMusic
     if [ ! -f "/tmp/UnblockNeteaseMusic" ]; then
-        logger -t "音乐解锁" "二进制文件下载失败，可能是地址失效或者网络异常！"
-        nvram set wyy_enable=0
-        wyy_close
+        curl -k -s -o /tmp/UnblockNeteaseMusic --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/unblockmusic/UnblockNeteaseMusic
+        if [ ! -f "/tmp/UnblockNeteaseMusic" ]; then
+            logger -t "音乐解锁" "二进制文件下载失败，可能是地址失效或者网络异常！"
+            nvram set wyy_enable=0
+            wyy_close
+        else
+            logger -t "音乐解锁" "二进制文件下载成功"
+            chmod -R 777 /tmp/UnblockNeteaseMusic
+            wyy_bin="/tmp/UnblockNeteaseMusic"
+        fi
     else
-        logger -t "音乐解锁" "二进制文件下载成功"
-        chmod -R 777 /tmp/UnblockNeteaseMusic
         wyy_bin="/tmp/UnblockNeteaseMusic"
-    fi
-    else
-    wyy_bin="/tmp/UnblockNeteaseMusic"
     fi
 fi
 }
@@ -169,29 +166,25 @@ wyy_start()
         musictype="-o $TYPE"
     fi
     if [ "$APPTYPE" == "go" ]; then
-    get_bin
-    $wyy_bin -p 5200 -sp 5202 -m 0 -c /$STORAGE_DIR/unblockmusic/music_certificate/server.crt -k /$STORAGE_DIR/unblockmusic/music_certificate/server.key -m 0 >/dev/null 2>&1 &
-    logger -t "音乐解锁" "启动 Golang Version (http:5200, https:5201)"
-    $wyy_bin -p 5203 -sp 5201 -m 0 -c /etc_ro/UnblockNeteaseMusicGo/server.crt -k /etc_ro/UnblockNeteaseMusicGo/server.key -m 0 -e  >/dev/null 2>&1 &
-  else
-    kill -9 $(busybox ps -w | grep 'sleep 60m' | grep -v grep | awk '{print $1}') >/dev/null 2>&1
-    $STORAGE_DIR/unblockmusic/UnblockNeteaseMusicCloud >/dev/null 2>&1 &
-     logger -t "音乐解锁" "启动 Cloud Version - Server: $cloudip (http:$cloudhttp, https:$cloudhttp)"
+        get_bin
+        $wyy_bin -p 5200 -sp 5202 -m 0 -c /$STORAGE_DIR/unblockmusic/music_certificate/server.crt -k /$STORAGE_DIR/unblockmusic/music_certificate/server.key -m 0 >/dev/null 2>&1 &
+        logger -t "音乐解锁" "启动 Golang Version (http:5200, https:5201)"
+        $wyy_bin -p 5203 -sp 5201 -m 0 -c /etc_ro/UnblockNeteaseMusicGo/server.crt -k /etc_ro/UnblockNeteaseMusicGo/server.key -m 0 -e  >/dev/null 2>&1 &
+    else
+        kill -9 $(busybox ps -w | grep 'sleep 60m' | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+        $STORAGE_DIR/unblockmusic/UnblockNeteaseMusicCloud >/dev/null 2>&1 &
+        logger -t "音乐解锁" "启动 Cloud Version - Server: $cloudip (http:$cloudhttp, https:$cloudhttp)"
     fi
-
     set_firewall
-
-  if [ "$APPTYPE" != "cloud" ]; then
-    $STORAGE_DIR/unblockmusic/logcheck.sh >/dev/null 2>&1 &
-  fi
+    if [ "$APPTYPE" != "cloud" ]; then
+        $STORAGE_DIR/unblockmusic/logcheck.sh >/dev/null 2>&1 &
+    fi
 }
 
 wyy_close()
 {
-    kill -9 $(busybox ps -w | grep UnblockNeteaseMusic | grep -v grep | awk '{print $1}') >/dev/null 2>&1
-    kill -9 $(busybox ps -w | grep logcheck.sh | grep -v grep | awk '{print $1}') >/dev/null 2>&1
-    [ -d "$STORAGE_DIR/unblockmusic" ] && rm -rf "$STORAGE_DIR/unblockmusic"
     del_rule
+    [ -d "$STORAGE_DIR/unblockmusic" ] && rm -rf "$STORAGE_DIR/unblockmusic"
     logger -t "音乐解锁" "已关闭"
 }
 
