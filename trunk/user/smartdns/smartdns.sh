@@ -48,8 +48,7 @@ if [ $(nvram get ss_enable) = "1" ] && [ $(nvram get ss_mode) = "2" ] && [ $(nvr
 fi
 }
 
-get_tz()
-{
+get_tz(){
     SET_TZ=""
     for tzfile in /etc/TZ
     do
@@ -65,9 +64,9 @@ get_tz()
 }
 
 gensmartconf(){
-rm -f $SMARTDNS_CONF
-touch $SMARTDNS_CONF
-echo "server-name $snds_name" >> $SMARTDNS_CONF
+    rm -f $SMARTDNS_CONF
+    touch $SMARTDNS_CONF
+    echo "server-name $snds_name" >> $SMARTDNS_CONF
     if [ "$sdns_ipv6_server" = "1" ]; then
         echo "bind" "[::]:$sdns_port" >> $SMARTDNS_CONF
     else
@@ -83,20 +82,20 @@ echo "server-name $snds_name" >> $SMARTDNS_CONF
 gensdnssecond
 echo "cache-size $snds_cache" >> $SMARTDNS_CONF
 if [ $snds_ip_change -eq 1 ]; then
-echo "dualstack-ip-selection yes" >> $SMARTDNS_CONF
-echo "dualstack-ip-selection-threshold $(nvram get snds_ip_change_time)" >> $SMARTDNS_CONF
+    echo "dualstack-ip-selection yes" >> $SMARTDNS_CONF
+    echo "dualstack-ip-selection-threshold $(nvram get snds_ip_change_time)" >> $SMARTDNS_CONF
 elif [ $snds_ipv6 -eq 1 ]; then
-echo "force-AAAA-SOA yes" >> $SMARTDNS_CONF
+    echo "force-AAAA-SOA yes" >> $SMARTDNS_CONF
 fi
 if [ $sdns_www -eq 1 ]; then
-echo "prefetch-domain yes" >> $SMARTDNS_CONF
+    echo "prefetch-domain yes" >> $SMARTDNS_CONF
 else
-echo "prefetch-domain no" >> $SMARTDNS_CONF
+    echo "prefetch-domain no" >> $SMARTDNS_CONF
 fi
 if [ $sdns_exp -eq 1 ]; then
-echo "serve-expired yes" >> $SMARTDNS_CONF
+    echo "serve-expired yes" >> $SMARTDNS_CONF
 else
-echo "serve-expired no" >> $SMARTDNS_CONF
+    echo "serve-expired no" >> $SMARTDNS_CONF
 fi
 echo "log-level info" >> $SMARTDNS_CONF
 listnum=`nvram get sdnss_staticnum_x`
@@ -209,27 +208,33 @@ if [ "$sdnse_address" = "1" ]; then
     else
         ADDR=""
     fi
-echo "bind" "$ADDR:$sdnse_port $ARGS" >> $SMARTDNS_CONF
+    echo "bind" "$ADDR:$sdnse_port $ARGS" >> $SMARTDNS_CONF
     if [ "$sdnse_tcp" = "1" ]; then
         echo "bind-tcp" "$ADDR:$sdnse_port$ARGS" >> $SMARTDNS_CONF
     fi
 fi
 }
 
-change_dns() {
-sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
-sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
-cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
+change_dns(){
+    sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
+    sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
+    cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
 no-resolv
 server=127.0.0.1#$sdns_port
 EOF
-/sbin/restart_dhcpd
-logger -t "SmartDNS" "添加DNS转发到$sdns_port端口"
+    /sbin/restart_dhcpd
+    logger -t "SmartDNS" "添加DNS转发到$sdns_port端口"
 }
-del_dns() {
-sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
-sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
-restart_dhcpd &
+
+del_dns(){
+    if grep -q "server=127.0.0.1" "$TIME_SCRIPT"
+    then
+        sed -i '/v2ray-watchdog/d' "$TIME_SCRIPT" >/dev/null 2>&1
+        sleep 2
+    fi
+    sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
+    sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
+    restart_dhcpd &
 }
 
 set_iptable()
