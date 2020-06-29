@@ -15,7 +15,6 @@ BINARY_PATH="$BIN_DIR/$BINARY_NAME"
 REDSOCKS_CONF="$TMP_HOME/$BINARY_NAME.conf"
 CHAIN_NAME="REDSOCKS"
 dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
-LOCK="/tmp/set_lock"
 SET_NAME="china"
 
 SOCKS5_IP=$(nvram get lan_ipaddr)
@@ -28,7 +27,8 @@ ARG3=$3
 
 func_redsocks(){
     ln -sf $BINARY_PATH $REDSOCKS_FILE
-    $REDSOCKS_FILE -c $REDSOCKS_CONF
+    cd $TMP_HOME
+    ./redsocks -c ./redsocks.conf
 }
 
 func_save(){
@@ -62,8 +62,8 @@ redsocks_conn_max = 1000;
 redsocks {
 local_ip = 0.0.0.0;
 local_port = 12345;
-ip = $(nvram get lan_ipaddr);
-port = $(nvram get ss_local_port);
+ip = $SOCKS5_IP;
+port = $SOCKS5_PORT;
 type = socks5;
 }
 
@@ -97,7 +97,6 @@ then
     wait
     echo "load ip rules !"
 fi
-[ ! -f $LOCK ] && touch $LOCK && logger -t $BINARY_NAME "SET LOCKED"
 }
 
 flush_ipt_file(){
@@ -122,7 +121,7 @@ $ipt -A $CHAIN_NAME -d 224.0.0.0/4 -j RETURN
 $ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
 $ipt -A $CHAIN_NAME -m set --match-set china dst -j RETURN
 $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
-$ipt -I PREROUTING -p tcp -j $CHAIN_NAME
+$ipt -I PREROUTING -i br0 -p tcp -j $CHAIN_NAME
 
 cat <<-CAT >>$FWI
 iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
