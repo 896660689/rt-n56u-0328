@@ -10,7 +10,16 @@ STORAGE_V2SH="$STORAGE/storage_v2ray.sh"
 SS_LOCAL_PORT_LINK=$(nvram get ss_local_port)
 ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 SS_LAN_IP=$(nvram get lan_ipaddr)
-V2_SERVER_ADDRESS=107.167.18.43
+
+v2_address=$(sed -n "2p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_port=$(sed -n "3p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_userid=$(sed -n "4p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_alterId=$(sed -n "5p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_confidentiality=$(sed -n "6p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_docking_mode=$(sed -n "7p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_domain_name=$(sed -n "8p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_route=$(sed -n "9p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_tls=$(sed -n "10p" $STORAGE_V2SH |cut -f 2 -d ":")
 
 func_download(){
     if [ ! -f "$v2_home/v2ray" ]
@@ -19,19 +28,62 @@ func_download(){
         curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/V2/v2ray_4.25.1 && \
         chmod 777 "$v2_home/v2ray"
     fi
-    /bin/bash $SSR_HOME/redsocks.sh start [ $3 ]
-    /bin/bash $SSR_HOME/redsocks.sh iptables $V2_SERVER_ADDRESS && sleep 2
+    /bin/bash $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK $v2_address
+    /bin/bash $SSR_HOME/redsocks.sh iptables $v2_address && sleep 2
 }
 
 v2_server_file(){
     if [ ! -f "$STORAGE_V2SH" ] || [ ! -s "$STORAGE_V2SH" ]
     then
         cat > "$STORAGE_V2SH" <<EOF
+## -------- 以下修改账号信息，文本格式固定勿改动! -------- ##
+#服务器账号:107.167.18.43
+#服务器端口:443
+#用户ID:418048af-a293-4b99-9b0c-98ca3580dd23
+#额外ID:64
+#加密方式:auto
+#传输协议:ws
+#伪装域名:www.7921769.xyz
+#路径:/footers
+#TLS:tls
+## ---------- END ---------- ##
+EOF
+    chmod 644 "$STORAGE_V2SH"
+    fi
+}
+
+v2_tmp_json(){
+        cat > "$v2_json" <<EOF
 {
   "log": {
     "access": "none",
     "error": "none",
     "loglevel": "warning"
+  },
+  "dns": {
+    "servers": [
+      "208.67.220.220",
+      "176.103.130.131",
+      "8.8.4.4",
+      "localhost"
+    ]
+  },
+  "policy": {
+    "levels": {
+      "5": {
+        "handshake": 4,
+        "connIdle": 300,
+        "uplinkOnly": 0,
+        "downlinkOnly": 0,
+        "statsUserUplink": false,
+        "statsUserDownlink": false,
+        "bufferSize": 0
+      }
+    },
+    "system": {
+      "statsInboundUplink": false,
+      "statsInboundDownlink": false
+    }
   },
   "inbounds": [
     {
@@ -59,71 +111,44 @@ v2_server_file(){
   "outbounds": [
     {
       "protocol": "vmess",
+      "mux": {
+        "enabled": false,
+        "concurrency": -1
+      },
       "settings": {
         "vnext": [
           {
-            "address": "$V2_SERVER_ADDRESS",
-            "port": 443,
+            "address": "$v2_address",
+            "port": $v2_port,
             "users": [
               {
-                "id": "418048af-a293-4b99-9b0c-98ca3580dd23",
-                "alterId": 64,
-                "security": "auto"
+                "id": "$v2_userid",
+                "alterId": $v2_alterId,
+                "security": "$v2_confidentiality"
               }
             ]
           }
         ]
       },
       "streamSettings": {
-        "network": "ws",
-        "security": "tls",
+        "network": "$v2_docking_mode",
+        "security": "$v2_tls",
         "tlsSettings": {
           "allowInsecure": true,
-          "serverName": "www.7921769.xyz"
+          "serverName": "$v2_domain_name"
         },
         "wsSettings": {
           "connectionReuse": true,
-          "path": "/footers",
+          "path": "$v2_route",
           "headers": {
-            "Host": "www.7921769.xyz"
+            "Host": "$v2_domain_name"
           }
         }
-      },
-      "mux": {
-        "enabled": false,
-        "concurrency": -1
       }
     }
-  ],
-  "policy": {
-    "levels": {
-      "5": {
-        "handshake": 4,
-        "connIdle": 300,
-        "uplinkOnly": 0,
-        "downlinkOnly": 0,
-        "statsUserUplink": false,
-        "statsUserDownlink": false,
-        "bufferSize": 0
-      }
-    },
-    "system": {
-      "statsInboundUplink": false,
-      "statsInboundDownlink": false
-    }
-  },
-  "dns": {
-    "servers": [
-      "208.67.220.220",
-      "176.103.130.131",
-      "8.8.4.4",
-      "localhost"
-    ]
-  }
+  ]
 }
 EOF
-    chmod 644 "$STORAGE_V2SH"
-    fi
 }
 
 func_Del_rule(){
@@ -135,10 +160,7 @@ func_Del_rule(){
 }
 
 func_v2_running(){
-    if [ -s "$STORAGE_V2SH" ]
-    then
-        cp -f "$STORAGE_V2SH" "$v2_json"
-    fi
+    v2_tmp_json
     cd "$v2_home"
     ./v2ray >/dev/null 2>&1 &
 }
