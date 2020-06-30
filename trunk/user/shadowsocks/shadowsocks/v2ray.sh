@@ -28,8 +28,6 @@ func_download(){
         curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/V2/v2ray_4.25.1 && \
         chmod 777 "$v2_home/v2ray"
     fi
-    /bin/bash $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK $v2_address
-    /bin/bash $SSR_HOME/redsocks.sh iptables $v2_address && sleep 2
 }
 
 v2_server_file(){
@@ -156,7 +154,6 @@ func_Del_rule(){
         killall v2ray >/dev/null 2>&1 &
         sleep 2
     fi
-    /bin/bash $SSR_HOME/redsocks.sh stop
 }
 
 func_v2_running(){
