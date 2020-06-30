@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-06-28
+# Compile:by-lanse	2020-06-30
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -41,6 +41,7 @@ ss2_protocol=$(nvram get ss2_protocol)
 ss2_proto_param=$(nvram get ss2_proto_param)
 ss2_obfs=$(nvram get ss2_obfs)
 ss2_obfs_param=$(nvram get ss2_obfs_param)
+v2_address=$(sed -n "2p" /etc/storage/storage_v2ray.sh |cut -f 2 -d ":")
 
 check_music(){
 if [ $(nvram get wyy_enable) = "1" ] && [ $(nvram get sdns_enable) = "1" ]; then
@@ -122,15 +123,10 @@ func_ss_Close(){
         killall pdnsd >/dev/null 2>&1 &
         sleep 2
     fi
-    if [ -n "$(pidof chinadns-ng)" ] ; then
-        killall chinadns-ng >/dev/null 2>&1 &
-        sleep 2
-    fi
     iptables -t nat -X gfwlist >/dev/null 2>&1
     iptables-save -c | grep -v "gfwlist" | iptables-restore -c && sleep 2
     ipset flush gfwlist 2>/dev/null &
     sleep 2
-    func_del_ipt
     if grep -q "ssr-watchcat" "$TIME_SCRIPT"
     then
         sed -i '/ssr-watchcat/d' "$TIME_SCRIPT" >/dev/null 2>&1
@@ -145,10 +141,6 @@ func_ss_Close(){
     then
         sed -i '/listen-address/d; /min-cache/d; /gfwlist/d; /log/d' $DNSMASQ_RURE &
     fi
-    if grep -q "no-resolv" "$DNSMASQ_RURE"
-    then
-        sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE &
-    fi
 }
 
 func_ss_down(){
@@ -158,10 +150,9 @@ func_ss_down(){
         [ -f /var/run/pdnsd.pid ] && rm -f /var/run/pdnsd.pid && sleep 1
         [ -f /tmp/ss-redir.json.main ] && rm -rf /tmp/ss-redir.json.main && sleep 1
         [ -f /tmp/ss-redir.json.backup ] && rm -rf /tmp/ss-redir.json.backup && sleep 1
-        [ -f /tmp/cdn.txt ] && rm -rf /tmp/cdn.txt && sleep 1
         [ -d /var/pdnsd ] && rm -rf /var/pdnsd && sleep 1
-        [ -d $STORAGE/chinadns ] && rm -rf $STORAGE/chinadns && sleep 1
         [ -d $STORAGE/gfwlist ] && rm -rf $STORAGE/gfwlist && sleep 1
+        [ -d $STORAGE/chinadns ] && rm -rf $STORAGE/chinadns && sleep 1
         [ -f /tmp/shadowsocks_iptables.save ] && rm -rf /tmp/shadowsocks_iptables.save
     fi
 }
@@ -306,55 +297,6 @@ func_port_agent_mode(){
     fi
 }
 
-func_del_ipt(){
-    iptables-save -c | grep -v CNNG_OUT | iptables-restore -c
-    iptables-save -c | grep -v CNNG_PRE | iptables-restore -c
-    iptables-save -c | grep -v UDPCHAIN | iptables-restore -c
-}
-
-func_cnng_file(){
-        logger -t "[CHINADNS-NG]" "下载 [cdn] 域名文件..."
-        curl -k -s -o /tmp/cdn.txt --connect-timeout 10 --retry 3 https://gitee.com/bkye/rules/raw/master/cdn.txt
-        /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 223.5.5.5#53 -t 127.0.0.1#$ss_tunnel_local_port -4 china -m /tmp/cdn.txt >/dev/null 2>&1 &
-        sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE
-        cat >> $DNSMASQ_RURE << EOF
-no-resolv
-server=127.0.0.1#65353
-EOF
-}
-
-func_cnng_ipt(){
-ipt="iptables -t nat"
-ipt_m="iptables -t mangle"
-
-$ipt -N CNNG_OUT
-$ipt -N CNNG_PRE
-
-$ipt -A CNNG_OUT -p tcp -j REDSOCKS
-$ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
-$ipt -I PREROUTING -j CNNG_PRE
-$ipt -I OUTPUT -j CNNG_OUT
-
-$ipt_m -N CNNG_OUT
-$ipt_m -N CNNG_PRE
-$ipt_m -N UDPCHAIN
-
-$ipt_m -A UDPCHAIN -d $v2_address -j RETURN
-$ipt_m -A UDPCHAIN -d 0.0.0.0/8 -j RETURN
-$ipt_m -A UDPCHAIN -d 10.0.0.0/8 -j RETURN
-$ipt_m -A UDPCHAIN -d 127.0.0.0/8 -j RETURN
-$ipt_m -A UDPCHAIN -d 169.254.0.0/16 -j RETURN
-$ipt_m -A UDPCHAIN -d 172.16.0.0/12 -j RETURN
-$ipt_m -A UDPCHAIN -d 192.168.0.0/16 -j RETURN
-$ipt_m -A UDPCHAIN -d 224.0.0.0/4 -j RETURN
-$ipt_m -A UDPCHAIN -d 240.0.0.0/4 -j RETURN
-
-$ipt_m -A UDPCHAIN -m set --match-set china dst -j RETURN
-$ipt_m -A CNNG_OUT -p udp -j UDPCHAIN
-$ipt_m -A PREROUTING -j CNNG_PRE
-$ipt_m -A OUTPUT -j CNNG_OUT
-}
-
 func_cron(){
     if [ "$SS_WATCHCAT" = "1" ] ; then
         if [ "$ss_mode" = "3" ]
@@ -379,6 +321,19 @@ dog_restart(){
     sleep 2 && $ss_bin -c $ss_json -b 0.0.0.0 -l $SS_LOCAL_PORT_LINK >/dev/null 2>&1 &
 }
 
+func_v2fly(){
+    /bin/sh $SSR_HOME/v2ray.sh start
+}
+
+func_redsocks(){
+    /bin/bash $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK v2_address 
+    /bin/bash $SSR_HOME/redsocks.sh iptables $v2_address
+}
+
+func_chinadns_ng(){
+    /bin/sh $SSR_HOME/chinadns-ng.sh start
+}
+
 func_start(){
     if [ "$SS_ENABLE" = "1" ]
     then
@@ -391,11 +346,9 @@ func_start(){
         if [ "$ss_mode" = "3" ]
         then
             logger -t "[v2ray]" "开始部署 [v2ray] 代理模式..."
-            /bin/sh $SSR_HOME/v2ray.sh start
-            v2_address=$(sed -n "2p" /etc/storage/storage_v2ray.sh |cut -f 2 -d ":")
-            func_cnng_file &&         func_cnng_ipt
-            sleep 3 && logger -t "[CHINADNS-NG]" "ipt 规则部署完成..."
-            restart_dhcpd
+            func_v2fly && \
+            func_redsocks && \
+            func_chinadns_ng &
         else
             echo -e "\033[41;37m 部署 [ShadowsocksR] 文件,请稍后...\e[0m\n"
             func_gen_ss_json && \
@@ -422,6 +375,8 @@ func_stop(){
     nvram set ss-tunnel_enable=0
     /usr/bin/ss-tunnel.sh stop &
     sleep 1 && $SSR_HOME/v2ray.sh stop &
+    sleep 1 && /bin/bash $SSR_HOME/redsocks.sh stop
+    sleep 1 && /bin/bash $SSR_HOME/chinadns-ng.sh stop
     sleep 1 && func_ss_Close &
     sleep 1 && func_ss_down &
     wait
