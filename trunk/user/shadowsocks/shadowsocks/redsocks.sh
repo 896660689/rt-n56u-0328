@@ -1,6 +1,6 @@
 #!/bin/bash
 # github:http://github.com/SuzukiHonoka
-# Compile:by-lanse	2020-06-28
+# Compile:by-lanse	2020-06-30
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -122,6 +122,7 @@ $ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
 $ipt -A $CHAIN_NAME -m set --match-set china dst -j RETURN
 $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
 $ipt -I PREROUTING -i br0 -p tcp -j $CHAIN_NAME
+#$ipt -I OUTPUT -p tcp -j $CHAIN_NAME
 
 cat <<-CAT >>$FWI
 iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
