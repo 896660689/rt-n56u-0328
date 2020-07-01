@@ -43,7 +43,6 @@ global {
 server {
     label = "CN DNS";
     ip = $CHN_LIST;
-    port = 53;
     timeout = 4;
     uptest = none;
     interval = 10m;
@@ -58,7 +57,7 @@ server {
     reject = 208.69.32.0/24,
          208.69.34.0/24,
          208.67.219.0/24;
-    port = 443;
+    port = $SS_TUNNEL_LOCAL_PORT;
     timeout = 5;
     uptest = none;
     interval = 10m;
