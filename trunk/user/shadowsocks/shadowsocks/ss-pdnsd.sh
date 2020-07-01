@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-06-28
+# Compile:by-lanse	2020-07-01
 
 PDNSD_HOUSE="/var/pdnsd"
 PDNSD_FILE="$PDNSD_HOUSE/pdnsd.conf"
@@ -43,6 +43,7 @@ global {
 server {
     label = "CN DNS";
     ip = $CHN_LIST;
+    port = 53;
     timeout = 4;
     uptest = none;
     interval = 10m;
@@ -57,7 +58,7 @@ server {
     reject = 208.69.32.0/24,
          208.69.34.0/24,
          208.67.219.0/24;
-    port = $SS_TUNNEL_LOCAL_PORT;
+    port = 443;
     timeout = 5;
     uptest = none;
     interval = 10m;
