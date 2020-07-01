@@ -47,8 +47,7 @@ ipt_m="iptables -t mangle"
 $ipt -N CNNG_OUT
 $ipt -N CNNG_PRE
 
-$ipt -D PREROUTING -i br0 -p tcp -j REDSOCKS
-$ipt -A CNNG_PRE -i br0 -p tcp -j REDSOCKS
+$ipt -A CNNG_PRE -p tcp -j REDSOCKS
 $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
 $ipt -I PREROUTING -j CNNG_PRE
 $ipt -I OUTPUT -j CNNG_OUT
