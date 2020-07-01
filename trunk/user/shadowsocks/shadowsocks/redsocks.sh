@@ -15,7 +15,7 @@ BINARY_PATH="$BIN_DIR/$BINARY_NAME"
 REDSOCKS_CONF="$TMP_HOME/$BINARY_NAME.conf"
 CHAIN_NAME="REDSOCKS"
 dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
-SET_NAME="china"
+SET_NAME="chnroute"
 
 SOCKS5_IP=$(nvram get lan_ipaddr)
 SOCKS5_PORT=$(nvram get ss_local_port)
@@ -92,8 +92,8 @@ then
 fi
 if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
 then
-    ipset -N china hash:net
-    awk '!/^$/&&!/^#/{printf("add china %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore && \
+    ipset -N chnroute hash:net
+    awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore && \
     wait
     echo "load ip rules !"
 fi
@@ -119,7 +119,7 @@ $ipt -A $CHAIN_NAME -d 172.16.0.0/12 -j RETURN
 $ipt -A $CHAIN_NAME -d 192.168.0.0/16 -j RETURN
 $ipt -A $CHAIN_NAME -d 224.0.0.0/4 -j RETURN
 $ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
-$ipt -A $CHAIN_NAME -m set --match-set china dst -j RETURN
+$ipt -A $CHAIN_NAME -m set --match-set chnroute dst -j RETURN
 $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
 $ipt -I PREROUTING -i br0 -p tcp -j $CHAIN_NAME
 #$ipt -I OUTPUT -p tcp -j $CHAIN_NAME
