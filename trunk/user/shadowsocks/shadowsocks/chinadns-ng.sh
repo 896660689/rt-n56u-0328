@@ -29,7 +29,7 @@ func_del_ipt(){
 func_cnng_file(){
     logger -t "[CHINADNS-NG]" "下载 [cdn] 域名文件..."
     curl -k -s -o /tmp/cdn.txt --connect-timeout 10 --retry 3 https://gitee.com/bkye/rules/raw/master/cdn.txt
-    /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 223.5.5.5#53 -t 127.0.0.1#$ss_tunnel_local_port -4 china -m /tmp/cdn.txt >/dev/null 2>&1 &
+    /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 114.114.114.114#53 -t 127.0.0.1#$ss_tunnel_local_port -4 chnroute -m /tmp/cdn.txt >/dev/null 2>&1 &
     if grep -q "no-resolv" "$DNSMASQ_RURE"
     then
         sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE
@@ -47,10 +47,14 @@ ipt_m="iptables -t mangle"
 $ipt -N CNNG_OUT
 $ipt -N CNNG_PRE
 
-$ipt -A CNNG_OUT -p tcp -j REDSOCKS
+$ipt -D PREROUTING -i br0 -p tcp -j REDSOCKS
+$ipt -A CNNG_PRE -i br0 -p tcp -j REDSOCKS
 $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
 $ipt -I PREROUTING -j CNNG_PRE
 $ipt -I OUTPUT -j CNNG_OUT
+
+$ipt -A CNNG_OUT -d 114.114.114.114/32 -p udp -m udp --dport 53 -j RETURN
+$ipt -A CNNG_OUT -d 8.8.8.8/32 -p udp -m udp --dport 53 -j RETURN
 
 $ipt_m -N CNNG_OUT
 $ipt_m -N CNNG_PRE
@@ -66,10 +70,14 @@ $ipt_m -A UDPCHAIN -d 192.168.0.0/16 -j RETURN
 $ipt_m -A UDPCHAIN -d 224.0.0.0/4 -j RETURN
 $ipt_m -A UDPCHAIN -d 240.0.0.0/4 -j RETURN
 
-$ipt_m -A UDPCHAIN -m set --match-set china dst -j RETURN
+$ipt_m -A UDPCHAIN -m set --match-set chnroute dst -j RETURN
+$ipt_m -A CNNG_PRE -i br0 -p tcp -j UDPCHAIN
 $ipt_m -A CNNG_OUT -p udp -j UDPCHAIN
 $ipt_m -A PREROUTING -j CNNG_PRE
 $ipt_m -A OUTPUT -j CNNG_OUT
+
+$ipt_m -A CNNG_OUT -d 114.114.114.114/32 -p udp -m udp --dport 53 -j RETURN
+$ipt_m -A CNNG_OUT -d 8.8.8.8/32 -p udp -m udp --dport 53 -j RETURN
 }
 
 func_start(){
