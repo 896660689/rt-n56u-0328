@@ -18,33 +18,33 @@ usage() {
 
 		Valid options are:
 
-		    -s <server_ips>         ip address of shadowsocks remote server
-		    -l <local_port>         port number of shadowsocks local server
-		    -S <server_ips>         ip address of shadowsocks remote UDP server
-		    -L <local_port>         port number of shadowsocks local UDP server
-		    -B <ip_list_file>       a file whose content is bypassed ip list
-		    -b <wan_ips>            wan ip of will be bypassed
-		    -W <ip_list_file>       a file whose content is forwarded ip list
-		    -w <wan_ips>            wan ip of will be forwarded
-		    -I <interface>          proxy only for the given interface
-		    -d <target>             the default target of lan access control
-		    -a <lan_hosts>          mac addr of access control, need a prefix to
-		                            define proxy type
-		    -e <extra_args>         extra arguments for iptables
-		    -o                      apply the rules to the OUTPUT chain
-		    -O                      apply the global rules to the OUTPUT chain
-		    -u                      enable udprelay mode, TPROXY is required
-		    -U                      enable udprelay mode, using different IP
-		                            and ports for TCP and UDP
-		    -f                      flush the rules
-		    -h                      show this help message and exit
+			-s <server_ips>         ip address of shadowsocks remote server
+			-l <local_port>         port number of shadowsocks local server
+			-S <server_ips>         ip address of shadowsocks remote UDP server
+			-L <local_port>         port number of shadowsocks local UDP server
+			-B <ip_list_file>       a file whose content is bypassed ip list
+			-b <wan_ips>            wan ip of will be bypassed
+			-W <ip_list_file>       a file whose content is forwarded ip list
+			-w <wan_ips>            wan ip of will be forwarded
+			-I <interface>          proxy only for the given interface
+			-d <target>             the default target of lan access control
+			-a <lan_hosts>          mac addr of access control, need a prefix to
+						define proxy type
+			-e <extra_args>         extra arguments for iptables
+			-o                      apply the rules to the OUTPUT chain
+			-O                      apply the global rules to the OUTPUT chain
+			-u                      enable udprelay mode, TPROXY is required
+			-U                      enable udprelay mode, using different IP
+						and ports for TCP and UDP
+			-f                      flush the rules
+			-h                      show this help message and exit
 EOF
 	exit $1
 }
 
 loger() {
-	# 1.alert 2.crit 3.err 4.warn 5.notice 6.info 7.debug
-	logger -st ss-rules[$$] -p$1 $2
+    # 1.alert 2.crit 3.err 4.warn 5.notice 6.info 7.debug
+    logger -st ss-rules[$$] -p$1 $2
 }
 
 flush_rules() {
@@ -137,7 +137,7 @@ gen_lan_host_ipset_entry() {
 }
 
 gen_special_purpose_ip() {
-	cat <<-EOF | grep -E "^([0-9]{1,3}\.){3}[0-9]{1,3}"
+    cat <<-EOF | grep -E "^([0-9]{1,3}\.){3}[0-9]{1,3}"
 		0.0.0.0/8
 		10.0.0.0/8
 		100.64.0.0/10
@@ -254,11 +254,11 @@ done
 [ -z "$server" -o -z "$local_port" ] && usage 2
 
 if [ "$TPROXY" = 1 ] ; then
-	unset SERVER
-	LOCAL_PORT=$local_port
+    unset SERVER
+    LOCAL_PORT=$local_port
 elif [ "$TPROXY" = 2 ] ; then
-	: ${SERVER:?"You must assign an ip for the udp relay server."}
-	: ${LOCAL_PORT:?"You must assign a port for the udp relay server."}
+    : ${SERVER:?"You must assign an ip for the udp relay server."}
+    : ${LOCAL_PORT:?"You must assign a port for the udp relay server."}
 fi
 
 flush_rules && ipset_init && ipt_nat && ipt_mangle && export_ipt_rules
