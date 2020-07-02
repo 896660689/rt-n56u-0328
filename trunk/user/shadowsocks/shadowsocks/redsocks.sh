@@ -151,7 +151,10 @@ flush_ipt_file && flush_ipt_rules
 
 func_clean(){
 iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c && sleep 2
-ipset -X $SET_NAME >/dev/null 2>&1 &
+#ipset -X $SET_NAME >/dev/null 2>&1 &
+for setname in $(ipset -n list | grep "chnroute"); do
+ipset destroy "$setname" 2>/dev/null
+done
 }
 
 func_stop(){
