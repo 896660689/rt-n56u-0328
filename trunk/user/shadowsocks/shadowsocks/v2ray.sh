@@ -98,12 +98,6 @@ v2_tmp_json(){
         "destOverride": ["http", "tls"]
       },
       "tag": "socks"
-    },
-    {
-      "port": 1081,
-      "protocol": "http",
-      "sniffing": {},
-      "tag":"http"
     }
   ],
   "outbounds": [
