@@ -1,6 +1,7 @@
 #!/bin/sh
 
-SSR_HOME="/etc/storage/shadowsocks"
+SSR_HOME="$STORAGE/shadowsocks"
+SS_SCRIPT="/usr/bin/shadowsocks.sh"
 Global_WEBSITE="www.youtube.com"
 CN_WEBSITE="www.baidu.com"
 
@@ -21,7 +22,7 @@ if [ -n "$(pidof v2ray)" ] ; then
         wget -s -q -T 3 $CN_WEBSITE > /dev/null
         if [ "$?" == "0" ]; then
             loger "网络正常,v2ray-服务失败,重新启动-Shadowsocks..."
-            $SSR_HOME/ssr-install restart
+            $SS_SCRIPT restart
         else
             loger "互联网络未接通-已断网......"
         fi
