@@ -13,6 +13,7 @@ DNSMASQ_RURE="$STORAGE/dnsmasq/dnsmasq.conf"
 TIME_SCRIPT="$STORAGE/cron/crontabs/$username"
 dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
 dir_gfwlist_file="$STORAGE/gfwlist/gfw_list.conf"
+ss_folder="/etc_ro/shadowsocks.tar.gz"
 
 username=$(nvram get http_username)
 SS_ENABLE=$(nvram get ss_enable)
@@ -321,6 +322,13 @@ dog_restart(){
     sleep 2 && $ss_bin -c $ss_json -b 0.0.0.0 -l $SS_LOCAL_PORT_LINK >/dev/null 2>&1 &
 }
 
+func_sshome_file(){
+    if [ ! -d "$SSR_HOME" ] ; then
+        sleep 3 && \
+        tar zxf "$ss_folder" -C "$STORAGE"
+    fi
+}
+
 func_v2fly(){
     /bin/sh $SSR_HOME/v2ray.sh start
 }
@@ -341,6 +349,7 @@ func_start(){
         then
             check_music
         fi
+        func_sshome_file && \
         func_gfwlist_list && \
         func_port_agent_mode &
         if [ "$ss_mode" = "3" ]
