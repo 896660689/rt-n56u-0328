@@ -87,26 +87,26 @@ func_china_file(){
 [ ! -f "/etc_ro/chnroute.bz2" ] && sleep 12
 if [ ! -f "$dir_chnroute_file" ] || [ ! -s "$dir_chnroute_file" ]
 then
-    [ ! -d $STORAGE/chinadns ] && mkdir -p "$STORAGE/chinadns"
-    tar jxf "/etc_ro/chnroute.bz2" -C "$STORAGE/chinadns" && \
-    chmod 644 "$dir_chnroute_file" && sleep 2
+[ ! -d $STORAGE/chinadns ] && mkdir -p "$STORAGE/chinadns"
+tar jxf "/etc_ro/chnroute.bz2" -C "$STORAGE/chinadns" && \
+chmod 644 "$dir_chnroute_file" && sleep 2
 fi
 if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
 then
-    ipset -N chnroute hash:net
-    awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore && \
-    wait
-    echo "load ip rules !"
+ipset -N chnroute hash:net
+awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore && \
+wait
+echo "load ip rules !"
 else
-    func_china_file
+func_china_file
 fi
 }
 
 flush_ipt_file(){
-    FWI="/tmp/shadowsocks_iptables.save"
-    [ -n "$FWI" ] && echo '# firewall include file' >$FWI && \
-    chmod +x $FWI
-    return 0
+FWI="/tmp/shadowsocks_iptables.save"
+[ -n "$FWI" ] && echo '# firewall include file' >$FWI && \
+chmod +x $FWI
+return 0
 }
 
 flush_ipt_rules(){
@@ -131,18 +131,18 @@ cat <<-CAT >>$FWI
 iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
 iptables-restore -n <<-EOF
 $(iptables-save | grep -E "$CHAIN_NAME|^\*|^COMMIT" |\
-	sed -e "s/^-A \(OUTPUT\|PREROUTING\)/-I \1 1/")
+sed -e "s/^-A \(OUTPUT\|PREROUTING\)/-I \1 1/")
 EOF
 CAT
-    return 0
+return 0
 }
 
 func_iptables(){
 if [ -n "$ARG2" ]
 then
-    REMOTE_IP=$ARG2
+REMOTE_IP=$ARG2
 else
-    logger -t $BINARY_NAME "$REMOTE_IP NOT FOUND!"
+logger -t $BINARY_NAME "$REMOTE_IP NOT FOUND!"
 return 0
 fi
 func_clean
@@ -161,13 +161,13 @@ done
 }
 
 func_stop(){
-    if [ -n "$(pidof $BINARY_NAME)" ] ; then
-    killall $BINARY_NAME >/dev/null 2>&1 &
-    sleep 2
-    fi
-    func_clean
-    [ -d "$TMP_HOME" ] && rm -rf "$TMP_HOME"
-    logger -t $BINARY_NAME "KILLED"
+if [ -n "$(pidof $BINARY_NAME)" ] ; then
+killall $BINARY_NAME >/dev/null 2>&1 &
+sleep 2
+fi
+func_clean
+[ -d "$TMP_HOME" ] && rm -rf "$TMP_HOME"
+logger -t $BINARY_NAME "KILLED"
 }
 
 case "$ARG1" in
