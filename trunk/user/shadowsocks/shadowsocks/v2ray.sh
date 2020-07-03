@@ -25,7 +25,7 @@ func_download(){
     if [ ! -f "$v2_home/v2ray" ]
     then
         mkdir -p "$v2_home" && sleep 2
-        curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/V2fly/v2ray && \
+        curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/v2fly/v2ray && \
         chmod 777 "$v2_home/v2ray"
     fi
 }
