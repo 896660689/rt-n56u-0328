@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # github:http://github.com/SuzukiHonoka
 # Compile:by-lanse	2020-06-30
 
@@ -124,7 +124,7 @@ $ipt -A $CHAIN_NAME -d 224.0.0.0/4 -j RETURN
 $ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
 $ipt -A $CHAIN_NAME -m set --match-set chnroute dst -j RETURN
 $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
-$ipt -I PREROUTING -i br0 -p tcp -j $CHAIN_NAME
+$ipt -A PREROUTING -i br0 -p tcp -j $CHAIN_NAME
 #$ipt -I OUTPUT -p tcp -j $CHAIN_NAME
 
 cat <<-CAT >>$FWI
