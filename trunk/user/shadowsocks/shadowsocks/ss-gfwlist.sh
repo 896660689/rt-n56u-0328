@@ -109,8 +109,8 @@ EOF
 ipt_nat() {
 	include_ac_rules nat
 	ipt="iptables -t nat"
-	$ipt -I PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $SS_LOCAL_PORT_LINK || return 1
-	$ipt -I OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $SS_LOCAL_PORT_LINK
+	$ipt -A PREROUTING -i br0 -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $SS_LOCAL_PORT_LINK || return 1
+	$ipt -A OUTPUT -p tcp -m set --match-set gfwlist dst -j REDIRECT --to-port $SS_LOCAL_PORT_LINK
 	return $?
 }
 
