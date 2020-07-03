@@ -1,5 +1,5 @@
-!  -----¸üĞÂÊ±¼ä:  2020-01-29 16:56:51   by:xwhyc-----------------------------------------------
-!  -----¹ã¸æ·´À¡:http://www.adbyby.com/help.htm   QQÈº: 79547134(Âú), 364066294(Âú)£¬470705224(Âú)£¬534897434,438394572--------------
+!  -----æ›´æ–°æ—¶é—´:  2020-01-29 16:56:51   by:xwhyc-----------------------------------------------
+!  -----å¹¿å‘Šåé¦ˆ:http://www.adbyby.com/help.htm   QQç¾¤: 79547134(æ»¡), 364066294(æ»¡)ï¼Œ470705224(æ»¡)ï¼Œ534897434,438394572--------------
 @@||dd.browser.360.cn/static
 rrys2019.com##.float_middel_ad_bk,#float_ad
 youku.com##[style*="width: 400px;"],[style*="width: 361px;"]
@@ -19,11 +19,12 @@ youku.com##[style*="width: 400px;"],[style*="width: 361px;"]
 ||qunale888.com/files/h5/
 ||res.iyoowi.com/iy/iy.js?cid=
 ||tdbzcl.com
-||tt27.tv/js/jsg/¶ÔÁª¹ã¸æ.js
+||tt27.tv/js/jsg/å¯¹è”å¹¿å‘Š.js
 ||vodxc.tv/xcimg/js/Img.Load.js
 !-------------------------------------------
 
 !-----------------------
 |http://mark.l.qq.com/fcgi-bin/get_video_mark_all*&strAdParam=
 !---------adbyby---------
+
 
