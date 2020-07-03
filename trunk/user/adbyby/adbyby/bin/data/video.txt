@@ -27,4 +27,3 @@ youku.com##[style*="width: 400px;"],[style*="width: 361px;"]
 |http://mark.l.qq.com/fcgi-bin/get_video_mark_all*&strAdParam=
 !---------adbyby---------
 
-
