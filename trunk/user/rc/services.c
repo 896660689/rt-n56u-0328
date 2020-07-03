@@ -252,13 +252,13 @@ void restart_ttyd(void){
 
 #if defined(APP_SHADOWSOCKS)
 void stop_ss(void){
-	eval("/etc/storage/shadowsocks/ssr-install","stop");
+	eval("/usr/bin/shadowsocks.sh","stop");
 }
 
 void start_ss(void){
 	int ss_enable = nvram_get_int("ss_enable");
 	if ( ss_enable == 1)
-		eval("/etc/storage/shadowsocks/ssr-install","start");
+		eval("/usr/bin/shadowsocks.sh","start");
 }
 
 void restart_ss(void){
