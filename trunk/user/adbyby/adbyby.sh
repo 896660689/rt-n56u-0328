@@ -283,7 +283,7 @@ adbyby_folder()
 {
     if [ ! -f "$TMP_HOME/adbyby" ]
     then
-        logger "adbyby" "adbyby程序文件不存在,正在解压..." && sleep 15
+        logger "adbyby" "adbyby程序文件不存在,正在解压..." && sleep 25
         #tar zxf "/etc_ro/adbyby.tar.gz" "adbyby/bin" -C "/tmp"
         tar zxf "/etc_ro/adbyby.tar.gz" -C "/tmp" &
         sleep 3
