@@ -195,7 +195,6 @@ func_fill()
 	dir_inadyn="$dir_storage/inadyn"
 	dir_crond="$dir_storage/cron/crontabs"
 	dir_wlan="$dir_storage/wlan"
-	dir_shadowsocks="$dir_storage/shadowsocks"
 
 	script_start="$dir_storage/start_script.sh"
 	script_started="$dir_storage/started_script.sh"
@@ -216,8 +215,6 @@ func_fill()
 	user_sswan_conf="$dir_sswan/strongswan.conf"
 	user_sswan_ipsec_conf="$dir_sswan/ipsec.conf"
 	user_sswan_secrets="$dir_sswan/ipsec.secrets"
-
-	shadowsocks_folder="/etc_ro/shadowsocks.tar.gz"
 
 	username=$(whoami)
 	[ -z $username ] && username=$(nvram get http_username)
@@ -259,11 +256,6 @@ EOF
 
 	# create https dir
 	[ ! -d "$dir_httpssl" ] && mkdir -p -m 700 "$dir_httpssl"
-
-	# create shadowsocks
-	if [ ! -d "$dir_shadowsocks" ] ; then
-			tar zxf "$shadowsocks_folder" -C "$dir_storage"
-	fi
 
 	# create start script
 	if [ ! -f "$script_start" ] ; then
