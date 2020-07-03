@@ -326,8 +326,8 @@ func_v2fly(){
 }
 
 func_redsocks(){
-    /bin/bash $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK $v2_address 
-    /bin/bash $SSR_HOME/redsocks.sh iptables $v2_address
+    /bin/sh $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK $v2_address 
+    #/bin/bash $SSR_HOME/redsocks.sh iptables $v2_address
 }
 
 func_chinadns_ng(){
@@ -374,9 +374,9 @@ func_start(){
 func_stop(){
     nvram set ss-tunnel_enable=0
     /usr/bin/ss-tunnel.sh stop &
-    sleep 1 && $SSR_HOME/v2ray.sh stop &
-    sleep 1 && /bin/bash $SSR_HOME/redsocks.sh stop
-    sleep 1 && /bin/bash $SSR_HOME/chinadns-ng.sh stop
+    sleep 1 && /bin/sh $SSR_HOME/v2ray.sh stop &
+    sleep 1 && /bin/sh $SSR_HOME/redsocks.sh stop
+    sleep 1 && /bin/sh $SSR_HOME/chinadns-ng.sh stop
     sleep 1 && func_ss_Close &
     sleep 1 && func_ss_down &
     wait
