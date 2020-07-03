@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-06-27
+# Compile:by-lanse	2020-07-03
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
@@ -25,7 +25,7 @@ func_download(){
     if [ ! -f "$v2_home/v2ray" ]
     then
         mkdir -p "$v2_home" && sleep 2
-        curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/V2/v2ray_4.25.1 && \
+        curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/V2fly/v2ray && \
         chmod 777 "$v2_home/v2ray"
     fi
 }
