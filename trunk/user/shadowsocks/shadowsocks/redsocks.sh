@@ -84,6 +84,7 @@ fi
 }
 
 func_china_file(){
+[ ! -f "/etc_ro/chnroute.bz2" ] && sleep 12
 if [ ! -f "$dir_chnroute_file" ] || [ ! -s "$dir_chnroute_file" ]
 then
     [ ! -d $STORAGE/chinadns ] && mkdir -p "$STORAGE/chinadns"
