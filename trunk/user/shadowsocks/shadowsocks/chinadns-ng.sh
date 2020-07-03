@@ -25,18 +25,21 @@ func_del_rule(){
 }
 
 func_del_ipt(){
-    iptables-save -c | grep -v CNNG_OUT | iptables-restore -c
-    iptables-save -c | grep -v CNNG_PRE | iptables-restore -c
-    iptables-save -c | grep -v REDSOCKS | iptables-restore -c && sleep 1
-    for setname in $(ipset -n list | grep "lanip"); do
+iptables-save -c | grep -v CNNG_OUT | iptables-restore -c
+#iptables-save -c | grep -v CNNG_PRE | iptables-restore -c 
+iptables-save -c | grep -v REDSOCKS | iptables-restore -c && sleep 1
+    for setname in $(ipset -n list | grep "gateway"); do
         ipset destroy "$setname" 2>/dev/null
     done
 }
 
-func_cnng_file(){
+func_cdn_file(){
     logger -t "[CHINADNS-NG]" "下载 [cdn] 域名文件..."
     curl -k -s -o /tmp/cdn.txt --connect-timeout 10 --retry 3 https://gitee.com/bkye/rules/raw/master/cdn.txt
-    /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 114.114.114.114#53 -t 127.0.0.1#$ss_tunnel_local_port -4 chnroute >/dev/null 2>&1 &
+}
+
+func_cnng_file(){
+    /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 114.114.114.114#53 -t 127.0.0.1#$ss_tunnel_local_port -4 chnroute -m /tmp/cdn.txt >/dev/null 2>&1 &
     if grep -q "no-resolv" "$DNSMASQ_RURE"
     then
         sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE
@@ -45,63 +48,55 @@ func_cnng_file(){
 no-resolv
 server=127.0.0.1#65353
 EOF
+restart_dhcpd
 }
 
 func_lan_ip(){
-    ipset -! restore <<-EOF || return 1
-        create lanip hash:net hashsize 64
-        $(gen_lan_ip | sed -e "s/^/add lanip /")
+ipset -! restore <<-EOF
+create gateway hash:net hashsize 64
+$(gen_lan_ip | sed -e "s/^/add gateway /")
 EOF
-    return 0
 }
 
 gen_lan_ip(){
-    cat <<-EOF | grep -E "^([0-9]{1,3}\.){3}[0-9]{1,3}"
-	0.0.0.0/8
-	10.0.0.0/8
-	127.0.0.0/8
-	169.254.0.0/16
-	172.16.0.0/12
-	192.0.2.0/24
-	192.168.0.0/16
-	224.0.0.0/4
-	240.0.0.0/4
-	$v2_address
-
+cat <<-EOF | grep -E "^([0-9]{1,3}\.){3}[0-9]{1,3}"
+0.0.0.0/8
+10.0.0.0/8
+127.0.0.0/8
+169.254.0.0/16
+172.16.0.0/12
+192.0.2.0/24
+192.168.0.0/16
+224.0.0.0/4
+240.0.0.0/4
+$v2_address
 EOF
 }
 
 func_cnng_ipt(){
 ipt="iptables -t nat"
-#ipt_m="iptables -t mangle"
-
-$ipt -N CNNG_PRE
 $ipt -N CNNG_OUT
 $ipt -N REDSOCKS
 
-$ipt -I PREROUTING 1 -p tcp -j CNNG_OUT
+$ipt -I PREROUTING 1 -j CNNG_OUT
+$ipt -I OUTPUT 1 -p tcp -j CNNG_OUT
 
-$ipt -A CNNG_PRE -m set --match-set lanip dst -j RETURN
-$ipt -A REDSOCKS -m set --match-set chnroute dst -j RETURN
-
-$ipt -A PREROUTING -p tcp -j REDSOCKS
-$ipt -A CNNG_PRE -j REDSOCKS
-$ipt -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
-
-$ipt -A OUTPUT -j CNNG_OUT
-$ipt -A CNNG_OUT -p tcp -j CNNG_PRE
+$ipt -A REDSOCKS -m set --match-set gateway dst -j RETURN
+$ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
 $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
 
+$ipt -A CNNG_OUT -p tcp -j REDSOCKS
+$ipt -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
 }
 
 func_start(){
     func_del_rule && \
     echo -e "\033[41;37m 部署 [CHINADNS-NG] 文件,请稍后...\e[0m\n"
-    #func_cnng_file &
+    func_cdn_file
+    func_cnng_file &
     func_del_ipt && \
     func_lan_ip
     func_cnng_ipt && sleep 2
-    restart_dhcpd && \
     logger -t "[CHINADNS-NG]" "开始运行…"
 }
 
