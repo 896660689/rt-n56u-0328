@@ -79,7 +79,7 @@ $ipt -N CNNG_OUT
 $ipt -N REDSOCKS
 
 $ipt -I PREROUTING 1 -j CNNG_OUT
-$ipt -I OUTPUT 1 -p tcp -j CNNG_OUT
+$ipt -I OUTPUT 1 -j CNNG_OUT
 
 $ipt -A REDSOCKS -m set --match-set gateway dst -j RETURN
 $ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
