@@ -39,7 +39,7 @@ func_cdn_file(){
 }
 
 func_cnng_file(){
-    /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 114.114.114.114#53 -t 127.0.0.1#$ss_tunnel_local_port -4 chnroute -m /tmp/cdn.txt >/dev/null 2>&1 &
+    /usr/bin/chinadns-ng -b 0.0.0.0 -l 65353 -c 114.114.114.114#53 -t 127.0.0.1#$ss_tunnel_local_port -4 chnroute >/dev/null 2>&1 &
     if grep -q "no-resolv" "$DNSMASQ_RURE"
     then
         sed -i '/no-resolv/d; /server=127.0.0.1/d' $DNSMASQ_RURE
@@ -79,10 +79,10 @@ $ipt -N CNNG_OUT
 $ipt -N REDSOCKS
 
 $ipt -I PREROUTING 1 -j CNNG_OUT
-$ipt -I OUTPUT 1 -j CNNG_OUT
+$ipt -I OUTPUT 1 -j REDSOCKS
 
 $ipt -A REDSOCKS -m set --match-set gateway dst -j RETURN
-$ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
+$ipt -A REDSOCKS -m set --match-set chnroute dst -j RETURN
 $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
 
 $ipt -A CNNG_OUT -p tcp -j REDSOCKS
@@ -92,7 +92,7 @@ $ipt -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
 func_start(){
     func_del_rule && \
     echo -e "\033[41;37m 部署 [CHINADNS-NG] 文件,请稍后...\e[0m\n"
-    func_cdn_file &
+    #func_cdn_file &
     wait
     echo "download cdn file !"
     func_del_ipt
