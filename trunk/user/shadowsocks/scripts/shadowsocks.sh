@@ -335,9 +335,7 @@ func_v2fly(){
 
 func_redsocks(){
     /bin/sh $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK $v2_address 
-    /bin/sh $SSR_HOME/redsocks.sh iptables $v2_address &
-    wait
-    echo "socks5 Start..."
+    /bin/sh $SSR_HOME/redsocks.sh iptables $v2_address
 }
 
 func_chinadns_ng(){
@@ -358,8 +356,8 @@ func_start(){
         then
             logger -t "[v2ray]" "开始部署 [v2ray] 代理模式..."
             func_v2fly && \
-            func_redsocks
-            func_chinadns_ng
+            func_redsocks && \
+            func_chinadns_ng &
         else
             echo -e "\033[41;37m 部署 [ShadowsocksR] 文件,请稍后...\e[0m\n"
             func_gen_ss_json && \
