@@ -1,6 +1,6 @@
 #!/bin/sh
 # github:http://github.com/SuzukiHonoka
-# Compile:by-lanse	2020-06-30
+# Compile:by-lanse	2020-07-06
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -149,13 +149,7 @@ func_clean
 func_china_file
 wait
 echo "CH list rule !"
-if [ -f "$dir_chnroute_file" ]
-then
-flush_ipt_file && flush_ipt_rules
-else
-func_china_file && sleep 5
-flush_ipt_file && flush_ipt_rules
-fi
+#flush_ipt_file && flush_ipt_rules
 }
 
 func_clean(){
