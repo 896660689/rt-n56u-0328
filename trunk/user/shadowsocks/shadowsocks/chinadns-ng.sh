@@ -92,11 +92,13 @@ $ipt -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
 func_start(){
     func_del_rule && \
     echo -e "\033[41;37m 部署 [CHINADNS-NG] 文件,请稍后...\e[0m\n"
-    func_cdn_file
-    func_cnng_file &
-    func_del_ipt && \
-    func_lan_ip
-    func_cnng_ipt && sleep 2
+    func_cdn_file &
+    wait
+    echo "download cdn file !"
+    func_del_ipt
+    func_cnng_file
+    func_lan_ip && \
+    func_cnng_ipt && \
     logger -t "[CHINADNS-NG]" "开始运行…"
 }
 
