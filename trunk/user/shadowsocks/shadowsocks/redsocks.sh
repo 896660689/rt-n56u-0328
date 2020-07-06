@@ -149,7 +149,13 @@ func_clean
 func_china_file
 wait
 echo "CH list rule !"
+if [ -f "$dir_chnroute_file" ]
+then
 flush_ipt_file && flush_ipt_rules
+else
+func_china_file && sleep 5
+flush_ipt_file && flush_ipt_rules
+fi
 }
 
 func_clean(){
