@@ -125,7 +125,7 @@ $ipt -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
 $ipt -A $CHAIN_NAME -m set --match-set chnroute dst -j RETURN
 $ipt -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
 $ipt -A PREROUTING -i br0 -p tcp -j $CHAIN_NAME
-#$ipt -I OUTPUT -p tcp -j $CHAIN_NAME
+#$ipt -A OUTPUT -j $CHAIN_NAME
 
 cat <<-CAT >>$FWI
 iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c
