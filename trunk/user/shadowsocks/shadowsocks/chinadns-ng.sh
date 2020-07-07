@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-06-30
+# Compile:by-lanse	2020-07-08
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -75,14 +75,15 @@ EOF
 
 func_cnng_ipt(){
 ipt="iptables -t nat"
+
 $ipt -N CNNG_OUT
 $ipt -N REDSOCKS
 
 $ipt -I PREROUTING 1 -j CNNG_OUT
-$ipt -I OUTPUT 1 -j REDSOCKS
-
+$ipt -I OUTPUT 1 -p tcp -j REDSOCKS
 $ipt -A REDSOCKS -m set --match-set gateway dst -j RETURN
 $ipt -A REDSOCKS -m set --match-set chnroute dst -j RETURN
+$ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
 $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
 
 $ipt -A CNNG_OUT -p tcp -j REDSOCKS
