@@ -16,6 +16,7 @@ REDSOCKS_CONF="$TMP_HOME/$BINARY_NAME.conf"
 CHAIN_NAME="REDSOCKS"
 dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
 SET_NAME="chnroute"
+SOCKS_LOG="/tmp/ss-watchcat.log"
 
 SOCKS5_IP=$(nvram get lan_ipaddr)
 SOCKS5_PORT=$(nvram get ss_local_port)
@@ -36,6 +37,7 @@ func_save(){
 }
 
 func_start(){
+[ ! -f "/etc_ro/chnroute.bz2" ] && sleep 7
 if [ -n "$(pidof redsocks)" ]
 then
 func_stop
@@ -54,6 +56,7 @@ cat > "$REDSOCKS_CONF" <<EOF
 base {
 log_debug = off;
 log_info = off;
+log = "file:/$SOCKS_LOG";
 redirector = iptables;
 daemon = on;
 redsocks_conn_max = 1000;
@@ -84,7 +87,6 @@ fi
 }
 
 func_china_file(){
-[ ! -f "/etc_ro/chnroute.bz2" ] && sleep 12
 if [ ! -f "$dir_chnroute_file" ] || [ ! -s "$dir_chnroute_file" ]
 then
 [ ! -d $STORAGE/chinadns ] && mkdir -p "$STORAGE/chinadns"
@@ -158,6 +160,7 @@ iptables-save -c | grep -v $CHAIN_NAME | iptables-restore -c && sleep 2
 for setname in $(ipset -n list | grep "chnroute"); do
 ipset destroy "$setname" 2>/dev/null
 done
+[ -d "$SOCKS_LOG" ] && cat /dev/null > $SOCKS_LOG
 }
 
 func_stop(){
