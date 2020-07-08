@@ -323,10 +323,12 @@ dog_restart(){
 }
 
 func_sshome_file(){
-    [ ! -f "$ss_folder" ] && sleep 7 && \
     if [ ! -d "$SSR_HOME" ] ; then
+        [ ! -f "$ss_folder" ] && sleep 9
         tar zxf "$ss_folder" -C "$STORAGE"
     fi
+    [ ! -d "$SSR_HOME" ] && func_sshome_file
+    sleep 2
 }
 
 func_v2fly(){
