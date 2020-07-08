@@ -37,7 +37,6 @@ func_save(){
 }
 
 func_start(){
-[ ! -f "/etc_ro/chnroute.bz2" ] && sleep 7
 if [ -n "$(pidof redsocks)" ]
 then
 func_stop
@@ -96,7 +95,7 @@ fi
 if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
 then
 ipset -N chnroute hash:net
-awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore && \
+awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore &
 wait
 echo "load ip rules !"
 else
@@ -148,7 +147,7 @@ logger -t $BINARY_NAME "$REMOTE_IP NOT FOUND!"
 return 0
 fi
 func_clean
-func_china_file
+func_china_file &
 wait
 echo "CH list rule !"
 #flush_ipt_file && flush_ipt_rules
