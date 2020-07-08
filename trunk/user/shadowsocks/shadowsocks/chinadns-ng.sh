@@ -25,12 +25,10 @@ func_del_rule(){
 }
 
 func_del_ipt(){
-iptables-save -c | grep -v CNNG_OUT | iptables-restore -c
-#iptables-save -c | grep -v CNNG_PRE | iptables-restore -c 
-iptables-save -c | grep -v REDSOCKS | iptables-restore -c && sleep 1
-    for setname in $(ipset -n list | grep "gateway"); do
-        ipset destroy "$setname" 2>/dev/null
-    done
+iptables-save -c | grep -v CNNG_ | iptables-restore -c && sleep 1
+for setname in $(ipset -n list | grep "gateway"); do
+    ipset destroy "$setname" 2>/dev/null
+done
 }
 
 func_cdn_file(){
@@ -73,21 +71,38 @@ $v2_address
 EOF
 }
 
+flush_ipt_file(){
+FWI="/tmp/shadowsocks_iptables.save"
+[ -n "$FWI" ] && echo '# firewall include file' >$FWI && \
+chmod +x $FWI
+return 0
+}
+
 func_cnng_ipt(){
 ipt="iptables -t nat"
 
 $ipt -N CNNG_OUT
-$ipt -N REDSOCKS
+$ipt -N CNNG_PRE
 
-$ipt -I PREROUTING 1 -j CNNG_OUT
-$ipt -I OUTPUT 1 -p tcp -j REDSOCKS
-$ipt -A REDSOCKS -m set --match-set gateway dst -j RETURN
-$ipt -A REDSOCKS -m set --match-set chnroute dst -j RETURN
+$ipt -A PREROUTING -j CNNG_OUT
+#$ipt -A PREROUTING -p tcp -j CNNG_PRE
+$ipt -A OUTPUT -j CNNG_PRE
+$ipt -A CNNG_PRE -m set --match-set gateway dst -j RETURN
+$ipt -A CNNG_PRE -m set --match-set chnroute dst -j RETURN
 $ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
 $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
 
-$ipt -A CNNG_OUT -p tcp -j REDSOCKS
-$ipt -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
+$ipt -A CNNG_OUT -p tcp -j CNNG_PRE
+$ipt -A CNNG_PRE -p tcp -j REDIRECT --to-ports 12345
+
+cat <<-CAT >>$FWI
+iptables-save -c | grep -v CNNG_ | iptables-restore -c
+iptables-restore -n <<-EOF
+$(iptables-save | grep -E "CNNG_|^\*|^COMMIT" |\
+sed -e "s/^-A \(OUTPUT\|PREROUTING\)/-I \1 1/")
+EOF
+CAT
+return 0
 }
 
 func_start(){
@@ -99,6 +114,7 @@ func_start(){
     func_del_ipt
     func_cnng_file
     func_lan_ip && \
+    flush_ipt_file && \
     func_cnng_ipt && \
     logger -t "[CHINADNS-NG]" "开始运行…"
 }
