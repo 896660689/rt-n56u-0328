@@ -336,7 +336,7 @@ func_v2fly(){
 }
 
 func_redsocks(){
-    /bin/sh $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINk
+    /bin/sh $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK
     /bin/sh $SSR_HOME/redsocks.sh iptables $v2_address
 }
 
