@@ -84,8 +84,8 @@ ipt="iptables -t nat"
 $ipt -N CNNG_OUT
 $ipt -N CNNG_PRE
 
-$ipt -A PREROUTING -j CNNG_OUT
-#$ipt -A PREROUTING -p tcp -j CNNG_PRE
+$ipt -A PREROUTING -p udp -j CNNG_OUT
+$ipt -A PREROUTING -p tcp -j CNNG_PRE
 $ipt -A OUTPUT -j CNNG_PRE
 $ipt -A CNNG_PRE -m set --match-set gateway dst -j RETURN
 $ipt -A CNNG_PRE -m set --match-set chnroute dst -j RETURN
