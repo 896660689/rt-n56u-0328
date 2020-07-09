@@ -150,8 +150,9 @@ addn-hosts=$HOSTS_HOME/hosts_ad/
 EOF
         wget -t 5 -T 10 -c --no-check-certificate -O- "https://cdn.jsdelivr.net/gh/vokins/yhosts/hosts" \
         | sed -E -e '/#/d' -e '/^\s*$/d; s/127.0.0.1/0.0.0.0/' > $HS_TV/hosts &
-        chmod 644 $HS_TV/hosts
-        sleep 2
+        chmod 644 $HS_TV/hosts &
+        wait
+        echo "download hosts file !"
         if [ -f "$HS_TV/hosts" ] ; then
             nvram set adbyby_hostsad=$(grep -v '^!' $HS_TV/hosts | wc -l)
         fi
@@ -166,8 +167,9 @@ addn-hosts=$HOSTS_HOME/hosts_ad/
 EOF
         wget --no-check-certificate -O- "http://winhelp2002.mvps.org/hosts.txt" \
         |sed -E -e "s/#.*$//" -e "/^$/d" -e "/localhost/d" -e '/^[[:space:]]*$/d' > $HS_TV/tvhosts &
-        chmod 644 $HS_TV/tvhosts
-        sleep 2
+        chmod 644 $HS_TV/tvhosts &
+        wait
+        echo "download tvhosts file !"
         if [ -f "$HS_TV/tvhosts" ] ; then
             nvram set adbyby_tvbox=$(grep -v '^!' $HS_TV/tvhosts | wc -l)
         fi
@@ -224,6 +226,8 @@ func_abp_up()
 {
     if [ ! -f "$HOSTS_HOME/dnsmasq.adblock" ] ; then
         $ADBYBY_HOME/adblock.sh 2>&1 >/dev/null &
+        wait
+        echo "download adblock file !"
         func_adblock_gz &
     fi
 }
