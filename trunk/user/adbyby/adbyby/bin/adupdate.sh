@@ -91,4 +91,5 @@ download_video(){
         #sed -i "s/=video,lazy/=none/g" $TMP_HOME/adhook.sample.ini
         judge_update
     fi
+    rm -rf $tmpdir
     exit 0
