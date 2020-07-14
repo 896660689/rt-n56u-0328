@@ -372,7 +372,7 @@ func_start(){
             func_start_ss_rules &
             wait
             echo "ShadowsocksR Started..."
-            loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!";}
+            loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!"; }
         fi
         func_cron &
         sleep 2 && logger -t "[ShadowsocksR]" "开始运行"
