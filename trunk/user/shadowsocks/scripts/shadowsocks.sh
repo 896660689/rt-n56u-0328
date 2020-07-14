@@ -250,7 +250,7 @@ func_chnroute_file(){
     if [ ! -f "$dir_chnroute_file" ] || [ ! -s "$dir_chnroute_file" ] ; then
         [ ! -d $STORAGE/chinadns ] && mkdir -p "$STORAGE/chinadns"
         tar jxf "/etc_ro/chnroute.bz2" -C "$STORAGE/chinadns"
-        chmod 644 "$dir_chnroute_file"
+        chmod 644 "$dir_chnroute_file" && /sbin/mtd_storage.sh save
     fi
 }
 
@@ -322,7 +322,8 @@ dog_restart(){
 func_sshome_file(){
     [ ! -f "$ss_folder" ] && sleep 8
     if [ ! -d "$SSR_HOME" ] ; then
-        sleep 10 && tar zxf "$ss_folder" -C "$STORAGE"
+        sleep 10 && tar zxf "$ss_folder" -C "$STORAGE" && \
+        /sbin/mtd_storage.sh save
     fi
 }
 
