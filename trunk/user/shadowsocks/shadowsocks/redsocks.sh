@@ -86,17 +86,6 @@ fi
 }
 
 func_china_file(){
-if [ ! -f "$dir_chnroute_file" ] || [ ! -s "$dir_chnroute_file" ]
-then
-[ ! -d $STORAGE/chinadns ] && mkdir -p "$STORAGE/chinadns"
-if [ -f "/etc_ro/chnroute.bz2" ]
-then
-tar jxf "/etc_ro/chnroute.bz2" -C "$STORAGE/chinadns" && \
-chmod 644 "$dir_chnroute_file" && sleep 2
-else
-sleep 3 && func_china_file
-fi
-fi
 if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
 then
 ipset -N chnroute hash:net
