@@ -89,18 +89,18 @@ func_china_file(){
 if [ ! -f "$dir_chnroute_file" ] || [ ! -s "$dir_chnroute_file" ]
 then
 [ ! -d $STORAGE/chinadns ] && mkdir -p "$STORAGE/chinadns"
+sleep 3 && \
 tar jxf "/etc_ro/chnroute.bz2" -C "$STORAGE/chinadns" && \
 chmod 644 "$dir_chnroute_file" && sleep 2
 fi
 if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
 then
 ipset -N chnroute hash:net
+sleep 3 && \
 awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore &
+fi
 wait
 echo "load ip rules !"
-else
-func_china_file
-fi
 }
 
 flush_ipt_file(){
