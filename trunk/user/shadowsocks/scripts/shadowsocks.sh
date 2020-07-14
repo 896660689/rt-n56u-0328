@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-07-01
+# Compile:by-lanse	2020-07-15
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -252,9 +252,6 @@ func_chnroute_file(){
         tar jxf "/etc_ro/chnroute.bz2" -C "$STORAGE/chinadns"
         chmod 644 "$dir_chnroute_file"
     fi
-    func_start_ss_redir
-    func_start_ss_rules
-    sleep 2 && loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!";}
 }
 
 func_gfwlist_file(){
@@ -349,7 +346,13 @@ func_start(){
         then
             check_music
         fi
-        func_sshome_file &
+        func_sshome_file && \
+        if [ "$ss_mode" = "2" ]
+        then
+            func_gfwlist_file &
+        else
+            func_chnroute_file &
+        fi
         wait
         echo "SSR FILE..."
         func_gfwlist_list && \
@@ -364,19 +367,15 @@ func_start(){
             echo -e "\033[41;37m 部署 [ShadowsocksR] 文件,请稍后...\e[0m\n"
             func_gen_ss_json && \
             func_gen_ss2_json && \
-            ln -sf $ss_json.main $ss_json
-            sleep 1
-            if [ "$ss_mode" = "2" ]
-            then
-                func_gfwlist_file &
-            else
-                func_chnroute_file &
-            fi
+            ln -sf $ss_json.main $ss_json && \
+            func_start_ss_redir && \
+            func_start_ss_rules &
             wait
             echo "ShadowsocksR Started..."
-            logger -t "[ShadowsocksR]" "开始运行"
+            loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!";}
         fi
         func_cron &
+        sleep 2 && logger -t "[ShadowsocksR]" "开始运行"
     else
         exit 0
     fi
