@@ -323,12 +323,10 @@ dog_restart(){
 }
 
 func_sshome_file(){
+    [ ! -f "$ss_folder" ] && sleep 8
     if [ ! -d "$SSR_HOME" ] ; then
-        [ ! -f "$ss_folder" ] && sleep 9
-        tar zxf "$ss_folder" -C "$STORAGE"
+        sleep 10 && tar zxf "$ss_folder" -C "$STORAGE"
     fi
-    [ ! -d "$SSR_HOME" ] && func_sshome_file
-    sleep 2
 }
 
 func_v2fly(){
@@ -351,7 +349,9 @@ func_start(){
         then
             check_music
         fi
-        func_sshome_file
+        func_sshome_file &
+        wait
+        echo "SSR FILE..."
         func_gfwlist_list && \
         func_port_agent_mode &
         if [ "$ss_mode" = "3" ]
