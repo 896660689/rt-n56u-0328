@@ -90,7 +90,8 @@ if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
 then
 ipset -N chnroute hash:net
 sleep 3 && \
-awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore &
+sed -e "s/^/add chnroute /" $dir_chnroute_file | ipset restore &
+#awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore &
 fi
 wait
 echo "load ip rules !"
