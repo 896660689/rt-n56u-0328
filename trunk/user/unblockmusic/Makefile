@@ -4,7 +4,12 @@ export GOPROXY=https://goproxy.io
 UM_VERSION := 0.2.3
 UM_URL := https://github.com/cnsilvan/UnblockNeteaseMusic/archive/$(UM_VERSION).tar.gz
 
-all: download_um build_extract build
+all: download_um build_extract build unblockmusic_dl
+
+unblockmusic_dl:
+	( if [ -d unblockmusic ]; then \
+		tar zcf unblockmusic.tar.gz unblockmusic ; \
+	fi )
 
 build_extract:
 	mkdir -p $(THISDIR)/UnblockNeteaseMusicGo
