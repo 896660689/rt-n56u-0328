@@ -88,7 +88,7 @@ $ipt -A PREROUTING -j CNNG_OUT
 $ipt -A OUTPUT -j CNNG_PRE
 $ipt -A CNNG_PRE -m set --match-set gateway dst -j RETURN
 $ipt -A CNNG_PRE -m set --match-set chnroute dst -j RETURN
-$ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
+#$ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
 $ipt -A CNNG_OUT -p udp -d 127.0.0.1 --dport 53 -j REDIRECT --to-ports 65353
 
 $ipt -A CNNG_OUT -p tcp -j CNNG_PRE
