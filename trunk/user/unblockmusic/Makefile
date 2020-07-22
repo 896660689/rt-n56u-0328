@@ -36,6 +36,7 @@ romfs:
 	chmod -R +x ./unblockmusic
 	$(ROMFSINST) -p +x $(THISDIR)/unblockmusic.sh /usr/bin/unblockmusic.sh
 	$(ROMFSINST) $(THISDIR)/Advanced_wyy.asp /www/Advanced_wyy.asp
+	$(ROMFSINST) $(THISDIR)/file/ /etc_ro/UnblockNeteaseMusicGo/
 	$(ROMFSINST) $(THISDIR)/unblockmusic.tar.gz /etc_ro/unblockmusic.tar.gz
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_WYYBIN),y)
 	$(ROMFSINST) -p +x $(THISDIR)/bin/UnblockNeteaseMusic /usr/bin/UnblockNeteaseMusic
