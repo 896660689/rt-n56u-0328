@@ -4,7 +4,7 @@ export GOPROXY=https://goproxy.io
 UM_VERSION := 0.2.3
 UM_URL := https://github.com/cnsilvan/UnblockNeteaseMusic/archive/$(UM_VERSION).tar.gz
 
-all: download_um build_extract build unblockmusic_dl
+all: unblockmusic_dl
 
 unblockmusic_dl:
 	( if [ -d unblockmusic ]; then \
@@ -36,9 +36,8 @@ romfs:
 	chmod -R +x ./unblockmusic
 	$(ROMFSINST) -p +x $(THISDIR)/unblockmusic.sh /usr/bin/unblockmusic.sh
 	$(ROMFSINST) $(THISDIR)/Advanced_wyy.asp /www/Advanced_wyy.asp
-	$(ROMFSINST) $(THISDIR)/file/ /etc_ro/UnblockNeteaseMusicGo/
 	$(ROMFSINST) $(THISDIR)/unblockmusic.tar.gz /etc_ro/unblockmusic.tar.gz
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_WYYBIN),y)
-	$(ROMFSINST) -p +x $(THISDIR)/bin/UnblockNeteaseMusic /usr/bin/UnblockNeteaseMusic
+	$(ROMFSINST) -p +x $(THISDIR)/UnblockNeteaseMusic /usr/bin/UnblockNeteaseMusic
 endif
 
