@@ -4,6 +4,7 @@
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
 
+username=$(nvram get http_username)
 ss_proc="/var/ss-redir"
 ss_bin="ss-redir"
 ss_json="/tmp/ss-redir.json"
@@ -15,7 +16,6 @@ dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
 dir_gfwlist_file="$STORAGE/gfwlist/gfw_list.conf"
 ss_folder="/etc_ro/shadowsocks.tar.gz"
 
-username=$(nvram get http_username)
 SS_ENABLE=$(nvram get ss_enable)
 SS_TYPE=$(nvram get ss_type)	#0=ss;1=ssr
 SS_LOCAL_PORT_LINK=$(nvram get ss_local_port)
@@ -375,7 +375,7 @@ func_start(){
             echo "ShadowsocksR Started..."
             loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!"; }
         fi
-        func_cron &
+        func_cron
         sleep 2 && logger -t "[ShadowsocksR]" "开始运行"
     else
         exit 0
