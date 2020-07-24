@@ -24,7 +24,7 @@ v2_tls=$(sed -n "10p" $STORAGE_V2SH |cut -f 2 -d ":")
 func_download(){
     if [ ! -f "$v2_home/v2ray" ]
     then
-        mkdir -p "$v2_home" && sleep 2
+        mkdir -p "$v2_home"
         curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/v2fly/v2ray && \
         chmod 777 "$v2_home/v2ray"
     fi
@@ -35,15 +35,15 @@ v2_server_file(){
     then
         cat > "$STORAGE_V2SH" <<EOF
 ## -------- 以下修改账号信息，文本格式固定勿改动! -------- ##
-#服务器账号:107.167.20.181
-#服务器端口:443
-#用户ID:418048af-a293-4b99-9b0c-98ca3580dd23
-#额外ID:64
+#服务器账号:zzmm01.qlioilp.xyz
+#服务器端口:11183
+#用户ID:d387ddb4-bcaa-11ea-8c26-0050569124d1
+#额外ID:2
 #加密方式:auto
 #传输协议:ws
-#伪装域名:www.feixiang99.xyz
-#路径:/footers
-#TLS:tls
+#伪装域名:
+#路径:/X1m6BlMk/
+#TLS:
 ## ---------- END ---------- ##
 EOF
     chmod 644 "$STORAGE_V2SH"
@@ -96,17 +96,13 @@ v2_tmp_json(){
       "sniffing": {
         "enabled": true,
         "destOverride": ["http", "tls"]
-      },
-      "tag": "socks"
+      }
     }
   ],
   "outbounds": [
     {
       "protocol": "vmess",
-      "mux": {
-        "enabled": false,
-        "concurrency": -1
-      },
+      "tag": "proxy",
       "settings": {
         "vnext": [
           {
@@ -136,9 +132,32 @@ v2_tmp_json(){
             "Host": "$v2_domain_name"
           }
         }
+      },
+      "mux": {
+        "enabled": true
       }
+    },
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
     }
-  ]
+  ],
+  "routing": {
+    "rules": [        
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": [
+          "domain:speedtest.net"
+        ]
+      }
+    ]
+  }
 }
 EOF
 }
@@ -193,12 +212,8 @@ stop)
 v2_file)
     v2_server_file
     ;;
-v2_ipt)
-    func_ipt_running
-    exit 0
-    ;;
 *)
-    echo "Usage: $0 { start | stop | v2_file | v2_ipt }"
+    echo "Usage: $0 { start | stop | v2_file }"
     exit 1
     ;;
 esac
