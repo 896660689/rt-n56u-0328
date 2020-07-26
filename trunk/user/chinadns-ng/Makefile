@@ -9,6 +9,7 @@ all: download_test extract_test
 download_test:
 	( if [ ! -f $(SRC_NAME).zip ]; then \
 		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).zip $(SRC_URL); \
+		rm -f $(SRC_NAME) \
 	fi )
 
 extract_test:
