@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-07-08
+# Compile:by-lanse	2020-07-28
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -67,7 +67,6 @@ cat <<-EOF | grep -E "^([0-9]{1,3}\.){3}[0-9]{1,3}"
 192.168.0.0/16
 224.0.0.0/4
 240.0.0.0/4
-$v2_address
 EOF
 }
 
@@ -86,6 +85,7 @@ $ipt -N CNNG_PRE
 
 $ipt -A PREROUTING -j CNNG_OUT
 $ipt -A OUTPUT -j CNNG_PRE
+$ipt -A CNNG_PRE -d $v2_address -j RETURN
 $ipt -A CNNG_PRE -m set --match-set gateway dst -j RETURN
 $ipt -A CNNG_PRE -m set --match-set chnroute dst -j RETURN
 #$ipt -A CNNG_OUT -m set --match-set chnroute dst -j RETURN
