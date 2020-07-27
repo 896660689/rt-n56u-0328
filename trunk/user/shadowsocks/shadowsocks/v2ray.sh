@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-07-03
+# Compile:by-lanse	2020-07-28
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
@@ -11,6 +11,7 @@ SS_LOCAL_PORT_LINK=$(nvram get ss_local_port)
 ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 SS_LAN_IP=$(nvram get lan_ipaddr)
 
+V2RUL=/tmp/V2mimi.txt
 v2_address=$(sed -n "2p" $STORAGE_V2SH |cut -f 2 -d ":")
 v2_port=$(sed -n "3p" $STORAGE_V2SH |cut -f 2 -d ":")
 v2_userid=$(sed -n "4p" $STORAGE_V2SH |cut -f 2 -d ":")
@@ -44,13 +45,16 @@ v2_server_file(){
 #伪装域名:
 #路径:/X1m6BlMk/
 #TLS:
+## ---------- 以下粘贴 v2 URL  ---------- ##
+
+
 ## ---------- END ---------- ##
 EOF
     chmod 644 "$STORAGE_V2SH"
     fi
 }
 
-v2_tmp_json(){
+v2_tmp2_json(){
         cat > "$v2_json" <<EOF
 {
   "log": {
@@ -162,6 +166,106 @@ v2_tmp_json(){
 EOF
 }
 
+v2_tmp_json(){
+    sed -n '12p' $STORAGE_V2SH > /tmp/V2mi.txt
+    if [ -s "/tmp/V2mi.txt" ]
+    then
+        cat "/tmp/V2mi.txt" | sed -e 's/^.\{8\}//g' | /bin/base64 -d | sed -e 's/^ *//' -e 's/.$//g' -e 's/"//g' -e 's/: /:/g' > $V2RUL
+    fi
+}
+
+v2_tmp3_json(){
+v2m_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
+v2m_port=$(sed -n "8p" $V2RUL |cut -f 2 -d ":")
+v2m_userid=$(sed -n "5p" $V2RUL |cut -f 2 -d ":")
+v2m_alterId=$(sed -n "3p" $V2RUL |cut -f 2 -d ":")
+v2m_docking_mode=$(sed -n "6p" $V2RUL |cut -f 2 -d ":")
+v2m_domain_name=$(sed -n "4p" $V2RUL |cut -f 2 -d ":")
+v2m_route=$(sed -n "7p" $V2RUL |cut -f 2 -d ":")
+v2m_tls=$(sed -n "10p" $V2RUL |cut -f 2 -d ":")
+
+cat > "$v2_json" <<EOF
+{
+  "log": {
+    "access": "none",
+    "error": "none",
+    "loglevel": "warning"
+  },
+  "policy": {
+    "levels": {
+      "5": {
+        "handshake": 4,
+        "connIdle": 300,
+        "uplinkOnly": 0,
+        "downlinkOnly": 0,
+        "statsUserUplink": false,
+        "statsUserDownlink": false,
+        "bufferSize": 0
+      }
+    },
+    "system": {
+      "statsInboundUplink": false,
+      "statsInboundDownlink": false
+    }
+  },
+  "inbounds": [
+    {
+      "port": $SS_LOCAL_PORT_LINK,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vmess",
+      "tag": "proxy",
+      "settings": {
+        "vnext": [
+          {
+            "address": "$v2m_address",
+            "port": $v2m_port,
+            "users": [
+              {
+                "id": "$v2m_userid",
+                "alterId": $v2m_alterId,
+                "security": "auto"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "$v2m_docking_mode",
+        "security": "$v2m_tls",
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": "$v2m_domain_name"
+        },
+        "wsSettings": {
+          "connectionReuse": true,
+          "path": "$v2m_route",
+          "headers": {
+            "Host": "$v2m_domain_name"
+          }
+        }
+      },
+      "mux": {
+        "enabled": true
+      }
+    }
+  ]
+}
+EOF
+rm -rf /tmp/V2mi.txt
+}
+
 func_Del_rule(){
     if [ -n "$(pidof v2ray)" ] ; then
         killall v2ray >/dev/null 2>&1 &
@@ -171,6 +275,13 @@ func_Del_rule(){
 
 func_v2_running(){
     v2_tmp_json
+    if [ -s "/tmp/V2mi.txt" ]
+    then
+        v2_tmp3_json
+    else
+        v2_tmp2_json
+        rm -rf /tmp/V2mi.txt
+    fi
     cd "$v2_home"
     ./v2ray >/dev/null 2>&1 &
 }
@@ -198,6 +309,7 @@ func_stop(){
     then
         [ -d "$v2_home" ] && rm -rf $v2_home
     fi
+    [ -f "$V2RUL" ] && rm -rf $V2RUL
     [ -f "/var/run/v2ray-watchdog.pid" ] && rm -rf /var/run/v2ray-watchdog.pid
     logger -t "[v2ray]" "已停止运行 !"
 }
