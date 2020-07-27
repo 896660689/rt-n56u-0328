@@ -9,9 +9,9 @@ STORAGE="/etc/storage"
 SSR_HOME="$STORAGE/shadowsocks"
 DNSMASQ_RURE="$STORAGE/dnsmasq/dnsmasq.conf"
 STORAGE_V2SH="$STORAGE/storage_v2ray.sh"
+V2RUL=/tmp/V2mimi.txt
 
 ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
-v2_address=$(sed -n "2p" $STORAGE_V2SH |cut -f 2 -d ":")
 
 func_del_rule(){
     if [ -n "$(pidof chinadns-ng)" ] ; then
@@ -78,6 +78,12 @@ return 0
 }
 
 func_cnng_ipt(){
+if [ -f "$V2RUL" ]
+then
+    v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
+else
+    v2_address=$(sed -n "2p" $STORAGE_V2SH |cut -f 2 -d ":")
+fi
 ipt="iptables -t nat"
 
 $ipt -N CNNG_OUT
