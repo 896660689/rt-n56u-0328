@@ -198,6 +198,14 @@ cat > "$v2_json" <<EOF
     "error": "none",
     "loglevel": "warning"
   },
+  "dns": {
+    "servers": [
+      "208.67.220.220",
+      "176.103.130.131",
+      "8.8.4.4",
+      "localhost"
+    ]
+  },
   "policy": {
     "levels": {
       "5": {
