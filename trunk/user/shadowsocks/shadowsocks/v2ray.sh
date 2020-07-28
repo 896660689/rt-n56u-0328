@@ -11,7 +11,7 @@ SS_LOCAL_PORT_LINK=$(nvram get ss_local_port)
 ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 SS_LAN_IP=$(nvram get lan_ipaddr)
 
-V2RUL=/tmp/V2mimi.txt
+V2RUL=/tmp/V2mi.txt
 v2_address=$(sed -n "2p" $STORAGE_V2SH |cut -f 2 -d ":")
 v2_port=$(sed -n "3p" $STORAGE_V2SH |cut -f 2 -d ":")
 v2_userid=$(sed -n "4p" $STORAGE_V2SH |cut -f 2 -d ":")
@@ -167,11 +167,9 @@ EOF
 }
 
 v2_tmp_json(){
-    sed -n '12p' $STORAGE_V2SH > /tmp/V2mi.txt
-    if [ -s "/tmp/V2mi.txt" ]
-    then
-        cat "/tmp/V2mi.txt" | sed -e 's/^.\{8\}//g' | /bin/base64 -d | sed -e 's/^ *//' -e 's/.$//g' -e 's/"//g' -e 's/: /:/g' > $V2RUL
-    fi
+    cat "$STORAGE_V2SH" | sed "s/vmess:\/\//vmess:/" | grep "vmess" | sed 's/:/\n/g' | sed '1d' | sed 's/}//g' \
+    | /bin/base64 -d | sed -e 's/^ *//' -e 's/{/\n/g' -e 's/,/\n/g' -e 's/.$//g' -e 's/"//g' -e 's/: /:/g' \
+    | sort -n | uniq > $V2RUL
 }
 
 v2_tmp3_json(){
@@ -182,7 +180,7 @@ v2m_alterId=$(sed -n "3p" $V2RUL |cut -f 2 -d ":")
 v2m_docking_mode=$(sed -n "6p" $V2RUL |cut -f 2 -d ":")
 v2m_domain_name=$(sed -n "4p" $V2RUL |cut -f 2 -d ":")
 v2m_route=$(sed -n "7p" $V2RUL |cut -f 2 -d ":")
-v2m_tls=$(sed -n "10p" $V2RUL |cut -f 2 -d ":")
+v2m_tls=$(cat $V2RUL | grep "tls" | sed 's/:/\n/g' | sed '1d')
 
 cat > "$v2_json" <<EOF
 {
@@ -263,7 +261,6 @@ cat > "$v2_json" <<EOF
   ]
 }
 EOF
-rm -rf /tmp/V2mi.txt
 }
 
 func_Del_rule(){
@@ -275,12 +272,11 @@ func_Del_rule(){
 
 func_v2_running(){
     v2_tmp_json
-    if [ -s "/tmp/V2mi.txt" ]
+    if [ -s "$V2RUL" ]
     then
         v2_tmp3_json
     else
         v2_tmp2_json
-        rm -rf /tmp/V2mi.txt
     fi
     cd "$v2_home"
     ./v2ray >/dev/null 2>&1 &
