@@ -184,7 +184,7 @@ v2_tmp_json(){
 v2_tmp3_json(){
 v2m_address=$(cat $V2RUL | grep "add" | sed 's/:/\n/g' | sed '1d')
 v2m_port=$(cat $V2RUL | grep "port" | sed 's/:/\n/g' | sed '1d')
-v2m_userid=$(cat $V2RUL | grep -w "ip" | sed 's/:/\n/g' | sed '1d')
+v2m_userid=$(cat $V2RUL | grep -w "id" | sed 's/:/\n/g' | sed '1d')
 v2m_alterId=$(cat $V2RUL | grep "aid" | sed 's/:/\n/g' | sed '1d')
 v2m_docking_mode=$(cat $V2RUL | grep "net" | sed 's/:/\n/g' | sed '1d')
 v2m_domain_name=$(cat $V2RUL | grep "host" | sed 's/:/\n/g' | sed '1d')
