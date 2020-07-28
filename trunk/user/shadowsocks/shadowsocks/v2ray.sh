@@ -12,15 +12,15 @@ ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 SS_LAN_IP=$(nvram get lan_ipaddr)
 
 V2RUL=/tmp/V2mi.txt
-v2_address=$(sed -n "2p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_port=$(sed -n "3p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_userid=$(sed -n "4p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_alterId=$(sed -n "5p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_confidentiality=$(sed -n "6p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_docking_mode=$(sed -n "7p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_domain_name=$(sed -n "8p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_route=$(sed -n "9p" $STORAGE_V2SH |cut -f 2 -d ":")
-v2_tls=$(sed -n "10p" $STORAGE_V2SH |cut -f 2 -d ":")
+v2_address=$(cat $STORAGE_V2SH | grep "address" | sed 's/:/\n/g' | sed '1d')
+v2_port=$(cat $STORAGE_V2SH | grep "port" | sed 's/:/\n/g' | sed '1d')
+v2_userid=$(cat $STORAGE_V2SH | grep "userid" | sed 's/:/\n/g' | sed '1d')
+v2_alterId=$(cat $STORAGE_V2SH | grep "alterId" | sed 's/:/\n/g' | sed '1d')
+v2_confidentiality=$(cat $STORAGE_V2SH | grep "security" | sed 's/:/\n/g' | sed '1d')
+v2_docking_mode=$(cat $STORAGE_V2SH | grep "network" | sed 's/:/\n/g' | sed '1d')
+v2_domain_name=$(cat $STORAGE_V2SH | grep "host" | sed 's/:/\n/g' | sed '1d')
+v2_route=$(cat $STORAGE_V2SH | grep "path" | sed 's/:/\n/g' | sed '1d')
+v2_tls=$(cat $STORAGE_V2SH | grep "tls" | sed 's/:/\n/g' | sed '1d')
 
 func_download(){
     if [ ! -f "$v2_home/v2ray" ]
@@ -36,16 +36,16 @@ v2_server_file(){
     then
         cat > "$STORAGE_V2SH" <<EOF
 ## -------- 以下修改账号信息，文本格式固定勿改动! -------- ##
-#服务器账号:zzmm01.qlioilp.xyz
-#服务器端口:11183
-#用户ID:d387ddb4-bcaa-11ea-8c26-0050569124d1
-#额外ID:2
-#加密方式:auto
-#传输协议:ws
-#伪装域名:
-#路径:/X1m6BlMk/
-#TLS:
-## ---------- 以下粘贴 v2 URL  ---------- ##
+address:127.0.0.1       // 服务器账号
+port:12345         // 服务器端口
+userid:v2ray-888   // 用户ID
+alterId:64         // 额外ID
+security:auto      // 加密方式
+network:ws         // 传输协议
+host:              // 伪装域名
+path:              // 路径
+tls:               // 安全协议
+## -------- 以下粘贴 V2RAY URL  -------- ##
 
 
 ## ---------- END ---------- ##
