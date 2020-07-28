@@ -173,13 +173,13 @@ v2_tmp_json(){
 }
 
 v2_tmp3_json(){
-v2m_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
-v2m_port=$(sed -n "8p" $V2RUL |cut -f 2 -d ":")
+v2m_address=$(cat $V2RUL | grep "add" | sed 's/:/\n/g' | sed '1d')
+v2m_port=$(cat $V2RUL | grep "port" | sed 's/:/\n/g' | sed '1d')
 v2m_userid=$(sed -n "5p" $V2RUL |cut -f 2 -d ":")
-v2m_alterId=$(sed -n "3p" $V2RUL |cut -f 2 -d ":")
-v2m_docking_mode=$(sed -n "6p" $V2RUL |cut -f 2 -d ":")
-v2m_domain_name=$(sed -n "4p" $V2RUL |cut -f 2 -d ":")
-v2m_route=$(sed -n "7p" $V2RUL |cut -f 2 -d ":")
+v2m_alterId=$(cat $V2RUL | grep "aid" | sed 's/:/\n/g' | sed '1d')
+v2m_docking_mode=$(cat $V2RUL | grep "net" | sed 's/:/\n/g' | sed '1d')
+v2m_domain_name=$(cat $V2RUL | grep "host" | sed 's/:/\n/g' | sed '1d')
+v2m_route=$(cat $V2RUL | grep "path" | sed 's/:/\n/g' | sed '1d')
 v2m_tls=$(cat $V2RUL | grep "tls" | sed 's/:/\n/g' | sed '1d')
 
 cat > "$v2_json" <<EOF
