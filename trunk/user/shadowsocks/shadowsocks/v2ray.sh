@@ -12,15 +12,6 @@ ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 SS_LAN_IP=$(nvram get lan_ipaddr)
 
 V2RUL=/tmp/V2mi.txt
-v2_address=$(cat $STORAGE_V2SH | grep "address" | sed 's/:/\n/g' | sed '1d')
-v2_port=$(cat $STORAGE_V2SH | grep "port" | sed 's/:/\n/g' | sed '1d')
-v2_userid=$(cat $STORAGE_V2SH | grep "userid" | sed 's/:/\n/g' | sed '1d')
-v2_alterId=$(cat $STORAGE_V2SH | grep "alterId" | sed 's/:/\n/g' | sed '1d')
-v2_confidentiality=$(cat $STORAGE_V2SH | grep "security" | sed 's/:/\n/g' | sed '1d')
-v2_docking_mode=$(cat $STORAGE_V2SH | grep "network" | sed 's/:/\n/g' | sed '1d')
-v2_domain_name=$(cat $STORAGE_V2SH | grep "host" | sed 's/:/\n/g' | sed '1d')
-v2_route=$(cat $STORAGE_V2SH | grep "path" | sed 's/:/\n/g' | sed '1d')
-v2_tls=$(cat $STORAGE_V2SH | grep "tls" | sed 's/:/\n/g' | sed '1d')
 
 func_download(){
     if [ ! -f "$v2_home/v2ray" ]
@@ -47,8 +38,6 @@ port:12345
 userid:v2ray-888
 #额外ID
 alterId:64
-#加密方式
-security:auto
 #传输协议
 network:ws
 #伪装域名
@@ -63,8 +52,34 @@ EOF
     fi
 }
 
-v2_tmp2_json(){
-        cat > "$v2_json" <<EOF
+v2_tmp_address(){
+if grep -q "vmess" "$STORAGE_V2SH"
+then
+    cat "$STORAGE_V2SH" | sed "s/vmess:\/\//vmess:/" | grep "vmess" | sed 's/:/\n/g' | sed '1d' | sed 's/}//g' \
+    | /bin/base64 -d | sed -e 's/^ *//' -e 's/{/\n/g' -e 's/,/\n/g' -e 's/.$//g' -e 's/"//g' -e 's/: /:/g' \
+    | sort -n | uniq > $V2RUL
+    v2_address=$(cat $V2RUL | grep "add" | awk -F '[:/]' '{print $2}')
+    v2_port=$(cat $V2RUL | grep "port" | awk -F '[:/]' '{print $2}')
+    v2_userid=$(cat $V2RUL | grep -w "id" | awk -F '[:/]' '{print $2}')
+    v2_alterId=$(cat $V2RUL | grep "aid" | awk -F '[:/]' '{print $2}')
+    v2_docking_mode=$(cat $V2RUL | grep "net" | awk -F '[:/]' '{print $2}')
+    v2_domain_name=$(cat $V2RUL | grep "host" | awk -F '[:/]' '{print $2}')
+    v2_route=$(cat $V2RUL | grep "path" | awk -F '[:/]' '{print $2}')
+    v2_tls=$(cat $V2RUL | grep "tls" | awk -F '[:/]' '{print $2}')
+else
+    v2_address=$(cat $STORAGE_V2SH | grep "address" | awk -F '[:/]' '{print $2}')
+    v2_port=$(cat $STORAGE_V2SH | grep "port" | awk -F '[:/]' '{print $2}')
+    v2_userid=$(cat $STORAGE_V2SH | grep "userid" | awk -F '[:/]' '{print $2}')
+    v2_alterId=$(cat $STORAGE_V2SH | grep "alterId" | awk -F '[:/]' '{print $2}')
+    v2_docking_mode=$(cat $STORAGE_V2SH | grep "network" | awk -F '[:/]' '{print $2}')
+    v2_domain_name=$(cat $STORAGE_V2SH | grep "host" | awk -F '[:/]' '{print $2}')
+    v2_route=$(cat $STORAGE_V2SH | grep "path" | awk -F '[:/]' '{print $2}')
+    v2_tls=$(cat $STORAGE_V2SH | grep "tls" | awk -F '[:/]' '{print $2}')
+fi
+}
+
+v2_tmp_json(){
+cat > "$v2_json" <<EOF
 {
   "log": {
     "access": "none",
@@ -125,7 +140,7 @@ v2_tmp2_json(){
               {
                 "id": "$v2_userid",
                 "alterId": $v2_alterId,
-                "security": "$v2_confidentiality"
+                "security": "auto"
               }
             ]
           }
@@ -149,131 +164,6 @@ v2_tmp2_json(){
       "mux": {
         "enabled": true
       }
-    },
-    {
-      "protocol": "freedom",
-      "tag": "direct"
-    },
-    {
-      "protocol": "blackhole",
-      "settings": {},
-      "tag": "blocked"
-    }
-  ],
-  "routing": {
-    "rules": [        
-      {
-        "type": "field",
-        "outboundTag": "direct",
-        "domain": [
-          "domain:speedtest.net"
-        ]
-      }
-    ]
-  }
-}
-EOF
-}
-
-v2_tmp_json(){
-    cat "$STORAGE_V2SH" | sed "s/vmess:\/\//vmess:/" | grep "vmess" | sed 's/:/\n/g' | sed '1d' | sed 's/}//g' \
-    | /bin/base64 -d | sed -e 's/^ *//' -e 's/{/\n/g' -e 's/,/\n/g' -e 's/.$//g' -e 's/"//g' -e 's/: /:/g' \
-    | sort -n | uniq > $V2RUL
-}
-
-v2_tmp3_json(){
-v2m_address=$(cat $V2RUL | grep "add" | sed 's/:/\n/g' | sed '1d')
-v2m_port=$(cat $V2RUL | grep "port" | sed 's/:/\n/g' | sed '1d')
-v2m_userid=$(cat $V2RUL | grep -w "id" | sed 's/:/\n/g' | sed '1d')
-v2m_alterId=$(cat $V2RUL | grep "aid" | sed 's/:/\n/g' | sed '1d')
-v2m_docking_mode=$(cat $V2RUL | grep "net" | sed 's/:/\n/g' | sed '1d')
-v2m_domain_name=$(cat $V2RUL | grep "host" | sed 's/:/\n/g' | sed '1d')
-v2m_route=$(cat $V2RUL | grep "path" | sed 's/:/\n/g' | sed '1d')
-v2m_tls=$(cat $V2RUL | grep "tls" | sed 's/:/\n/g' | sed '1d')
-
-cat > "$v2_json" <<EOF
-{
-  "log": {
-    "access": "none",
-    "error": "none",
-    "loglevel": "warning"
-  },
-  "dns": {
-    "servers": [
-      "208.67.220.220",
-      "176.103.130.131",
-      "8.8.4.4",
-      "localhost"
-    ]
-  },
-  "policy": {
-    "levels": {
-      "5": {
-        "handshake": 4,
-        "connIdle": 300,
-        "uplinkOnly": 0,
-        "downlinkOnly": 0,
-        "statsUserUplink": false,
-        "statsUserDownlink": false,
-        "bufferSize": 0
-      }
-    },
-    "system": {
-      "statsInboundUplink": false,
-      "statsInboundDownlink": false
-    }
-  },
-  "inbounds": [
-    {
-      "port": $SS_LOCAL_PORT_LINK,
-      "protocol": "socks",
-      "settings": {
-        "auth": "noauth",
-        "udp": true
-      },
-      "sniffing": {
-        "enabled": true,
-        "destOverride": ["http", "tls"]
-      }
-    }
-  ],
-  "outbounds": [
-    {
-      "protocol": "vmess",
-      "tag": "proxy",
-      "settings": {
-        "vnext": [
-          {
-            "address": "$v2m_address",
-            "port": $v2m_port,
-            "users": [
-              {
-                "id": "$v2m_userid",
-                "alterId": $v2m_alterId,
-                "security": "auto"
-              }
-            ]
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "$v2m_docking_mode",
-        "security": "$v2m_tls",
-        "tlsSettings": {
-          "allowInsecure": true,
-          "serverName": "$v2m_domain_name"
-        },
-        "wsSettings": {
-          "connectionReuse": true,
-          "path": "$v2m_route",
-          "headers": {
-            "Host": "$v2m_domain_name"
-          }
-        }
-      },
-      "mux": {
-        "enabled": true
-      }
     }
   ]
 }
@@ -288,13 +178,8 @@ func_Del_rule(){
 }
 
 func_v2_running(){
+    v2_tmp_address && \
     v2_tmp_json
-    if [ -s "$V2RUL" ]
-    then
-        v2_tmp3_json
-    else
-        v2_tmp2_json
-    fi
     cd "$v2_home"
     ./v2ray >/dev/null 2>&1 &
 }
