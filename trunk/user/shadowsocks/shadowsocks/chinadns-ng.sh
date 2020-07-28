@@ -80,9 +80,10 @@ return 0
 func_cnng_ipt(){
 if [ -f "$V2RUL" ]
 then
-    v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
+    v2_address=$(cat $V2RUL | grep "add" | awk -F '[:/]' '{print $2}')
+    #v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
 else
-    v2_address=$(cat $STORAGE_V2SH | grep "address" | sed 's/:/\n/g' | sed '1d')
+    v2_address=$(cat $STORAGE_V2SH | grep "address" | awk -F '[:/]' '{print $2}')
 fi
 ipt="iptables -t nat"
 
