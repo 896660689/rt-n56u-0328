@@ -9,7 +9,6 @@ STORAGE="/etc/storage"
 SSR_HOME="$STORAGE/shadowsocks"
 DNSMASQ_RURE="$STORAGE/dnsmasq/dnsmasq.conf"
 STORAGE_V2SH="$STORAGE/storage_v2ray.sh"
-V2RUL=/tmp/V2mi.txt
 
 ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 
@@ -78,10 +77,11 @@ return 0
 }
 
 func_cnng_ipt(){
-if [ -f "$V2RUL" ]
+if grep -q "vmess" "$STORAGE_V2SH"
 then
-    v2_address=$(cat $V2RUL | grep "add" | awk -F '[:/]' '{print $2}')
-    #v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
+    V2RUL=/tmp/V2mi.txt
+    #v2_address=$(cat $V2RUL | grep "add" | awk -F '[:/]' '{print $2}')
+    v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
 else
     v2_address=$(cat $STORAGE_V2SH | grep "address" | awk -F '[:/]' '{print $2}')
 fi
