@@ -82,7 +82,7 @@ if [ -s "$V2RUL" ]
 then
     v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
 else
-    v2_address=$(sed -n "2p" $STORAGE_V2SH |cut -f 2 -d ":")
+    v2_address=$(cat $STORAGE_V2SH | grep "address" | sed 's/:/\n/g' | sed '1d')
 fi
 ipt="iptables -t nat"
 
