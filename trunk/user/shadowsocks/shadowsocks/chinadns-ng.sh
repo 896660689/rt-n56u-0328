@@ -80,7 +80,7 @@ return 0
 func_cnng_ipt(){
 if [ -s "$V2RUL" ]
 then
-    v2_address=$(cat $STORAGE_V2SH | grep "add" | sed 's/:/\n/g' | sed '1d')
+    v2_address=$(cat $V2RUL | grep "add" | sed 's/:/\n/g' | sed '1d')
 else
     v2_address=$(cat $STORAGE_V2SH | grep "address" | sed 's/:/\n/g' | sed '1d')
 fi
