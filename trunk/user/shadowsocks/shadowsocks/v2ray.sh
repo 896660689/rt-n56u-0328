@@ -35,19 +35,28 @@ v2_server_file(){
     if [ ! -f "$STORAGE_V2SH" ] || [ ! -s "$STORAGE_V2SH" ]
     then
         cat > "$STORAGE_V2SH" <<EOF
-## -------- 以下修改账号信息，文本格式固定勿改动! -------- ##
-address:127.0.0.1       // 服务器账号
-port:12345         // 服务器端口
-userid:v2ray-888   // 用户ID
-alterId:64         // 额外ID
-security:auto      // 加密方式
-network:ws         // 传输协议
-host:              // 伪装域名
-path:              // 路径
-tls:               // 安全协议
 ## -------- 以下粘贴 V2RAY URL  -------- ##
 
 
+## -------- 以下修改账号信息，文本格式固定勿改动! -------- ##
+#服务器账号
+address:127.0.0.1
+#服务器端口
+port:12345
+#用户ID
+userid:v2ray-888
+#额外ID
+alterId:64
+#加密方式
+security:auto
+#传输协议
+network:ws
+#伪装域名
+host:
+路径
+path:
+安全协议
+tls:
 ## ---------- END ---------- ##
 EOF
     chmod 644 "$STORAGE_V2SH"
