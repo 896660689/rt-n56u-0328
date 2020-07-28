@@ -9,7 +9,7 @@ STORAGE="/etc/storage"
 SSR_HOME="$STORAGE/shadowsocks"
 DNSMASQ_RURE="$STORAGE/dnsmasq/dnsmasq.conf"
 STORAGE_V2SH="$STORAGE/storage_v2ray.sh"
-V2RUL=/tmp/V2mimi.txt
+V2RUL=/tmp/V2mi.txt
 
 ss_tunnel_local_port=$(nvram get ss-tunnel_local_port)
 
