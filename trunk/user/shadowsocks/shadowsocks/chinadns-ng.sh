@@ -78,7 +78,7 @@ return 0
 }
 
 func_cnng_ipt(){
-if [ -f "$V2RUL" ]
+if [ -s "$V2RUL" ]
 then
     v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
 else
