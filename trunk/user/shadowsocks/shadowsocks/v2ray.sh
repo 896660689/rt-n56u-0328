@@ -52,19 +52,21 @@ EOF
     fi
 }
 
-v2_tmp_address(){
+v2_addmi(){
 if grep -q "vmess" "$STORAGE_V2SH"
 then
     cat "$STORAGE_V2SH" | sed "s/vmess:\/\//vmess:/" | grep "vmess" | sed 's/:/\n/g' | sed '1d' | sed 's/}//g' \
     | /bin/base64 -d | sed -e 's/^ *//' -e 's/{/\n/g' -e 's/,/\n/g' -e 's/.$//g' -e 's/"//g' -e 's/: /:/g' \
     | sort -n | uniq > $V2RUL
+fi
+if [ -f "$V2RUL" ] ; then
     v2_address=$(cat $V2RUL | grep "add" | awk -F '[:/]' '{print $2}')
     v2_port=$(cat $V2RUL | grep "port" | awk -F '[:/]' '{print $2}')
     v2_userid=$(cat $V2RUL | grep -w "id" | awk -F '[:/]' '{print $2}')
     v2_alterId=$(cat $V2RUL | grep "aid" | awk -F '[:/]' '{print $2}')
     v2_docking_mode=$(cat $V2RUL | grep "net" | awk -F '[:/]' '{print $2}')
-    v2_domain_name=$(cat $V2RUL | grep "host" | awk -F '[:/]' '{print $2}')
-    v2_route=$(cat $V2RUL | grep "path" | awk -F '[:/]' '{print $2}')
+    v2_domain_name=$(cat $V2RUL | grep "host" | sed 's/:/\n/g' | sed '1d')
+    v2_route=$(cat $V2RUL | grep "path" | sed 's/:/\n/g' | sed '1d')
     v2_tls=$(cat $V2RUL | grep "tls" | awk -F '[:/]' '{print $2}')
 else
     v2_address=$(cat $STORAGE_V2SH | grep "address" | awk -F '[:/]' '{print $2}')
@@ -72,14 +74,14 @@ else
     v2_userid=$(cat $STORAGE_V2SH | grep "userid" | awk -F '[:/]' '{print $2}')
     v2_alterId=$(cat $STORAGE_V2SH | grep "alterId" | awk -F '[:/]' '{print $2}')
     v2_docking_mode=$(cat $STORAGE_V2SH | grep "network" | awk -F '[:/]' '{print $2}')
-    v2_domain_name=$(cat $STORAGE_V2SH | grep "host" | awk -F '[:/]' '{print $2}')
-    v2_route=$(cat $STORAGE_V2SH | grep "path" | awk -F '[:/]' '{print $2}')
+    v2_domain_name=$(cat $STORAGE_V2SH | grep "host" | sed 's/:/\n/g' | sed '1d')
+    v2_route=$(cat $STORAGE_V2SH | grep "path" | sed 's/:/\n/g' | sed '1d')
     v2_tls=$(cat $STORAGE_V2SH | grep "tls" | awk -F '[:/]' '{print $2}')
 fi
 }
 
 v2_tmp_json(){
-cat > "$v2_json" <<EOF
+    cat > "$v2_json" <<EOF
 {
   "log": {
     "access": "none",
@@ -114,12 +116,10 @@ cat > "$v2_json" <<EOF
   "inbounds": [
     {
       "port": $SS_LOCAL_PORT_LINK,
-      "listen": "::",
       "protocol": "socks",
       "settings": {
         "auth": "noauth",
-        "udp": true,
-        "ip": "127.0.0.1"
+        "udp": true
       },
       "sniffing": {
         "enabled": true,
@@ -139,8 +139,7 @@ cat > "$v2_json" <<EOF
             "users": [
               {
                 "id": "$v2_userid",
-                "alterId": $v2_alterId,
-                "security": "auto"
+                "alterId": $v2_alterId
               }
             ]
           }
@@ -178,7 +177,7 @@ func_Del_rule(){
 }
 
 func_v2_running(){
-    v2_tmp_address && \
+    v2_addmi
     v2_tmp_json
     cd "$v2_home"
     ./v2ray >/dev/null 2>&1 &
