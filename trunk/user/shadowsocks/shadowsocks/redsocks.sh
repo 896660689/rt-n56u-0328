@@ -58,7 +58,8 @@ log_info = off;
 log = "file:/$SOCKS_LOG";
 redirector = iptables;
 daemon = on;
-redsocks_conn_max = 1000;
+redsocks_conn_max = 10000;
+rlimit_nofile = 10240;
 }
 
 redsocks {
@@ -137,7 +138,7 @@ if [ -n "$ARG2" ]
 then
 REMOTE_IP=$ARG2
 else
-logger -t $BINARY_NAME "$REMOTE_IP NOT FOUND!"
+logger -t $BINARY_NAME "REMOTE_IP NOT FOUND!"
 return 0
 fi
 func_clean
@@ -184,7 +185,7 @@ restart)
     func_start
     ;;
 *)
-    echo "Usage: $0 { start [ $1 IP $2 PORT $3 IP ] | stop | iptables [ $1 IP ] | restart }"
+    echo "Usage: $0 { start [ ARG2:Server IP ARG3:Server PORT ] | stop | iptables [ ARG1:Server IP ] | restart }"
     exit 1
     ;;
 esac
