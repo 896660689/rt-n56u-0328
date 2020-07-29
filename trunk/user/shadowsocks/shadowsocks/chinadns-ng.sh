@@ -80,8 +80,7 @@ func_cnng_ipt(){
 if grep -q "vmess" "$STORAGE_V2SH"
 then
     V2RUL=/tmp/V2mi.txt
-    #v2_address=$(cat $V2RUL | grep "add" | awk -F '[:/]' '{print $2}')
-    v2_address=$(sed -n "2p" $V2RUL |cut -f 2 -d ":")
+    v2_address=$(sed -n "2p" $V2RUL | cut -f 2 -d ":")
 else
     v2_address=$(cat $STORAGE_V2SH | grep "address" | awk -F '[:/]' '{print $2}')
 fi
