@@ -43,6 +43,8 @@ ss2_proto_param=$(nvram get ss2_proto_param)
 ss2_obfs=$(nvram get ss2_obfs)
 ss2_obfs_param=$(nvram get ss2_obfs_param)
 v2_address=$(sed -n "2p" /etc/storage/storage_v2ray.sh |cut -f 2 -d ":")
+dns2_ip=$(nvram get ss-tunnel_remote | awk -F '[:/]' '{print $1}')
+dns2_port=$(nvram get ss-tunnel_remote | sed 's/:/#/g')
 
 check_music(){
 if [ $(nvram get wyy_enable) = "1" ] && [ $(nvram get sdns_enable) = "1" ]; then
@@ -280,7 +282,7 @@ func_port_agent_mode(){
         logger -t "[DNS]" "使用 [dns-forwarder] 解析方式 !"
     elif [ "$ss_router_proxy" = "3" ]
     then
-        /usr/bin/dnsproxy -T -p $ss_tunnel_local_port -R 8.8.4.4 >/dev/null 2>&1 &
+        /usr/bin/dnsproxy -T -p $ss_tunnel_local_port -R $dns2_ip >/dev/null 2>&1 &
         logger -t "[DNS]" "使用 [dnsproxy] 解析方式 !"
     elif [ "$ss_router_proxy" = "4" ]
     then
@@ -288,7 +290,7 @@ func_port_agent_mode(){
         logger -t "[DNS]" "使用 [pdnsd] 解析方式 !"
     elif [ "$ss_router_proxy" = "5" ]
     then
-        /usr/bin/dns2tcp -L127.0.0.1#$ss_tunnel_local_port -R'8.8.8.8#53' &
+        /usr/bin/dns2tcp -L127.0.0.1#$ss_tunnel_local_port -R"$dns2_port" >/dev/null 2>&1 &
         logger -t "[DNS]" "使用 [dns2tcp] 解析方式 !"
     else
         logger -t "[DNS]" "未开启代理解析 !"
