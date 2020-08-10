@@ -1,6 +1,6 @@
 #!/bin/sh
 # github:http://github.com/SuzukiHonoka
-# Compile:by-lanse	2020-07-06
+# Compile:by-lanse	2020-08-10
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -17,7 +17,7 @@ CHAIN_NAME="REDSOCKS"
 dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
 SET_NAME="chnroute"
 SOCKS_LOG="/tmp/ss-watchcat.log"
-
+ss_router_proxy=$(nvram get ss_router_proxy)
 SOCKS5_IP=$(nvram get lan_ipaddr)
 SOCKS5_PORT=$(nvram get ss_local_port)
 REMOTE_IP="127.0.0.1"
@@ -27,9 +27,14 @@ ARG2=$2
 ARG3=$3
 
 func_redsocks(){
+if [ "$ss_router_proxy" = "5" ] ; then
+    IPT2SOCKS_CMD="ipt2socks -s 127.0.0.1 -p $SOCKS5_PORT -b 0.0.0.0 -l 12345 -j `cat /proc/cpuinfo|grep processor|wc -l` -T -4 -R"
+    $IPT2SOCKS_CMD >/dev/null 2>&1 &
+else
     ln -sf $BINARY_PATH $REDSOCKS_FILE
     cd $TMP_HOME
     ./redsocks -c ./redsocks.conf
+fi
 }
 
 func_save(){
@@ -145,7 +150,11 @@ func_clean
 func_china_file &
 wait
 echo "CH list rule !"
-#flush_ipt_file && flush_ipt_rules
+if [ "$ss_router_proxy" = "5" ] ; then
+echo "ipt2_socks"
+else
+flush_ipt_file && flush_ipt_rules
+fi
 }
 
 func_clean(){
@@ -162,6 +171,9 @@ func_stop(){
 if [ -n "$(pidof $BINARY_NAME)" ] ; then
 killall $BINARY_NAME >/dev/null 2>&1 &
 sleep 2
+fi
+if [ -n "$(pidof ipt2socks)" ] ; then
+killall ipt2socks >/dev/null 2>&1 &
 fi
 func_clean
 [ -d "$TMP_HOME" ] && rm -rf "$TMP_HOME"
