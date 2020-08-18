@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-07-28
+# Compile:by-lanse	2020-08-18
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
@@ -60,14 +60,14 @@ then
     | sort -n | uniq > $V2RUL
 fi
 if [ -f "$V2RUL" ] ; then
-    v2_address=$(cat $V2RUL | grep "add" | awk -F '[:/]' '{print $2}')
-    v2_port=$(cat $V2RUL | grep "port" | awk -F '[:/]' '{print $2}')
+    v2_address=$(cat $V2RUL | grep "add:" | awk -F '[:/]' '{print $2}')
+    v2_port=$(cat $V2RUL | grep "port:" | awk -F '[:/]' '{print $2}')
     v2_userid=$(cat $V2RUL | grep -w "id" | awk -F '[:/]' '{print $2}')
-    v2_alterId=$(cat $V2RUL | grep "aid" | awk -F '[:/]' '{print $2}')
-    v2_docking_mode=$(cat $V2RUL | grep "net" | awk -F '[:/]' '{print $2}')
-    v2_domain_name=$(cat $V2RUL | grep "host" | sed 's/:/\n/g' | sed '1d')
-    v2_route=$(cat $V2RUL | grep "path" | sed 's/:/\n/g' | sed '1d')
-    v2_tls=$(cat $V2RUL | grep "tls" | awk -F '[:/]' '{print $2}')
+    v2_alterId=$(cat $V2RUL | grep "aid:" | awk -F '[:/]' '{print $2}')
+    v2_docking_mode=$(cat $V2RUL | grep "net:" | awk -F '[:/]' '{print $2}')
+    v2_domain_name=$(cat $V2RUL | grep "host:" | sed 's/:/\n/g' | sed '1d')
+    v2_route=$(cat $V2RUL | grep "path:" | sed 's/:/\n/g' | sed '1d')
+    v2_tls=$(cat $V2RUL | grep "tls:" | awk -F '[:/]' '{print $2}')
 else
     v2_address=$(cat $STORAGE_V2SH | grep "address" | awk -F '[:/]' '{print $2}')
     v2_port=$(cat $STORAGE_V2SH | grep "port" | awk -F '[:/]' '{print $2}')
