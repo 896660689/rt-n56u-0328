@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-08-18
+# Compile:by-lanse	2020-08-31
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
@@ -90,8 +90,8 @@ v2_tmp_json(){
   },
   "dns": {
     "servers": [
+      "1.1.1.1",
       "208.67.220.220",
-      "176.103.130.131",
       "8.8.4.4",
       "localhost"
     ]
@@ -145,6 +145,10 @@ v2_tmp_json(){
           }
         ]
       },
+      "mux": {
+        "enabled": true
+      },
+      "tag": "proxy",
       "streamSettings": {
         "network": "$v2_docking_mode",
         "security": "$v2_tls",
@@ -159,9 +163,6 @@ v2_tmp_json(){
             "Host": "$v2_domain_name"
           }
         }
-      },
-      "mux": {
-        "enabled": true
       }
     }
   ]
