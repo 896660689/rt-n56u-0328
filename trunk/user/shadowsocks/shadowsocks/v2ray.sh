@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-08-31
+# Compile:by-lanse	2020-09-10
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
@@ -146,7 +146,8 @@ v2_tmp_json(){
         ]
       },
       "mux": {
-        "enabled": true
+        "enabled": true,
+        "concurrency": 8
       },
       "tag": "proxy",
       "streamSettings": {
