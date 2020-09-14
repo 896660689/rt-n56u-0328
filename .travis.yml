@@ -18,6 +18,7 @@ addons:
     - python-docutils
     - autopoint
 before_script:
+- "./trunk/tools/shellcheck.sh"
 - mkdir -p /opt/rt-n56u/toolchain-mipsel/toolchain-3.4.x && mkdir -p /opt/images/
 - rm -rf toolchain-mipsel/ && mv -f * .[^.]* /opt/rt-n56u
 - curl -LO $toolchain_url && tar -xf mipsel-linux-uclibc.tar.xz -C /opt/rt-n56u/toolchain-mipsel/toolchain-3.4.x
