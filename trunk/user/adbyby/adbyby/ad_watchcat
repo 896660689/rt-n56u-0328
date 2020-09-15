@@ -15,6 +15,12 @@ loger(){
 
 while true; do
 	sleep 90
+	pids=$(ps |grep "/tmp/adbyby/ad_watchcat" |grep -v "grep" |wc -l)
+	if [ $pids -gt 1 ] ; then
+		killall ad_watchcat >/dev/null 2>&1 &
+		sleep 2
+		/tmp/adbyby/ad_watchcat 2>&1 >/dev/null &
+	fi
 	if [ ! -f /tmp/cron_adb.lock ]
 	then
 		CPULoad=$(uptime |sed -e 's/\ *//g' -e 's/.*://g' -e 's/,.*//g' -e 's/\..*//g')
