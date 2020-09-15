@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-06-20
+# Compile:by-lanse	2020-09-15
 
 export PATH=$PATH:/usr/bin:/tmp/adbyby/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/bin:/tmp/adbyby/bin
@@ -24,19 +24,19 @@ GZ_HOME="$TMP_HOME/data"
 add_cron()
 {
     if [ "$adbyby_update" -eq 0 ] ; then
-        sed -i '/adbyby/d' "$TIME_SCRIPT" && sleep 2
+        sed -i '/adbyby.sh/d' "$TIME_SCRIPT" && sleep 2
         cat >> "$TIME_SCRIPT" << EOF
 $adbyby_update_min $adbyby_update_hour * * * /bin/sh /usr/bin/adbyby.sh G 2>&1 >/dev/null &
 EOF
         logger "adbyby" "设置每天$adbyby_update_hour时$adbyby_update_min分,自动更新规则！"
     elif [ "$adbyby_update" -eq 1 ] ; then
-        sed -i '/adbyby/d' "$TIME_SCRIPT" && sleep 2
+        sed -i '/adbyby.sh/d' "$TIME_SCRIPT" && sleep 2
         cat >> "$TIME_SCRIPT" << EOF
 */$adbyby_update_min */$adbyby_update_hour * * * /bin/sh /usr/bin/adbyby.sh G >/dev/null 2>&1
 EOF
         logger "adbyby" "设置每隔$adbyby_update_hour时$adbyby_update_min分,自动更新规则！"
     elif [ "$adbyby_update" -eq 2 ] ; then
-        sed -i '/adbyby/d' "$TIME_SCRIPT" && sleep 2
+        sed -i '/adbyby.sh/d' "$TIME_SCRIPT" && sleep 2
     fi
 }
 
@@ -267,19 +267,19 @@ EOF
 
 del_rule()
 {
-    if grep -q "adbyby" "$TIME_SCRIPT"
+    if grep -q "adbyby.sh" "$TIME_SCRIPT"
     then
-        sed -i '/adbyby/d' "$TIME_SCRIPT"
-        sleep 2
-    fi
-    if grep -q "ad_watchcat" "$TIME_SCRIPT"
-    then
-        sed -i '/ad_watchcat/d' "$TIME_SCRIPT"
+        sed -i '/adbyby.sh/d' "$TIME_SCRIPT"
         sleep 2
     fi
     if grep -q "adblock.sh" "$TIME_SCRIPT"
     then
         sed -i '/adblock.sh/d' "$TIME_SCRIPT"
+        sleep 2
+    fi
+    if grep -q "ad_watchcat" "$TIME_SCRIPT"
+    then
+        sed -i '/ad_watchcat/d' "$TIME_SCRIPT"
         sleep 2
     fi
     if grep -q "dnsmasq.ad" "$STORAGE_DNSMASQ"
