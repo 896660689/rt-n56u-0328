@@ -316,7 +316,7 @@ function_install()
             else
                 sed -i '/ad_watchcat/d' "$TIME_SCRIPT" && sleep 2
                 cat >> "$TIME_SCRIPT" << EOF
-*/3 * * * * $ADBYBY_HOME/ad_watchcat 2>&1 >/dev/null &
+*/30 * * * * $ADBYBY_HOME/ad_watchcat 2>&1 >/dev/null &
 EOF
             sleep 2
             fi
