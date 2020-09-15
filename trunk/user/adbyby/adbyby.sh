@@ -317,7 +317,7 @@ function_install()
 ipt_restore()
 {
     port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
-    if [ $port -ge 1 ] ; then
+    if [ $port -lt 1 ] ; then
         iptables -t nat -D PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8118
     fi
     sleep 1
