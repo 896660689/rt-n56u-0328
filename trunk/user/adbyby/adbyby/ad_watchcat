@@ -1,5 +1,5 @@
 #!/bin/sh
-## Adaptation Grassland in Lucheng 2020-06-08
+## Adaptation Grassland in Lucheng 2020-09-15
 
 TMP_HOME="/tmp/adbyby/bin"
 LOGFILE="/var/log/adbyby_watchdog.log"
