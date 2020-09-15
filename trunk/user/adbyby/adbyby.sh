@@ -272,6 +272,11 @@ del_rule()
         sed -i '/adbyby/d' "$TIME_SCRIPT"
         sleep 2
     fi
+    if grep -q "ad_watchcat" "$TIME_SCRIPT"
+    then
+        sed -i '/ad_watchcat/d' "$TIME_SCRIPT"
+        sleep 2
+    fi
     if grep -q "adblock.sh" "$TIME_SCRIPT"
     then
         sed -i '/adblock.sh/d' "$TIME_SCRIPT"
@@ -305,8 +310,16 @@ function_install()
             if [ $port -eq 0 ] ; then
                 iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8118
             fi
-            $ADBYBY_HOME/ad_watchcat 2>&1 >/dev/null &
+            if grep -q "ad_watchcat" "$TIME_SCRIPT"
+            then
+                echo 'Startup code exists'
+            else
+                sed -i '/ad_watchcat/d' "$TIME_SCRIPT" && sleep 2
+                cat >> "$TIME_SCRIPT" << EOF
+*/3 * * * * $ADBYBY_HOME/ad_watchcat 2>&1 >/dev/null &
+EOF
             sleep 2
+            fi
         fi
     else
         ipt_restore &
@@ -368,10 +381,6 @@ adbyby_stop()
     del_rule &
     if [ -n "$(pidof adbyby)" ] ; then
         killall adbyby >/dev/null 2>&1 &
-        sleep 2
-    fi
-    if [ -n "$(pidof ad_watchcat)" ] ; then
-        killall ad_watchcat >/dev/null 2>&1 &
         sleep 2
     fi
     ipt_restore &
