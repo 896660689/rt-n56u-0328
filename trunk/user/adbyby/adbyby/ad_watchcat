@@ -18,11 +18,11 @@ while true; do
 	if [ ! -f /tmp/cron_adb.lock ]
 	then
 		CPULoad=$(uptime |sed -e 's/\ *//g' -e 's/.*://g' -e 's/,.*//g' -e 's/\..*//g')
-		if [ $((CPULoad)) -ge "2" ]; then
+		if [ $((CPULoad)) -ge "2" ] ; then
 			loger "adbyby CPU 负载拥堵,关闭广告屏蔽程序..."
 			touch /tmp/cron_adb.lock
 			port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
-			if [[ "$port" -ge 1 ]]; then
+			if [[ "$port" -ge 1 ]] ; then
 				logger "adbyby 找到 $port 个 8118 透明代理端口,正在关闭..."
 				iptables -t nat -D PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8118
 				port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
@@ -40,24 +40,24 @@ while true; do
 		fi
 	fi
 	PIDS=$(ps |grep "$TMP_HOME/adbyby" |grep -v "grep" |wc -l)
-	if [ $PIDS -eq 0 ]; then
+	if [ $PIDS -eq 0 ] ; then
 		logger "注意: adbyby 意外关闭,将重启 adbyby!"
 		sh /usr/bin/adbyby.sh start
 		loger "注意:TMP: adbyby 意外关闭,将重启 adbyby!"
 	fi
-	if [ $PIDS -gt 6 ]; then
+	if [ $PIDS -gt 6 ] ; then
 		loger "注意:发现 adbyby 多于 6 个进程,将重启 adbyby!"
 		ps |grep "$TMP_HOME/adbyby" |grep -v 'grep' |awk '{print $1}' |xargs kill -9
 		logger "注意: adbyby 多于 6 个进程,将重启 adbyby!"
 		sh /usr/bin/adbyby.sh start
 	fi
 	port=$(iptables -t nat -L | grep 'ports 8118' | wc -l)
-	if [ $port -eq 0 ]; then
+	if [ $port -lt 1 ] ; then
 		loger "注意: adbyby 防火墙转发规则丢失,将添加规则!"
 		iptables -t nat -A PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8118
 		logger "注意: adbyby 防火墙转发规则丢失,将添加规则"
 	fi
-	if [ $port -gt 1 ]; then
+	if [ $port -gt 1 ] ; then
 		loger "注意:发现 adbyby 多条防火墙转发规则,将删除多余规则!"
 		iptables -t nat -D PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8118
 		logger "注意:发现 adbyby 多条防火墙转发规则,将删除多余规则!"
