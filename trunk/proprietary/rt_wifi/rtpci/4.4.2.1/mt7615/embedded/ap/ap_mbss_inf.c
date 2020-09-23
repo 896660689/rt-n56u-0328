@@ -50,6 +50,7 @@
 
 /* --------------------------------- Public -------------------------------- */
 NET_DEV_STATS *RT28xx_get_ether_stats(PNET_DEV net_dev);
+struct rtnl_link_stats64 *RT28xx_get_ether_stats64(struct net_device *net_dev, struct rtnl_link_stats64 *stats);
 
 /*
 ========================================================================
