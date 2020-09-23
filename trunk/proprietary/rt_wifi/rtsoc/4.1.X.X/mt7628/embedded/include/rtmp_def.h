@@ -496,14 +496,14 @@ enum WIFI_MODE{
 #ifdef APCLI_SUPPORT
 #undef MAX_APCLI_NUM
 #define MAX_APCLI_NUM				1
-#ifdef MULTI_APCLI_SUPPORT
+#ifdef MULTI_APCLI_SUPPORT 
 #undef	MAX_APCLI_NUM
 #define MAX_APCLI_NUM				2
 #endif /* MULTI_APCLI_SUPPORT */
 #endif /* APCLI_SUPPORT */
 #ifdef APCLI_CONNECTION_TRIAL
 #ifndef MULTI_APCLI_SUPPORT
-#error "APCLI_CONNECTION_TRIAL flag depends on MULTI_APCLI_SUPPORT"
+#error "APCLI_CONNECTION_TRIAL flag depends on MULTI_APCLI_SUPPORT" 
 #endif
 #endif
 
@@ -2202,4 +2202,3 @@ do{									\
 	RtmpOSTaskInit(__pTask, __pTaskName, __pAd, &(__pAd)->RscTaskMemList, &(__pAd)->RscSemMemList);
 
 #endif /* __RTMP_DEF_H__ */
-

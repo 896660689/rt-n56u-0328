@@ -4117,7 +4117,7 @@ max_len += OWETRANSIE_LINE_LEN;
 //	sprintf(msg + strlen(msg), "Total=%-4d", pAdapter->ScanTab.BssNr);
 //	sprintf(msg + strlen(msg), "\n");
 	sprintf(msg + strlen(msg), "%-4s%-33s%-20s%-23s%-9s%-9s%-7s%-3s\n",
-		"Ch", "SSID", "BSSID", "Security", "Signal(%)", "W-Mode", " ExtCH", " NT");
+			"Ch", "SSID", "BSSID", "Security", "Signal(%)", "W-Mode", " ExtCH", " NT");
 #ifdef WSC_INCLUDED
 	sprintf(msg + strlen(msg) - 1, "%-4s%-5s\n", " WPS", " DPID");
 #endif /* WSC_INCLUDED */
@@ -4260,7 +4260,7 @@ VOID RTMPIoctlGetSiteSurvey(
 	sprintf(msg, "%s", "\n");
 	sprintf(msg+strlen(msg), "Total=%-4d", pAdapter->ScanTab.BssNr);
 	sprintf(msg+strlen(msg), "%s", "\n");
-	sprintf(msg+strlen(msg), "%-4s%-4s%-33s%-20s%-23s%-9s%-9s%-7s%-3s\n",
+	sprintf(msg+strlen(msg), "%-4s%-4s%-33s%-20s%-23s%-9s%-7s%-7s%-3s\n",
 	    "No", "Ch", "SSID", "BSSID", "Security", "Siganl(%)", "W-Mode", " ExtCH", " NT");
 
 	sprintf(msg+strlen(msg)-1, "%-11s%-10s%-6s%-6s%-6s%-7s\n", " STA_COUNT", " MED_UTIL", " SNR0", " SNR1", " SNR2", " SNR3");	/*change anand for SNR.	Anjan: TODO: SNR2, SNR3 */
@@ -4373,6 +4373,7 @@ USHORT RTMPGetLastTxRate(PRTMP_ADAPTER pAd, MAC_TABLE_ENTRY *pEntry)
 	return lastTxRate.word;
 }
 
+
 static VOID
 copy_mac_table_entry(RT_802_11_MAC_ENTRY *pDst, MAC_TABLE_ENTRY *pEntry)
 {
@@ -4414,6 +4415,7 @@ VOID RTMPIoctlGetMacTableStaInfo(
 	if (pObj->ioctl_if_type == INT_APCLI)
 	{
 		STA_TR_ENTRY *tr_entry;
+		
 		if (wrq_len < sizeof(RT_802_11_MAC_ENTRY))
 			return;
 		if (pObj->ioctl_if >= MAX_APCLI_NUM)
@@ -12421,7 +12423,7 @@ VOID	BTMActionFrameListExit(RTMP_ADAPTER *pAd)
 
 	DlListInit(&pBtmActionFrameList->BTMActionFrameList);
 	RTMP_SEM_EVENT_UP(&pBtmActionFrameList->BTMActionFrameListLock);
-	RTMP_SEM_EVENT_DESTORY(&pBtmActionFrameList->BTMActionFrameListLock);
+	RTMP_SEM_EVENT_DESTORY(&pBtmActionFrameList->BTMActionFrameListLock);	
 }
 #endif
 
@@ -14030,4 +14032,3 @@ INT32 ShowRssiThInfo(RTMP_ADAPTER *pAd, RTMP_STRING *arg)
 	return TRUE;
 }
 #endif /* end of ETSI_RX_BLOCKER_SUPPORT */
-

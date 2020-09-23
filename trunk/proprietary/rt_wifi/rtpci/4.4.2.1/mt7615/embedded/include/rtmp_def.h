@@ -1492,7 +1492,7 @@ enum {
 
 /*ApCli,Repeater Link Down reason */
 #define APCLI_LINKDOWN_NONE				  0
-#define APCLI_LINKDOWN_DEAUTH_REQ		  1
+#define APCLI_LINKDOWN_DEAUTH_REQ		  1	
 #define APCLI_LINKDOWN_DEASSOC_REQ		  2
 #define APCLI_LINKDOWN_PEER_DEASSOC_REQ	  3
 #define APCLI_LINKDOWN_DISCONNECT_REQ	  4
@@ -2419,4 +2419,3 @@ do{									\
 
 #define BandOffset		0x200
 #endif /* __RTMP_DEF_H__ */
-

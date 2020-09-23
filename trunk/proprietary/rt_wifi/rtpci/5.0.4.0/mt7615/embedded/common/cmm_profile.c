@@ -3269,7 +3269,7 @@ static VOID read_ht_param_from_file(struct _RTMP_ADAPTER *pAd, RTMP_STRING *tmpb
 
 	if (RTMPGetKeyParameter("HT_BSSCoexistence", tmpbuf, 25, buf, TRUE)) {
 		Value = os_str_tol(tmpbuf, 0, 10);
-		pAd->CommonCfg.bBssCoexEnable = 0;
+		pAd->CommonCfg.bBssCoexEnable = ((Value == 1) ? TRUE : FALSE);
 		MTWF_LOG(DBG_CAT_CFG, DBG_SUBCAT_ALL, DBG_LVL_TRACE, ("HT: 20/40 BssCoexSupport = %s\n",
 				 (pAd->CommonCfg.bBssCoexEnable == TRUE) ? "ON" : "OFF"));
 	}
@@ -3742,7 +3742,7 @@ NDIS_STATUS	RTMPSetProfileParameters(
 					pAd->ApCfg.bAutoChannelAtBootup = FALSE;
 				else { /*Enable*/
 					pAd->ApCfg.bAutoChannelAtBootup = TRUE;
-					pAd->ApCfg.AutoChannelAlg = 3;
+					pAd->ApCfg.AutoChannelAlg = 3; //force using busytime ACS alg
 				}
 			} else /*Disable*/
 				pAd->ApCfg.bAutoChannelAtBootup = FALSE;
@@ -4098,7 +4098,6 @@ NDIS_STATUS	RTMPSetProfileParameters(
 					pAd->CommonCfg.cPowerUpCckOfdm[BAND1][6]));
 			}
 #endif /* DBDC_MODE */
-
 		}
 
 		/* Power Boost (HT20) */
