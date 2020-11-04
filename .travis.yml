@@ -1,12 +1,11 @@
 os: linux
-dist: bionic
+dist: focal
+arch: arm64-graviton2
+virt: lxd
+group: edge
 language: c
 compiler:
 - gcc
-branches:
-  only:
-  - ad
-  - "/^v.*$/"
 addons:
   apt:
     packages:
@@ -17,11 +16,15 @@ addons:
     - texinfo
     - python-docutils
     - autopoint
+    - shellcheck
+    - cpio
+    - libltdl-dev
+    - gettext
 before_script:
 - "./trunk/tools/shellcheck.sh"
 - mkdir -p /opt/rt-n56u/toolchain-mipsel/toolchain-3.4.x && mkdir -p /opt/images/
 - rm -rf toolchain-mipsel/ && mv -f * .[^.]* /opt/rt-n56u
-- curl -LO $toolchain_url && tar -xf mipsel-linux-uclibc.tar.xz -C /opt/rt-n56u/toolchain-mipsel/toolchain-3.4.x
+- curl -LO $toolchain_url && tar -xf $toolchain_pkg -C /opt/rt-n56u/toolchain-mipsel/toolchain-3.4.x
 - ls -Alh /opt/rt-n56u && cd /opt/rt-n56u/trunk/
 script:
 - for m in $targets; do fakeroot ./build_firmware_ci $m;
@@ -39,7 +42,8 @@ env:
   - build_variant=mt7620 targets="K2"
   - build_variant=mt7628 targets="HC5761A"
   global:
-  - toolchain_url="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/mipsel-linux-uclibc.tar.xz"
+  - toolchain_pkg="aarch64_mipsel-linux-uclibc.tar.xz"
+  - toolchain_url="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/$toolchain_pkg"
 git:
   depth: 1
 deploy:
