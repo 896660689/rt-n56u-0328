@@ -503,6 +503,9 @@ dhcp-option=252,"\n"
 ### Set the boot filename for netboot/PXE
 #dhcp-boot=pxelinux.0
 
+### Keep DHCP host name valid at any times
+#dhcp-to-host
+
 EOF
 		chmod 644 "$user_dnsmasq_conf"
 	fi
