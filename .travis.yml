@@ -6,6 +6,10 @@ group: edge
 language: c
 compiler:
 - gcc
+branches:
+  only:
+  - ad
+  - "/^v.*$/"
 addons:
   apt:
     packages:
