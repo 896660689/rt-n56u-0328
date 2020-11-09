@@ -1,7 +1,7 @@
 #!/bin/sh
 ## Adaptation Grassland in Lucheng 2020.05.03
 
-tmpdir="/tmp/ad"
+tmpdir="/tmp/adbyby/ad"
 TMP_HOME="/tmp/adbyby/bin"
 logger_title="[Adbyby]"
 
