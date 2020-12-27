@@ -3869,9 +3869,11 @@ s32 exfat_find_dir_entry(struct super_block *sb, CHAIN_T *p_dir, UNI_NAME_T *p_u
 					is_feasible_entry = FALSE;
 				}
 			}
+
 			i += step;
 			dentry += step;
 		}
+
 		i -= dentries_per_clu;
 
 		if (p_dir->dir == CLUSTER_32(0))
