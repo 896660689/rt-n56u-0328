@@ -146,7 +146,7 @@ get_eeprom_params(void)
 	char regspec_code[8];
 	char wps_pin[12];
 	char productid[24];
-	char fwver[10], fwver_sub[36];
+	char fwver[16], fwver_sub[36];
 
 	memset(buffer, 0xff, ETHER_ADDR_LEN);
 #if defined (VENDOR_TPLINK)
@@ -899,7 +899,7 @@ if_dircase_exist(const char *dir, const char *subdir)
 {
 	DIR *dirp;
 	struct dirent *direntp;
-	char oldpath[64];
+	char oldpath[257], newpath[257];
 
 	if (!dir || !subdir)
 		return NULL;
