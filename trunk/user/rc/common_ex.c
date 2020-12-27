@@ -873,7 +873,7 @@ rename_if_dir_exist(const char *dir, const char *subdir)
 {
 	DIR *dirp;
 	struct dirent *direntp;
-	char oldpath[257], newpath[257]
+	char oldpath[257], newpath[257];
 
 	if (!dir || !subdir)
 		return 0;
