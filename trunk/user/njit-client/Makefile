@@ -14,8 +14,8 @@ download_test:
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
-		tar zxf $(SRC_NAME).tar.gz; \
-		patch -d $(SRC_NAME) -p1 -i ../0001-fix-njit_client-build-error.patch; \
+		tar -xf $(SRC_NAME).tar.gz; \
+		patch -p1 -d $(SRC_NAME) < $(SRC_NAME).patch; \
 	fi )
 
 config_test:
