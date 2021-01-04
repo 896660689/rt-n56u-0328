@@ -32,9 +32,9 @@ function initial(){
 </script>
 </head>
 <body onload="initial()">
-    <div style="max-width:300px;margin:150px auto 0 auto;">
+    <div style="margin-top: 50px;">
         <center>
-            <div class="well">
+            <div class="well" style="max-width: 600px;">
                 <h2><#logoutmessage#></h2>
 
                 <div><#Not_authpage_login_again#></div>
