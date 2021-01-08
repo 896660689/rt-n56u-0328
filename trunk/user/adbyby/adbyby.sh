@@ -183,8 +183,9 @@ EOF
 rule_update()
 {
     if [ -f "$TMP_HOME/adupdate.sh" ] ; then
-        sh $TMP_HOME/adupdate.sh &
-    else
+        #sh $TMP_HOME/adupdate.sh &
+    fi
+    if [ -d "$GZ_HOME" ] ; then
         logger "adbyby" "正在检查规则是否需要更新!"
         rm -f $GZ_HOME/*.bak && sleep 2
         touch /tmp/local-md5.json && md5sum $GZ_HOME/lazy.txt $GZ_HOME/video.txt > /tmp/local-md5.json && sleep 2
