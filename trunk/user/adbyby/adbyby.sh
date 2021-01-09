@@ -183,7 +183,7 @@ EOF
 rule_update()
 {
     if [ -f "$TMP_HOME/adupdate.sh" ] ; then
-        #sh $TMP_HOME/adupdate.sh &
+        sh $TMP_HOME/adupdate.sh &
     fi
     nvram set adbyby_ltime=$(head -1 $GZ_HOME/lazy.txt | awk -F' ' '{print $3,$4}')
     nvram set adbyby_vtime=$(head -1 $GZ_HOME/video.txt | awk -F' ' '{print $3,$4}')
