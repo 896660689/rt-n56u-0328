@@ -10,9 +10,6 @@
 <link rel="icon" href="images/favicon.png">
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/main.css">
-<script src="jquery.js"></script>
-<script src="state.js"></script>
-
 <script>
 function initial(){
 	var xmlhttp;
