@@ -262,7 +262,5 @@ elif [ "$TPROXY" = 2 ] ; then
 fi
 
 flush_rules && ipset_init && ipt_nat && ipt_mangle && export_ipt_rules
-RET=$?
-[ "$RET" = 0 ] && loger 5 "Start Success!" || loger 3 "Start failed!"
-exit $RET
-
+[ "$?" = 0 ] || loger 3 "Start failed!"
+exit $?
