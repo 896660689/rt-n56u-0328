@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-09-15
+# Compile:by-lanse	2021-01-09
 
 export PATH=$PATH:/usr/bin:/tmp/adbyby/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/bin:/tmp/adbyby/bin
@@ -184,38 +184,6 @@ rule_update()
 {
     if [ -f "$TMP_HOME/adupdate.sh" ] ; then
         sh $TMP_HOME/adupdate.sh &
-    else
-        logger "adbyby" "正在检查规则是否需要更新!"
-        rm -f $GZ_HOME/*.bak && sleep 2
-        touch /tmp/local-md5.json && md5sum $GZ_HOME/lazy.txt $GZ_HOME/video.txt > /tmp/local-md5.json && sleep 2
-        touch /tmp/md5.json && wget --no-check-certificate https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/md5.json -O /tmp/md5.json &
-
-        lazy_local=$(grep 'lazy' /tmp/local-md5.json | awk -F' ' '{print $1}')
-        video_local=$(grep 'video' /tmp/local-md5.json | awk -F' ' '{print $1}')
-        lazy_online=$(sed  's/":"/\n/g' /tmp/md5.json  |  sed  's/","/\n/g' | sed -n '2p')
-        video_online=$(sed  's/":"/\n/g' /tmp/md5.json  |  sed  's/","/\n/g' | sed -n '4p')
-
-        if [ ! "$lazy_online"x = "$lazy_local"x -a  ! "$video_online"x = "$video_local"x ] ; then
-            echo "MD5 not match! Need update!"
-            logger "adbyby" "发现更新的规则,下载规则！"
-            touch /tmp/lazy.txt && wget --no-check-certificate -t 1 -T 10 -O /tmp/lazy.txt https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/lazy.txt &
-            sleep 2
-            touch /tmp/video.txt && wget --no-check-certificate -t 1 -T 10 -O /tmp/video.txt https://adbyby.coding.net/p/xwhyc-rules/d/xwhyc-rules/git/raw/master/video.txt &
-            touch /tmp/local-md5.json && md5sum /tmp/lazy.txt /tmp/video.txt > /tmp/local-md5.json && sleep 2
-            lazy_local=$(grep 'lazy' /tmp/local-md5.json | awk -F' ' '{print $1}')
-            video_local=$(grep 'video' /tmp/local-md5.json | awk -F' ' '{print $1}')
-            if [ "$lazy_online"x == "$lazy_local"x -a "$video_online"x == "$video_local"x ] ; then
-                echo "New rules MD5 match!"
-                mv -f /tmp/lazy.txt $GZ_HOME/lazy.txt &
-                mv -f /tmp/video.txt $GZ_HOME/video.txt &
-                echo $(date +%F) > /tmp/adbyby.updated
-            fi
-        else
-            echo "MD5 match! No need to update!"
-            logger "adbyby" "没有更新的规则,本次无需更新！"
-        fi
-        rm -f /tmp/lazy.txt /tmp/video.txt /tmp/local-md5.json /tmp/md5.json
-        logger "adbyby" "Adbyby规则更新完成"
     fi
     nvram set adbyby_ltime=$(head -1 $GZ_HOME/lazy.txt | awk -F' ' '{print $3,$4}')
     nvram set adbyby_vtime=$(head -1 $GZ_HOME/video.txt | awk -F' ' '{print $3,$4}')
@@ -395,6 +363,8 @@ adbyby_stop()
         sleep 2
     fi
     ipset -X blackip 2>/dev/null &
+    nvram set adbyby_ltime=0
+    nvram set adbyby_vtime=0
     logger "adbyby" "Adbyby已关闭."
 }
 
