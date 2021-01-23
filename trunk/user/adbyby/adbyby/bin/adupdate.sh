@@ -19,24 +19,21 @@ judge_update(){
         logger -t "${logger_title}" "本地 lazy 规则已经最新，无需更新"
         if [ "$video_online"x == "$video_local"x ]; then
             logger -t "${logger_title}" "本地 video 规则已经最新，无需更新"
-            rm_cache && exit 0
         else
             logger -t "${logger_title}" "检测到 video 规则更新，下载规则中..."
             download_video;restart_ad
-            rm_cache && exit 0
         fi
     else
         logger -t "${logger_title}" "检测到 lazy 规则更新，下载规则中..."
         if [ "$video_online"x == "$video_local"x ]; then
             logger -t "${logger_title}" "本地 video 规则已经最新，无需更新"
             download_lazy;restart_ad
-            rm_cache && exit 0
         else
             logger -t "${logger_title}" "检测到 video 规则更新，下载规则中..."
             download_lazy;download_video;restart_ad
-            rm_cache && exit 0
         fi
     fi
+    sleep 2 && rm_cache && exit 0
 }
 
 download_lazy(){
@@ -48,7 +45,7 @@ download_lazy(){
             logger -t "${logger_title}" "【lazy】双双失败GG，请检查网络"
         else
             mv $tmpdir/lazy.txt $TMP_HOME/data/lazy.txt
-			logger -t "${logger_title}" "【lazy】下载成功，更新完成..."
+            logger -t "${logger_title}" "【lazy】下载成功，更新完成..."
         fi
     else
         mv $tmpdir/lazy.txt $TMP_HOME/data/lazy.txt
@@ -65,11 +62,11 @@ download_video(){
             logger -t "${logger_title}" "【video】双双失败GG，请检查网络"
         else
             mv $tmpdir/video.txt $TMP_HOME/data/video.txt
-			logger -t "${logger_title}" "【video】下载成功，更新完成..."
+            logger -t "${logger_title}" "【video】下载成功，更新完成..."
         fi
-	else
-		mv $tmpdir/video.txt $TMP_HOME/data/video.txt
-		logger -t "${logger_title}" "【video】下载成功，更新完成..."
+    else
+        mv $tmpdir/video.txt $TMP_HOME/data/video.txt
+        logger -t "${logger_title}" "【video】下载成功，更新完成..."
     fi
 }
 
