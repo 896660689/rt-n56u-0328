@@ -9,7 +9,7 @@ CXX = g++
 
 COPTS = $(CPUFLAGS) -O3 $(filter-out -O%, $(CFLAGS))
 COPTS += $(if $(CONFIG_IPV6),-DOPENSSL_USE_IPV6=1,)
-COPTS += -DOPENSSL_SMALL_FOOTPRINT
+COPTS += -DOPENSSL_PREFER_CHACHA_OVER_GCM
 
 CFLAGS := $(COPTS)
 CXXFLAGS := $(COPTS)
@@ -19,7 +19,8 @@ OPENSSL_CIPHERS = no-capieng no-cms no-rfc3779 no-seed \
   no-static-engine no-md2 no-sse2 no-dso no-ts no-mdc2 \
   no-cast no-whirlpool no-sctp no-srp no-ssl2 no-ssl3 \
   no-async no-blake2 no-hw-padlock no-aria no-hw \
-  no-devcryptoeng no-ssl3-method no-tests
+  no-devcryptoeng no-ssl3-method no-tests no-sm2 \
+  no-sm3 no-sm4 no-afalgeng no-comp
 
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_SSWAN),y)
 OPENSSL_CIPHERS += no-rc2
@@ -61,7 +62,9 @@ configure:
 	)
 
 clean:
-	$(MAKE) -C $(SRC_NAME) distclean
+	if [ -f $(SRC_NAME)/Makefile ] ; then \
+		$(MAKE) -C $(SRC_NAME) clean ; \
+	fi ; \
 	rm -f config_done
 
 install:
