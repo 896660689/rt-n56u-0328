@@ -119,7 +119,7 @@ mkdir -p $ROOTDIR/images
 
 echo --------------------------COPY-CONFIG-----------------------------
 ######################### FOR-ALL-DEVICES #############################
-ln -sf vendors/Ralink/config.arch config.arch
+ln -sf vendors/Ralink/$CONFIG_PRODUCT/config.arch config.arch
 cp -fL "$kernel_cf" "$kernel_tf"
 cp -fL "$busybox_cf" "$busybox_tf"
 cp -fL "$board_mk" "$ROOTDIR/user/shared/board.mk"
