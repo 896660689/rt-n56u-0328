@@ -11,4 +11,5 @@ download_test:
 	fi )
 
 romfs:
+	cp -fP $(STAGEDIR)/lib/libevent_core-2.1.so.* $(ROMFSDIR)/lib
 	$(ROMFSINST) -p +x $(THISDIR)/redsocks /usr/bin/redsocks
