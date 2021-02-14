@@ -1,34 +1,22 @@
-SRC_NAME=dnsmasq-2.81
+SRC_NAME=dnsmasq-2.8x
 
-COPTS := -DHAVE_BROKEN_RTC -DNO_INOTIFY -DNO_AUTH -DNO_LOOP -DNO_DUMPFILE
+COPTS := -DHAVE_BROKEN_RTC -DNO_INOTIFY -DNO_AUTH -DNO_LOOP
 ifndef CONFIG_IPV6
 COPTS += -DNO_IPV6
 endif
 ifndef CONFIG_USB_SUPPORT
 COPTS += -DNO_TFTP
 endif
-ifeq ($(CONFIG_FIRMWARE_ENABLE_DNSMASQ_REGEX),y)
-COPTS += -DHAVE_REGEX
-ifeq ($(CONFIG_FIRMWARE_INCLUDE_IPSET),y)
-COPTS += -DHAVE_REGEX_IPSET
-endif
-endif
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_IPSET),y)
 COPTS += -DNO_IPSET
 endif
 
-all: extract_test
-	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" COPTS="$(COPTS)"
-
-extract_test:
-	( if [ ! -d $(SRC_NAME) ]; then \
-		tar xzf $(SRC_NAME).tar.gz; \
-		patch -d $(SRC_NAME) -p1 -i ../001-regex-server.patch; \
-		patch -d $(SRC_NAME) -p1 -i ../002-regex-ipset.patch; \
-	fi )
+all:
+	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) COPTS="$(COPTS)"
 
 clean:
 	$(MAKE) -C $(SRC_NAME) clean
+	rm -f dnsmasq
 
 romfs:
 	$(ROMFSINST) $(SRC_NAME)/src/dnsmasq /usr/sbin/dnsmasq
