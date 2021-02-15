@@ -1,10 +1,11 @@
 #!/bin/sh
-# Compile:by-lanse	2020-09-10
+# Compile:by-lanse	2021-02-15
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
 ss_mode=$(nvram get ss_mode)
 STORAGE="/etc/storage"
+dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
 SSR_HOME="$STORAGE/shadowsocks"
 STORAGE_V2SH="$STORAGE/storage_v2ray.sh"
 SS_LOCAL_PORT_LINK=$(nvram get ss_local_port)
@@ -178,6 +179,16 @@ func_Del_rule(){
     fi
 }
 
+func_china_file(){
+    if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
+    then
+        ipset -N chnroute hash:net
+        sleep 3 && \
+        #sed -e "s/^/add chnroute /" $dir_chnroute_file | ipset restore &
+        awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore &
+    fi
+}
+
 func_v2_running(){
     v2_addmi
     v2_tmp_json
@@ -189,6 +200,7 @@ func_start(){
     if [ "$ss_mode" = "3" ]
     then
         func_Del_rule && \
+        func_china_file &
         echo -e "\033[41;37m 部署 [v2ray] 文件,请稍后...\e[0m\n"
         v2_server_file && \
         func_download &
