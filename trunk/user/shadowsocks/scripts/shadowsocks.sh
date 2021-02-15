@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-07-15
+# Compile:by-lanse	2021-02-15
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -42,7 +42,7 @@ ss2_protocol=$(nvram get ss2_protocol)
 ss2_proto_param=$(nvram get ss2_proto_param)
 ss2_obfs=$(nvram get ss2_obfs)
 ss2_obfs_param=$(nvram get ss2_obfs_param)
-v2_address=$(sed -n "2p" /etc/storage/storage_v2ray.sh |cut -f 2 -d ":")
+v2_address=$(cat /tmp/V2mi.txt | grep "add:" | awk -F '[:/]' '{print $2}')
 dns2_ip=$(nvram get ss-tunnel_remote | awk -F '[:/]' '{print $1}')
 dns2_port=$(nvram get ss-tunnel_remote | sed 's/:/#/g')
 
