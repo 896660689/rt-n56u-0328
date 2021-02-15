@@ -177,7 +177,7 @@ function add_client_row(table, atIndex, client, blocked, j){
 	nameCell.innerHTML = (client[6] == "1") ? "<a href=http://" + client[0] + " target='blank'>" + client[0] + "</a>" : client[0];
 	ipCell.innerHTML = (client[6] == "1") ? "<a href=http://" + client[1] + " target='blank'>" + client[1] + "</a>" : client[1];
 //	macCell.innerHTML = "<a target='_blank' href='https://services13.ieee.org/RST/standards-ra-web/rest/assignments/?registry=MAC&text=" + client[2].substr(0,6) + "'>" + mac_add_delimiters(client[2]) + "</a>";
-	macCell.innerHTML = "<a target='_blank' href='http://www.51240.com/apiiframe/?api_from=51240&api_url=http://mac.51240.com/" + client[2].substr(0,12) + "__mac/&api_width=85%&api_backgroundcolor=2f2f2f'>" + client[2] + "</a>";
+	macCell.innerHTML = "<a target='_blank' href='http://www.51240.com/apiiframe/?api_from=51240&api_url=http://mac.bmcx.com/" + client[2].substr(0,12) + "__mac/&api_width=85%&api_backgroundcolor=2f2f2f'>" + client[2] + "</a>";
 	if (client[3] == 10){
 		rssiCell.innerHTML = client[4].toString();
 	}
