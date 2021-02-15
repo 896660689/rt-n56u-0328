@@ -1,6 +1,6 @@
 #!/bin/sh
 # github:http://github.com/SuzukiHonoka
-# Compile:by-lanse	2020-08-10
+# Compile:by-lanse	2021-02-15
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -14,7 +14,6 @@ REDSOCKS_FILE="$TMP_HOME/redsocks"
 BINARY_PATH="$BIN_DIR/$BINARY_NAME"
 REDSOCKS_CONF="$TMP_HOME/$BINARY_NAME.conf"
 CHAIN_NAME="REDSOCKS"
-dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
 SET_NAME="chnroute"
 SOCKS_LOG="/tmp/ss-watchcat.log"
 ss_router_proxy=$(nvram get ss_router_proxy)
@@ -91,18 +90,6 @@ logger -t $BINARY_NAME "STARTED."
 fi
 }
 
-func_china_file(){
-if [ -f "$dir_chnroute_file" ] || [ -s "$dir_chnroute_file" ]
-then
-ipset -N chnroute hash:net
-sleep 3 && \
-#sed -e "s/^/add chnroute /" $dir_chnroute_file | ipset restore &
-awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore &
-fi
-wait
-echo "load ip rules !"
-}
-
 flush_ipt_file(){
 FWI="/tmp/shadowsocks_iptables.save"
 [ -n "$FWI" ] && echo '# firewall include file' >$FWI && \
@@ -147,7 +134,6 @@ logger -t $BINARY_NAME "REMOTE_IP NOT FOUND!"
 return 0
 fi
 func_clean
-func_china_file &
 wait
 echo "CH list rule !"
 if [ "$ss_router_proxy" = "5" ] ; then
