@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2021-02-15
+# Compile:by-lanse	2021-02-18
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -343,6 +343,7 @@ func_chinadns_ng(){
 }
 
 func_start(){
+    ulimit -n 65536
     if [ "$SS_ENABLE" = "1" ]
     then
         if [ "$ss_mode" = "2" ]
@@ -379,7 +380,7 @@ func_start(){
         fi
         func_cron && \
         restart_firewall && \
-        sleep 2 && logger -t "[ShadowsocksR]" "开始运行"
+        logger -t "[ShadowsocksR]" "开始运行…"
     else
         exit 0
     fi
@@ -389,8 +390,8 @@ func_stop(){
     nvram set ss-tunnel_enable=0
     /usr/bin/ss-tunnel.sh stop &
     sleep 1 && /bin/sh $SSR_HOME/v2ray.sh stop &
-    sleep 1 && /bin/sh $SSR_HOME/redsocks.sh stop
-    sleep 1 && /bin/sh $SSR_HOME/chinadns-ng.sh stop
+    sleep 1 && /bin/sh $SSR_HOME/redsocks.sh stop &
+    sleep 1 && /bin/sh $SSR_HOME/chinadns-ng.sh stop &
     sleep 1 && func_ss_Close &
     sleep 1 && func_ss_down &
     wait
