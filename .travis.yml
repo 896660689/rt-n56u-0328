@@ -1,8 +1,5 @@
 os: linux
-dist: focal
-arch: arm64-graviton2
-virt: lxd
-group: edge
+dist: bionic
 language: c
 compiler:
 - gcc
