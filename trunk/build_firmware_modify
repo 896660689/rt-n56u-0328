@@ -55,19 +55,14 @@ func_disable_busybox_param()
 		sed -i "s/$1=y/\# $1 is not set/" $busybox_tf
 	fi
 }
-
-if [ ! -f "$ROOTDIR/.config" ] ; then
-	cp -fv "$ROOTDIR/configs/templates/n56u_dlna.config" "$ROOTDIR/.config"
-fi
-
 . $ROOTDIR/toolchain.inc
 echo "CONFIG_TOOLCHAIN_DIR=${CONFIG_TOOLCHAIN_DIR}" >> .config
 
 # load project root config
 . $ROOTDIR/.config
 
-if [ ! -f "$ROOTDIR/vendors/Ralink/$CONFIG_PRODUCT/config.arch" ] ; then
-	echo "Project product dir ($CONFIG_PRODUCT) not found! Terminate."
+if [ ! -f "$ROOTDIR/vendors/Ralink/config.arch" ] ; then
+	echo "Project product dir not found! Terminate."
 	exit 1
 fi
 
@@ -119,7 +114,7 @@ mkdir -p $ROOTDIR/images
 
 echo --------------------------COPY-CONFIG-----------------------------
 ######################### FOR-ALL-DEVICES #############################
-ln -sf vendors/Ralink/$CONFIG_PRODUCT/config.arch config.arch
+ln -sf vendors/Ralink/config.arch config.arch
 cp -fL "$kernel_cf" "$kernel_tf"
 cp -fL "$busybox_cf" "$busybox_tf"
 cp -fL "$board_mk" "$ROOTDIR/user/shared/board.mk"
