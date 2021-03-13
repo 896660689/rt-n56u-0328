@@ -23,10 +23,9 @@ addons:
     - gettext
 before_script:
 - "./trunk/tools/shellcheck.sh"
-- mkdir -p /opt/rt-n56u/toolchain-mipsel && mkdir -p /opt/images/
+- mkdir -p /opt/rt-n56u/toolchain-mipsel/toolchain-3.4.x && mkdir -p /opt/images/
 - rm -rf toolchain-mipsel/ && mv -f * .[^.]* /opt/rt-n56u
-
-- curl -LO $toolchain_url && tar -zxvf toolchain-3.4.x.tar.gz -C /opt/rt-n56u/toolchain-mipsel
+- curl -LO $toolchain_url && tar -xf $toolchain_pkg -C /opt/rt-n56u/toolchain-mipsel/toolchain-3.4.x
 - ls -Alh /opt/rt-n56u && cd /opt/rt-n56u/trunk/
 script:
 - for m in $targets; do fakeroot ./build_firmware_ci $m;
@@ -43,8 +42,9 @@ env:
   - build_variant=mt7621 targets="K2P K2P-5.0"
   - build_variant=mt7620 targets="K2"
   - build_variant=mt7628 targets="HC5761A"
-  global:
-  - toolchain_url="https://github.com/896660689/builb--padavan/releases/download/20.14/toolchain-3.4.x.tar.gz"
+    global:
+  - toolchain_pkg="mipsel-linux-uclibc.tar.xz"
+  - toolchain_url="https://github.com/896660689/padavan-toolchain/releases/download/03.20/$toolchain_pkg"
 git:
   depth: 1
 deploy:
