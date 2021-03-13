@@ -44,7 +44,7 @@ env:
   - build_variant=mt7628 targets="HC5761A"
 global:
   - toolchain_pkg="mipsel-linux-uclibc.tar.xz"
-  - toolchain_url="https://github.com/896660689/padavan-toolchain/releases/download/03.20/$toolchain_pkg"
+  - toolchain_url="https://github.com/896660689/builb--padavan/releases/download/padavan/"
 git:
   depth: 1
 deploy:
