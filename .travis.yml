@@ -45,9 +45,9 @@ env:
   - build_variant=mt7621 targets="K2P K2P-5.0"
   - build_variant=mt7620 targets="K2"
   - build_variant=mt7628 targets="HC5761A"
-global:
+  global:
   - toolchain_pkg="aarch64_mipsel-linux-uclibc.tar.xz"
-  - toolchain_url="https://github.com/896660689/builb--padavan/releases/download/padavan/"
+  - toolchain_url="https://github.com/896660689/builb--padavan/releases/download/padavan/$toolchain_pkg"
 git:
   depth: 1
 deploy:
