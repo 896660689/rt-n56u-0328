@@ -31,7 +31,6 @@ endif
 extract_ssr_test:
 	( if [ ! -d $(SRC_SSR_NAME) ]; then \
 		tar xf $(ARCHIVE_SSR_NAME).tar.gz ; \
-		patch -d $(SRC_SSR_NAME) -p1 -i ../patches/0001-Add-ss-server-and-ss-check.patch; \
 		patch -d $(SRC_SSR_NAME) -p1 -i ../patches/0002-Revert-verify_simple-and-auth_simple.patch; \
 		patch -d $(SRC_SSR_NAME) -p1 -i ../patches/0003-Refine-Usage.patch; \
 		patch -d $(SRC_SSR_NAME) -p1 -i ../patches/999-Fix-Werror-sizeof-pointer-memaccess.patch; \
@@ -112,10 +111,8 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-redir /usr/bin/ss-orig-redir
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-tunnel /usr/bin/ss-orig-tunnel
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-local /usr/bin/ss-orig-local
-	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-redir /usr/bin/ss-redir
-	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-local /usr/bin/ss-local
-	#ln -sf /var/ss-redir $(ROMFSDIR)/usr/bin/ss-redir
-	#ln -sf /var/ss-tunnel $(ROMFSDIR)/usr/bin/ss-local
+	ln -sf /var/ss-redir $(ROMFSDIR)/usr/bin/ss-redir
+	ln -sf /var/ss-tunnel $(ROMFSDIR)/usr/bin/ss-local
 endif
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SSSERVER),y)
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-server /usr/bin/ss-server
