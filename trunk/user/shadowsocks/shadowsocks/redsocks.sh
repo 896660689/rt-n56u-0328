@@ -155,11 +155,11 @@ done
 
 func_stop(){
 if [ -n "$(pidof $BINARY_NAME)" ] ; then
-killall $BINARY_NAME >/dev/null 2>&1 &
+killall $BINARY_NAME &
 sleep 2
 fi
 if [ -n "$(pidof ipt2socks)" ] ; then
-killall ipt2socks >/dev/null 2>&1 &
+killall ipt2socks &
 fi
 func_clean
 [ -d "$TMP_HOME" ] && rm -rf "$TMP_HOME"
