@@ -1,4 +1,4 @@
-SRC_NAME=redsocks-release-0.5-11-g19b822e
+SRC_NAME=redsocks-19b822e
 SRC_URL=https://github.com/SuzukiHonoka/redsocks_for_mipsel/releases/download/release-0.5-11-g19b822e/redsocks
 
 THISDIR = $(shell pwd)
