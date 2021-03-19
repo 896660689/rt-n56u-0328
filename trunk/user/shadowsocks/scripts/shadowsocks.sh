@@ -350,7 +350,7 @@ func_start(){
         then
             check_music
         fi
-        func_sshome_file && \
+        func_sshome_file && sleep 2
         if [ "$ss_mode" = "2" ]
         then
             func_gfwlist_file &
