@@ -4,12 +4,13 @@ SRC_URL=https://github.com/SuzukiHonoka/redsocks_for_mipsel/releases/download/re
 THISDIR = $(shell pwd)
 
 all: download_test
+	$(MAKE) -C $(SRC_NAME)
 
 download_test:
-	( if [ ! -f redsocks ]; then \
-		wget -t5 --timeout=20 --no-check-certificate -O redsocks $(SRC_URL); \
+	( if [ -f $(SRC_NAME)/Makefile ] ; then \
+		$(MAKE) -C $(SRC_NAME) clean ; \
 	fi )
 
 romfs:
+	$(ROMFSINST) $(THISDIR)/$(SRC_NAME)/redsocks /usr/bin/redsocks
 	cp -fP $(STAGEDIR)/lib/libevent_core-2.1.so.* $(ROMFSDIR)/lib
-	$(ROMFSINST) -p +x $(THISDIR)/redsocks /usr/bin/redsocks
