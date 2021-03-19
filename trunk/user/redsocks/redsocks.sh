@@ -52,7 +52,8 @@ log_debug = off;
 log_info = off;
 redirector = iptables;
 daemon = on;
-redsocks_conn_max = 1000;
+redsocks_conn_max = 10000;
+rlimit_nofile = 10240;
 }
 
 redsocks {
@@ -119,13 +120,13 @@ iptables -t nat -A $CHAIN_NAME -d 224.0.0.0/4 -j RETURN
 iptables -t nat -A $CHAIN_NAME -d 240.0.0.0/4 -j RETURN
 iptables -t nat -A $CHAIN_NAME -m set --match-set china dst -j RETURN
 iptables -t nat -A $CHAIN_NAME -p tcp -j REDIRECT --to-ports 12345
-iptables -t nat -I PREROUTING -p tcp -j $CHAIN_NAME
-iptables -t nat -I OUTPUT -p tcp -j $CHAIN_NAME
+iptables -t nat -A PREROUTING -p tcp -j $CHAIN_NAME
+iptables -t nat -A OUTPUT -p tcp -j $CHAIN_NAME
 }
 
 func_stop(){
 if [ -n "$(pidof $BINARY_NAME)" ] ; then
-killall $BINARY_NAME >/dev/null 2>&1 &
+killall $BINARY_NAME
 sleep 2
 fi
 func_clean
