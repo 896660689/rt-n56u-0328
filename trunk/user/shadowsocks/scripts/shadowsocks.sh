@@ -389,11 +389,11 @@ func_start(){
 func_stop(){
     nvram set ss-tunnel_enable=0
     /usr/bin/ss-tunnel.sh stop &
-    sleep 1 && /bin/sh $SSR_HOME/v2ray.sh stop &
-    sleep 1 && /bin/sh $SSR_HOME/redsocks.sh stop &
-    sleep 1 && /bin/sh $SSR_HOME/chinadns-ng.sh stop &
-    sleep 1 && func_ss_Close &
-    sleep 1 && func_ss_down &
+    sleep 1 && $SSR_HOME/v2ray.sh stop &
+    sleep 1 && $SSR_HOME/redsocks.sh stop &
+    sleep 1 && $SSR_HOME/chinadns-ng.sh stop &
+    sleep 1 && func_ss_Close >/dev/null 2>&1 &
+    sleep 1 && func_ss_down >/dev/null 2>&1 &
     wait
     echo "Program Close ！"
     #ipset destroy gfwlist 2>/dev/null && sleep 2
