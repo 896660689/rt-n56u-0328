@@ -116,14 +116,14 @@ func_start_ss_rules(){
 func_ss_Close(){
     loger $ss_bin "stop"; ss-rules -f &
     if [ -n "$(pidof ss-redir)" ] ; then
-        killall ss-redir &
+        killall ss-redir >/dev/null 2>&1 &
         sleep 2
     fi
     kill -9 $(busybox ps -w | grep dns-forwarder | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     kill -9 $(busybox ps -w | grep dnsproxy | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     kill -9 $(busybox ps -w | grep dns2tcp | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     if [ -n "$(pidof pdnsd)" ] ; then
-        killall pdnsd &
+        killall pdnsd >/dev/null 2>&1 &
         sleep 2
     fi
     iptables -t nat -X gfwlist >/dev/null 2>&1
@@ -173,7 +173,6 @@ githubusercontent.com
 gnews.org
 gtv.org
 suannai.me
-transfer.sh
 
 EOF
         chmod 644 $STORAGE/ss_dom.sh
@@ -188,7 +187,7 @@ EOF
 EOF
         chmod 644 $STORAGE/ss_pc.sh
     fi
-    sh $SSR_HOME/v2ray.sh v2_file
+    $SSR_HOME/v2ray.sh v2_file
 }
 
 func_gen_ss_json(){
@@ -376,8 +375,8 @@ func_start(){
             loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!"; }
         fi
         func_cron && \
-        restart_firewall &
-        sleep 2 && logger -t "[ShadowsocksR]" "开始运行…"
+        restart_firewall && \
+        logger -t "[ShadowsocksR]" "开始运行…"
     else
         exit 0
     fi
@@ -391,9 +390,11 @@ func_stop(){
     sleep 1 && $SSR_HOME/chinadns-ng.sh stop &
     sleep 1 && func_ss_Close &
     sleep 1 && func_ss_down &
+    wait
+    echo "Program Close ！"
     #ipset destroy gfwlist 2>/dev/null && sleep 2
-    sleep 1 && ipset -X gfwlist 2>/dev/null &
-    sleep 3 && logger -t "[ShadowsocksR]" "已停止运行!"
+    ipset -X gfwlist 2>/dev/null && \
+    logger -t "[ShadowsocksR]" "已停止运行!"
 }
 
 case "$1" in
