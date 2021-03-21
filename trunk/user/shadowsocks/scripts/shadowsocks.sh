@@ -116,14 +116,14 @@ func_start_ss_rules(){
 func_ss_Close(){
     loger $ss_bin "stop"; ss-rules -f &
     if [ -n "$(pidof ss-redir)" ] ; then
-        killall ss-redir >/dev/null 2>&1 &
+        killall ss-redir &
         sleep 2
     fi
     kill -9 $(busybox ps -w | grep dns-forwarder | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     kill -9 $(busybox ps -w | grep dnsproxy | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     kill -9 $(busybox ps -w | grep dns2tcp | grep -v grep | awk '{print $1}') >/dev/null 2>&1
     if [ -n "$(pidof pdnsd)" ] ; then
-        killall pdnsd >/dev/null 2>&1 &
+        killall pdnsd &
         sleep 2
     fi
     iptables -t nat -X gfwlist >/dev/null 2>&1
@@ -166,16 +166,13 @@ func_gfwlist_list(){
         cat > "$STORAGE/ss_dom.sh" <<EOF
 ### 强制走 [ gfwlist ] 代理模式的域名黑名单
 ### 只填入网址名称或关键字即可,如下:
-bitbucket.org
 youtube.com
 youneed.win
 livestream.com
 githubusercontent.com
 gnews.org
 gtv.org
-gtv1.org
 suannai.me
-travis-ci.com
 transfer.sh
 
 EOF
@@ -330,16 +327,16 @@ func_sshome_file(){
 }
 
 func_v2fly(){
-    /bin/sh $SSR_HOME/v2ray.sh start
+    $SSR_HOME/v2ray.sh start
 }
 
 func_redsocks(){
-    /bin/sh $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK
-    /bin/sh $SSR_HOME/redsocks.sh iptables $v2_address
+    $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK
+    $SSR_HOME/redsocks.sh iptables $v2_address
 }
 
 func_chinadns_ng(){
-    /bin/sh $SSR_HOME/chinadns-ng.sh start
+    $SSR_HOME/chinadns-ng.sh start
 }
 
 func_start(){
@@ -350,7 +347,7 @@ func_start(){
         then
             check_music
         fi
-        func_sshome_file && sleep 2
+        func_sshome_file && \
         if [ "$ss_mode" = "2" ]
         then
             func_gfwlist_file &
@@ -392,8 +389,8 @@ func_stop(){
     sleep 1 && $SSR_HOME/v2ray.sh stop &
     sleep 1 && $SSR_HOME/redsocks.sh stop &
     sleep 1 && $SSR_HOME/chinadns-ng.sh stop &
-    sleep 1 && func_ss_Close >/dev/null 2>&1 &
-    sleep 1 && func_ss_down >/dev/null 2>&1 &
+    sleep 1 && func_ss_Close &
+    sleep 1 && func_ss_down &
     wait
     echo "Program Close ！"
     #ipset destroy gfwlist 2>/dev/null && sleep 2
