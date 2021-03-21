@@ -3,9 +3,9 @@ THISDIR = $(shell pwd)
 SRC_SS_NAME=shadowsocks-libev-3.3.5
 #https://github.com/shadowsocks/shadowsocks-libev.git
 
-SRC_SSR_NAME=shadowsocksr-libev-2.5.3
-ARCHIVE_SSR_NAME=shadowsocksr-libev-d63ff86
-#https://github.com/shadowsocksrr/shadowsocksr-libev.git
+SRC_SSR_NAME=shadowsocksr-libev-master
+ARCHIVE_SSR_NAME=shadowsocksr-libev-master-e2373d7
+#https://github.com/shadowsocksr-backup/shadowsocksr-libev.git
 
 SSR_HOME=shadowsocks
 
@@ -30,10 +30,7 @@ endif
 
 extract_ssr_test:
 	( if [ ! -d $(SRC_SSR_NAME) ]; then \
-		tar xf $(ARCHIVE_SSR_NAME).tar.gz ; \
-		patch -d $(SRC_SSR_NAME) -p1 -i ../patches/0002-Revert-verify_simple-and-auth_simple.patch; \
-		patch -d $(SRC_SSR_NAME) -p1 -i ../patches/0003-Refine-Usage.patch; \
-		patch -d $(SRC_SSR_NAME) -p1 -i ../patches/999-Fix-Werror-sizeof-pointer-memaccess.patch; \
+		unzip -qq $(ARCHIVE_SSR_NAME).zip ; \
 	fi )
 
 extract_ss_test:
