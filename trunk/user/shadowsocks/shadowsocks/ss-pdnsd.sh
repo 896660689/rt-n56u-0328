@@ -9,7 +9,7 @@ USERNAME=$(nvram get http_username)
 ROUTE_VLAN=$(nvram get lan_ipaddr)
 SS_TUNNEL_LOCAL_PORT=$(nvram get ss-tunnel_local_port)
 dns2_ip=$(nvram get ss-tunnel_remote | awk -F '[:/]' '{print $1}')
-DNS_LIST="$dns2_ip,208.67.220.220,8.8.4.4"
+DNS_LIST="$dns2_ip,1.1.1.1,208.67.220.220,8.8.4.4"
 CHN_LIST="119.29.29.29,223.5.5.5,114.114.114.114"
 
 export PATH=$PATH:/var/pdnsd
