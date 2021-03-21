@@ -1,12 +1,18 @@
 #!/bin/sh
 
+pidfile="/var/v2-watchcat"
 SSR_HOME="$STORAGE/shadowsocks"
 SS_SCRIPT="/usr/bin/shadowsocks.sh"
-Global_WEBSITE="www.youtube.com"
+Global_WEBSITE="http://www.google.com/"
 CN_WEBSITE="www.baidu.com"
 
 LOGFILE="/tmp/ss-watchcat.log"
 max_log_bytes=3000
+
+go_exit(){
+    rm -f $pidfile
+    exit
+}
 
 loger(){
     [ -f $LOGFILE ] && [ $(stat -c %s $LOGFILE) -gt $max_log_bytes ] && sed -i '1,10d' "$LOGFILE"
@@ -14,22 +20,34 @@ loger(){
     echo "$time v2ray-watchdog $1" >> $LOGFILE
 }
 
+ge_Problem(){
+	wget --spider --quiet --timeout=3 $Global_WEBSITE > /dev/null 2>&1
+	return $?
+}
+
+cn_Problem(){
+	wget --spider --quiet --timeout=3 $CN_WEBSITE > /dev/null 2>&1
+	return $?
+}
+
+[ -f $pidfile ] && kill -9 "$(cat $pidfile)" || echo "$$" > $pidfile
+
 if [ -n "$(pidof v2ray)" ] ; then
-    wget -s -q -T 3 $Global_WEBSITE > /dev/null
+    ge_Problem
     if [ "$?" == "0" ]; then
         loger "V2RAY-网络正常,已开启科学上网..."
+        go_exit
     else
-        wget -s -q -T 3 $CN_WEBSITE > /dev/null
+        cn_Problem
         if [ "$?" == "0" ]; then
             loger "网络正常,v2ray-服务失败,重新启动-Shadowsocks..."
             $SS_SCRIPT restart &
         else
-            loger "互联网络未接通-已断网......"
+            loger "互联网络未接通-已断网......" && go_exit
         fi
     fi
-    exit 0
 else
     loger "[V2ray] 未运行，重新启动 !"
     $SSR_HOME/v2ray.sh &
 fi
-
+go_exit
