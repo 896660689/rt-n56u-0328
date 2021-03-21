@@ -326,16 +326,16 @@ func_sshome_file(){
 }
 
 func_v2fly(){
-    $SSR_HOME/v2ray.sh start
+    /bin/sh $SSR_HOME/v2ray.sh start
 }
 
 func_redsocks(){
-    $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK
-    $SSR_HOME/redsocks.sh iptables $v2_address
+    /bin/sh $SSR_HOME/redsocks.sh start 127.0.0.1 $SS_LOCAL_PORT_LINK
+    /bin/sh $SSR_HOME/redsocks.sh iptables $v2_address
 }
 
 func_chinadns_ng(){
-    $SSR_HOME/chinadns-ng.sh start
+    /bin/sh $SSR_HOME/chinadns-ng.sh start
 }
 
 func_start(){
