@@ -67,12 +67,10 @@ else
                 if [ "$(nvram get ss2_server)" = "127.0.0.1" ]
                 then
                     loger "未设置备用服务器,稍后重新尝试主服务器…"
-                    go_exit
                 else
                     loger "Ssr-主服务器不通,更换备用服务器运行..."
                     ln -sf $SS_JSON.backup $SS_JSON
                     $SS_SCRIPT dog_up > /dev/null 2>&1
-                    go_exit
                 fi
             fi
         fi
