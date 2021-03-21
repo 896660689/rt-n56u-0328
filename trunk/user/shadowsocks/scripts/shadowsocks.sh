@@ -54,6 +54,11 @@ if [ $(nvram get wyy_enable) = "1" ] && [ $(nvram get sdns_enable) = "1" ]; then
 fi
 }
 
+wait-for() {
+    wait
+    echo "ShadowsocksR Started..."
+}
+
 if [ "${SS_TYPE:-0}" = "0" ] ; then
     ln -sf /usr/bin/ss-orig-redir $ss_proc
 elif [ "${SS_TYPE:-0}" = "1" ] ; then
@@ -260,8 +265,7 @@ func_gfwlist_file(){
     if [ "$ss_mode" = "2" ]
     then
         sh -c "$SSR_HOME/ss-gfwlist.sh -s $SS_SERVER_LINK -l $SS_LOCAL_PORT_LINK"
-        wait
-        echo "Program Start…"
+        wait-for && \
         $ss_bin -c $ss_json -b 0.0.0.0 -l $SS_LOCAL_PORT_LINK >/dev/null 2>&1 &
         sleep 2 && logger -t "[ShadowsocksR]" "使用 [gfwlist] 代理模式开始运行..."
     fi
@@ -370,8 +374,7 @@ func_start(){
             ln -sf $ss_json.main $ss_json && \
             func_start_ss_redir && \
             func_start_ss_rules &
-            wait
-            echo "ShadowsocksR Started..."
+            wait-for && \
             loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!"; }
         fi
         func_cron && \
@@ -390,8 +393,7 @@ func_stop(){
     sleep 1 && $SSR_HOME/chinadns-ng.sh stop &
     sleep 1 && func_ss_Close &
     sleep 1 && func_ss_down &
-    wait
-    echo "Program Close ！"
+    wait-for && \
     #ipset destroy gfwlist 2>/dev/null && sleep 2
     ipset -X gfwlist 2>/dev/null && \
     logger -t "[ShadowsocksR]" "已停止运行!"
