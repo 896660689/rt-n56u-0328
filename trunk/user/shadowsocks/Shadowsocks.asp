@@ -391,7 +391,9 @@ function showTab(curHash){
 
                                         <table class="table">
                                             <tr>
-                                                <td style="border: 0 none; padding: 0px;"><center><input name="button" type="button" class="btn btn-primary" style="width: 219px" onclick="applyRule();" value="<#CTL_apply#>"/></center></td>
+                                                <td colspan="6">
+                                                    center><input name="button" class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>
@@ -596,7 +598,9 @@ function showTab(curHash){
 
                                         <table class="table">
                                             <tr>
-                                                <td style="border: 0 none;"><center><input name="button" type="button" class="btn btn-primary" style="width: 219px" onclick="applyRule();" value="<#CTL_apply#>"/></center></td>
+                                                <td colspan="6">
+                                                    center><input name="button" class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>
@@ -667,7 +671,9 @@ function showTab(curHash){
 
                                         <table class="table">
                                             <tr>
-                                                <td style="border: 0 none;"><center><input name="button" type="button" class="btn btn-primary" style="width: 219px" onclick="applyRule();" value="<#CTL_apply#>"/></center></td>
+                                                <td colspan="6">
+                                                    center><input name="button" class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>
