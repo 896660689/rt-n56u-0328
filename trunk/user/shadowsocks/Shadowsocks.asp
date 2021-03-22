@@ -697,6 +697,9 @@ function showTab(curHash){
     </div>
     </form>
     <div id="footer"></div>
+    <form method="post" name="Shadowsocks_action" action="">
+        <input type="hidden" name="connect_action" value="">
+    </form>
 </div>
 
 </body>
