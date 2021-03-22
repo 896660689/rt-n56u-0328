@@ -22,11 +22,9 @@
 <script type="text/javascript" src="/help.js"></script>
 
 <script>
+var $j = jQuery.noConflict();
 <% shadowsocks_status(); %>
 <% rules_count(); %>
-
-var $j = jQuery.noConflict();
-
 $j(document).ready(function(){
 	init_itoggle('ss_enable');
 	init_itoggle('ss_udp');
@@ -40,6 +38,16 @@ $j(document).ready(function(){
 		return false;
 	});
 });
+
+var m_list = [<% get_nvram_list("ShadowsocksConf", "SdnsList"); %>];
+var mlist_ifield = 6;
+if(m_list.length > 0){
+	var m_list_ifield = m_list[0].length;
+	for (var i = 0; i < m_list.length; i++) {
+		m_list[i][mlist_ifield] = i;
+	}
+}
+
 function initial(){
 	show_banner(2);
 	show_menu(11,-1,0);
@@ -64,6 +72,7 @@ function initial(){
 	$("gfwlist_count").innerHTML = '<#menu5_17_3#>' + gfwlist_count();
 	switch_ss_router_proxy();
 	switch_ss_type();
+	showTab(getHash());
 }
 
 function switch_ss_router_proxy(){
@@ -80,14 +89,6 @@ function switch_ss_type(){
 	showhide_div('row_ss_proto_param', v);
 	showhide_div('row_ss_obfs', v);
 	showhide_div('row_ss_obfs_param', v);
-}
-
-function applyRule(){
-	showLoading();
-	document.form.action_mode.value = " Restart ";
-	document.form.current_page.value = "/Shadowsocks.asp";
-	document.form.next_page.value = "";
-	document.form.submit();
 }
 
 function submitInternet(v){
@@ -115,8 +116,15 @@ function fill_ss_tunnel_status(status_code){
 	$("ss_tunnel_status").innerHTML = '<span class="label label-' + (status_code != 0 ? 'success' : 'warning') + '">' + stext + '</span>';
 }
 
-var arrHashes = ["add", "ssl", "cli", "log"];
+function applyRule(){
+	showLoading();
+	document.form.action_mode.value = " Restart ";
+	document.form.current_page.value = "/Shadowsocks.asp";
+	document.form.next_page.value = "";
+	document.form.submit();
+}
 
+var arrHashes = ["add", "ssl", "cli", "log"];
 function showTab(curHash){
 	var obj = $('tab_ss_'+curHash.slice(1));
 	if (obj == null || obj.style.display == 'none')
@@ -131,6 +139,24 @@ function showTab(curHash){
 		}
 	}
 	window.location.hash = curHash;
+}
+
+function getHash(){
+	var curHash = window.location.hash.toLowerCase();
+	for(var i = 0; i < arrHashes.length; i++){
+		if(curHash == ('#'+arrHashes[i]))
+			return curHash;
+	}
+	return ('#'+arrHashes[0]);
+}
+
+function fill_status(status_code){
+	var stext = "Unknown";
+	if (status_code == 0)
+		stext = "<#Stopped#>";
+	else if (status_code == 1)
+		stext = "<#Running#>";
+	$("smartdns_status").innerHTML = '<span class="label label-' + (status_code != 0 ? 'success' : 'warning') + '">' + stext + '</span>';
 }
 
 </script>
@@ -164,7 +190,7 @@ function showTab(curHash){
     <input type="hidden" name="next_page" value="">
     <input type="hidden" name="next_host" value="">
     <input type="hidden" name="sid_list" value="ShadowsocksConf;">
-    <input type="hidden" name="group_id" value="">
+    <input type="hidden" name="group_id" value="SdnsList">
     <input type="hidden" name="action_mode" value="">
     <input type="hidden" name="action_script" value="">
 
@@ -229,7 +255,7 @@ function showTab(curHash){
 
                                             <tr>
                                                 <th width="50%" style="border-top: 0 none;"><#running_status#></th>
-                                                <td id="ss_status" style="border-top: 0 none;" colspan="3"></td>
+                                                <td id="ss_status" style="border-top: 0 none;" colspan="2"></td>
                                             </tr>
 
                                             <tr>
@@ -388,11 +414,10 @@ function showTab(curHash){
                                                 </td>
                                             </tr>
                                         </table>
-
                                         <table class="table">
                                             <tr>
                                                 <td colspan="6">
-                                                    <center><input name="button" class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
+                                                    <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
                                                 </td>
                                             </tr>
                                         </table>
@@ -595,11 +620,10 @@ function showTab(curHash){
                                                 </td>
                                             </tr>
                                         </table>
-
                                         <table class="table">
                                             <tr>
                                                 <td colspan="6">
-                                                    <center><input name="button" class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
+                                                    <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
                                                 </td>
                                             </tr>
                                         </table>
@@ -668,11 +692,10 @@ function showTab(curHash){
                                                 </td>
                                             </tr>
                                         </table>
-
                                         <table class="table">
                                             <tr>
                                                 <td colspan="6">
-                                                    <center><input name="button" class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
+                                                    <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
                                                 </td>
                                             </tr>
                                         </table>
