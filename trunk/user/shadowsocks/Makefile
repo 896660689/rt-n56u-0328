@@ -115,4 +115,4 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_SSSERVER),y)
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-server /usr/bin/ss-server
 endif
 	$(ROMFSINST) $(THISDIR)/Shadowsocks.asp /www/Shadowsocks.asp
-	$(ROMFSINST) $(THISDIR)/Shadowsocks_action.asp /www/Shadowsocks_action.asp
+	#$(ROMFSINST) $(THISDIR)/Shadowsocks_action.asp /www/Shadowsocks_action.asp
