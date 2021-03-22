@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2021-02-18
+# Compile:by-lanse	2021-03-21
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -52,11 +52,6 @@ if [ $(nvram get wyy_enable) = "1" ] && [ $(nvram get sdns_enable) = "1" ]; then
     nvram get ss_enable=0
     exit 0
 fi
-}
-
-wait-for() {
-    wait
-    echo "ShadowsocksR Started..."
 }
 
 if [ "${SS_TYPE:-0}" = "0" ] ; then
@@ -265,7 +260,8 @@ func_gfwlist_file(){
     if [ "$ss_mode" = "2" ]
     then
         sh -c "$SSR_HOME/ss-gfwlist.sh -s $SS_SERVER_LINK -l $SS_LOCAL_PORT_LINK"
-        wait-for && \
+        wait
+        echo "" && \
         $ss_bin -c $ss_json -b 0.0.0.0 -l $SS_LOCAL_PORT_LINK >/dev/null 2>&1 &
         sleep 2 && logger -t "[ShadowsocksR]" "使用 [gfwlist] 代理模式开始运行..."
     fi
@@ -358,7 +354,7 @@ func_start(){
             func_chnroute_file &
         fi
         wait
-        echo "SSR FILE..."
+        echo "" && \
         func_gfwlist_list && \
         func_port_agent_mode &
         if [ "$ss_mode" = "3" ]
@@ -374,7 +370,8 @@ func_start(){
             ln -sf $ss_json.main $ss_json && \
             func_start_ss_redir && \
             func_start_ss_rules &
-            wait-for && \
+            wait
+            echo "" && \
             loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!"; }
         fi
         func_cron && \
@@ -393,7 +390,8 @@ func_stop(){
     sleep 1 && $SSR_HOME/chinadns-ng.sh stop &
     sleep 1 && func_ss_Close &
     sleep 1 && func_ss_down &
-    wait-for && \
+    wait
+    echo "" && \
     #ipset destroy gfwlist 2>/dev/null && sleep 2
     ipset -X gfwlist 2>/dev/null && \
     logger -t "[ShadowsocksR]" "已停止运行!"
