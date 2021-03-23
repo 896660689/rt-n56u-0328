@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2021-02-15
+# Compile:by-lanse	2021-03-21
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
@@ -27,10 +27,10 @@ v2_server_file(){
     if [ ! -f "$STORAGE_V2SH" ] || [ ! -s "$STORAGE_V2SH" ]
     then
         cat > "$STORAGE_V2SH" <<EOF
-## -------- 以下粘贴 V2RAY URL  -------- ##
+## ---- 以下粘贴 V2RAY URL 账号（一键保存导入）-------- ##
 
 
-## -------- 以下修改账号信息，文本格式固定勿改动! -------- ##
+## ------ 以下修改 V2RAY 账号信息，文本格式固定勿改动! ------ ##
 #服务器账号
 address:127.0.0.1
 #服务器端口
@@ -184,7 +184,6 @@ func_china_file(){
     then
         ipset -N chnroute hash:net
         sleep 3 && \
-        #sed -e "s/^/add chnroute /" $dir_chnroute_file | ipset restore &
         awk '!/^$/&&!/^#/{printf("add chnroute %s'" "'\n",$0)}' $dir_chnroute_file | ipset restore &
     fi
 }
@@ -205,7 +204,7 @@ func_start(){
         v2_server_file && \
         func_download &
         wait
-        echo "Program Close !"
+        echo "" && \
         func_v2_running &
         logger -t "[v2ray]" "开始运行…"
     else
