@@ -115,7 +115,7 @@ func_start(){
     echo -e "\033[41;37m 部署 [CHINADNS-NG] 文件,请稍后...\e[0m\n"
     #func_cdn_file &
     wait
-    echo "download cdn file !"
+    echo "" && \
     func_del_ipt
     func_cnng_file
     func_lan_ip && \
