@@ -678,13 +678,6 @@ function fill_status(status_code){
                                                 </td>
                                             </tr>
                                         </table>
-                                        <table class="table">
-                                            <tr>
-                                                <td colspan="6">
-                                                    <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
-                                                </td>
-                                            </tr>
-                                        </table>
                                     </div>
 
                                     <div id="wnd_ss_log" style="display:none;">
