@@ -414,13 +414,6 @@ function fill_status(status_code){
                                                 </td>
                                             </tr>
                                         </table>
-                                        <table class="table">
-                                            <tr>
-                                                <td colspan="6">
-                                                    <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
-                                                </td>
-                                            </tr>
-                                        </table>
                                     </div>
 
                                     <div id="wnd_ss_ssl" style="display:none;">
@@ -620,13 +613,6 @@ function fill_status(status_code){
                                                 </td>
                                             </tr>
                                         </table>
-                                        <table class="table">
-                                            <tr>
-                                                <td colspan="6">
-                                                    <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
-                                                </td>
-                                            </tr>
-                                        </table>
                                     </div>
 
                                     <div id="wnd_ss_cli" style="display:none;">
@@ -710,6 +696,13 @@ function fill_status(status_code){
                                             </tr>
                                         </table>
                                     </div>
+                                    <table class="table">
+                                        <tr>
+                                            <td colspan="6">
+                                                <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                         </div>
