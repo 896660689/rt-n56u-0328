@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2021-03-21
+# Compile:by-lanse	2021-03-24
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -261,7 +261,7 @@ func_gfwlist_file(){
     then
         sh -c "$SSR_HOME/ss-gfwlist.sh -s $SS_SERVER_LINK -l $SS_LOCAL_PORT_LINK"
         wait
-        echo "" && \
+        echo ""
         $ss_bin -c $ss_json -b 0.0.0.0 -l $SS_LOCAL_PORT_LINK >/dev/null 2>&1 &
         sleep 2 && logger -t "[ShadowsocksR]" "使用 [gfwlist] 代理模式开始运行..."
     fi
@@ -354,7 +354,7 @@ func_start(){
             func_chnroute_file &
         fi
         wait
-        echo "" && \
+        echo ""
         func_gfwlist_list && \
         func_port_agent_mode &
         if [ "$ss_mode" = "3" ]
@@ -371,7 +371,7 @@ func_start(){
             func_start_ss_redir && \
             func_start_ss_rules &
             wait
-            echo "" && \
+            echo ""
             loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!"; }
         fi
         func_cron && \
@@ -391,7 +391,7 @@ func_stop(){
     sleep 1 && func_ss_Close &
     sleep 1 && func_ss_down &
     wait
-    echo "" && \
+    echo ""
     ipset -X gfwlist 2>/dev/null &
     logger -t "[ShadowsocksR]" "已停止运行!"
 }
