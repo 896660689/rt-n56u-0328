@@ -375,7 +375,7 @@ func_start(){
             loger $ss_bin "ShadowsocksR Start up" || { ss-rules -f && loger $ss_bin "ShadowsocksR Start fail!"; }
         fi
         func_cron && \
-        restart_firewall && \
+        restart_firewall &
         logger -t "[ShadowsocksR]" "开始运行…"
     else
         exit 0
@@ -392,8 +392,7 @@ func_stop(){
     sleep 1 && func_ss_down &
     wait
     echo "" && \
-    #ipset destroy gfwlist 2>/dev/null && sleep 2
-    ipset -X gfwlist 2>/dev/null && \
+    ipset -X gfwlist 2>/dev/null &
     logger -t "[ShadowsocksR]" "已停止运行!"
 }
 
