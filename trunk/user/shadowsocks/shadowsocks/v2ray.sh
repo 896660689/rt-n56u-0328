@@ -97,12 +97,6 @@ v2_tmp_json(){
       "localhost"
     ]
   },
-  "routing": {
-    "domainStrategy": "IPIfNonMatch",
-    "domainMatcher": "mph",
-    "rules": [],
-    "balancers": []
-  },
   "policy": {
     "levels": {
       "5": {
@@ -128,19 +122,9 @@ v2_tmp_json(){
         "auth": "noauth",
         "udp": true
       },
-      "tag": "proxy",
       "sniffing": {
         "enabled": true,
-        "destOverride": [
-          "http",
-          "tls"
-        ],
-        "metadataOnly": false
-      }，
-      "allocate": {
-        "strategy": "always",
-        "refresh": 5,
-        "concurrency": 3
+        "destOverride": ["http", "tls"]
       }
     }
   ],
@@ -176,7 +160,7 @@ v2_tmp_json(){
             "Host": "$v2_domain_name"
           }
         }
-      }，
+      },
       "mux": {
         "enabled": true,
         "concurrency": 8
