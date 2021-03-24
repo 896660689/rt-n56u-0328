@@ -187,7 +187,7 @@ EOF
 EOF
         chmod 644 $STORAGE/ss_pc.sh
     fi
-    $SSR_HOME/v2ray.sh v2_file
+    sh $SSR_HOME/v2ray.sh v2_file
 }
 
 func_gen_ss_json(){
