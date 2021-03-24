@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2020-07-28
+# Compile:by-lanse	2020-03-24
 
 modprobe xt_set
 modprobe ip_set_hash_ip
@@ -115,12 +115,12 @@ func_start(){
     echo -e "\033[41;37m 部署 [CHINADNS-NG] 文件,请稍后...\e[0m\n"
     #func_cdn_file &
     wait
-    echo "" && \
+    echo ""
     func_del_ipt
     func_cnng_file
     func_lan_ip && \
     flush_ipt_file && \
-    func_cnng_ipt && \
+    func_cnng_ipt &
     logger -t "[CHINADNS-NG]" "开始运行…"
 }
 
