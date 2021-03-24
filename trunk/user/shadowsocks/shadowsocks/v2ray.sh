@@ -27,10 +27,10 @@ v2_server_file(){
     if [ ! -f "$STORAGE_V2SH" ] || [ ! -s "$STORAGE_V2SH" ]
     then
         cat > "$STORAGE_V2SH" <<EOF
-## ---- 以下粘贴 V2RAY URL 账号（一键保存导入）-------- ##
+## ---- 以下粘贴 V2RAY URL 账号（应用后自动导入）-------- ##
 
 
-## ------ 以下修改 V2RAY 账号信息，文本格式固定勿改动! ------ ##
+## -- URL 账号为空时读取以下修改 V2RAY 账号信息，文本格式固定勿改动! -- ##
 #服务器账号
 address:127.0.0.1
 #服务器端口
@@ -204,7 +204,7 @@ func_start(){
         v2_server_file && \
         func_download &
         wait
-        echo "" && \
+        echo ""
         func_v2_running &
         logger -t "[v2ray]" "开始运行…"
     else
