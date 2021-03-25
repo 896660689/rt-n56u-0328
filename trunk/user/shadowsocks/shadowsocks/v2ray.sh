@@ -30,7 +30,7 @@ v2_server_file(){
 ## ---- 以下粘贴 V2RAY URL 账号（应用后自动导入）-------- ##
 
 
-## -- URL 账号为空时读取以下修改 V2RAY 账号信息，文本格式固定勿改动! -- ##
+## -- URL 账号为空时读取以下修改 V2RAY 账号信息，格式勿动! -- ##
 #服务器账号
 address:127.0.0.1
 #服务器端口
@@ -48,6 +48,7 @@ path:
 安全协议
 tls:
 ## ---------- END ---------- ##
+
 EOF
     chmod 644 "$STORAGE_V2SH"
     fi
@@ -204,8 +205,7 @@ func_start(){
     if [ "$ss_mode" = "3" ]
     then
         func_Del_rule && \
-        func_china_file && \
-        func_Del_ipset &
+        func_china_file &
         echo -e "\033[41;37m 部署 [v2ray] 文件,请稍后...\e[0m\n"
         v2_server_file && \
         func_download &
