@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2021-03-25
+# Compile:by-lanse	2021-03-26
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -340,10 +340,10 @@ func_start(){
     ulimit -n 65536
     if [ "$SS_ENABLE" = "1" ]
     then
+        [ "$ss_mode" = "2" ] && check_music
         func_sshome_file && \
         if [ "$ss_mode" = "2" ]
         then
-            check_music && \
             func_gfwlist_file &
         else
             func_chnroute_file &
