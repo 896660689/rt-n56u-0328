@@ -166,6 +166,11 @@ function fill_status(status_code){
     padding-right: 6px;
     padding-left: 6px;
 }
+.spanb{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
 </style>
 </head>
 
