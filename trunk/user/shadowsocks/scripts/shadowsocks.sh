@@ -388,7 +388,7 @@ func_stop(){
     wait
     echo ""
     ipset -X gfwlist 2>/dev/null &
-    logger -t "[ShadowsocksR]" "已停止运行!"
+    restart_dhcpd && logger -t "[ShadowsocksR]" "已停止运行!"
 }
 
 case "$1" in
