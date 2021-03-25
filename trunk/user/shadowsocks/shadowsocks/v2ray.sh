@@ -188,12 +188,6 @@ func_china_file(){
     fi
 }
 
-func_Del_ipset(){
-    for setname in $(ipset -n list | grep "chnroute"); do 
-        ipset destroy "$setname" 2>/dev/null 
-    done 
-}
-
 func_v2_running(){
     v2_addmi
     v2_tmp_json
@@ -219,9 +213,8 @@ func_start(){
 }
 
 func_stop(){
-    func_Del_rule && \
-    func_Del_ipset &
-    sleep 2
+    func_Del_rule &
+    sleep 2 && ipset -X gfwlist 2>/dev/null &
     if [ $(nvram get ss_enable) = "0" ]
     then
         [ -d "$v2_home" ] && rm -rf $v2_home
