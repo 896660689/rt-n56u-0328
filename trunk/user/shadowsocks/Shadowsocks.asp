@@ -149,16 +149,6 @@ function getHash(){
 	}
 	return ('#'+arrHashes[0]);
 }
-
-function fill_status(status_code){
-	var stext = "Unknown";
-	if (status_code == 0)
-		stext = "<#Stopped#>";
-	else if (status_code == 1)
-		stext = "<#Running#>";
-	$("smartdns_status").innerHTML = '<span class="label label-' + (status_code != 0 ? 'success' : 'warning') + '">' + stext + '</span>';
-}
-
 </script>
 
 <style>
@@ -195,7 +185,7 @@ function fill_status(status_code){
     <input type="hidden" name="next_page" value="">
     <input type="hidden" name="next_host" value="">
     <input type="hidden" name="sid_list" value="ShadowsocksConf;">
-    <input type="hidden" name="group_id" value="SdnsList">
+    <input type="hidden" name="group_id" value="">
     <input type="hidden" name="action_mode" value="">
     <input type="hidden" name="action_script" value="">
 
@@ -696,9 +686,7 @@ function fill_status(status_code){
                                     </div>
                                     <table class="table">
                                         <tr>
-                                            <td colspan="6">
-                                                <center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
-                                            </td>
+                                            <td style="border: 0 none;"><center><input name="button" type="button" class="btn btn-primary" style="width: 219px" onclick="applyRule();" value="<#CTL_apply#>"/></center></td>
                                         </tr>
                                     </table>
                                 </div>
