@@ -187,6 +187,12 @@ func_china_file(){
     fi
 }
 
+func_Del_ipset(){
+    for setname in $(ipset -n list | grep "chnroute"); do 
+        ipset destroy "$setname" 2>/dev/null 
+    done 
+}
+
 func_v2_running(){
     v2_addmi
     v2_tmp_json
@@ -198,7 +204,8 @@ func_start(){
     if [ "$ss_mode" = "3" ]
     then
         func_Del_rule && \
-        func_china_file &
+        func_china_file && \
+        func_Del_ipset &
         echo -e "\033[41;37m 部署 [v2ray] 文件,请稍后...\e[0m\n"
         v2_server_file && \
         func_download &
@@ -212,6 +219,7 @@ func_start(){
 }
 
 func_stop(){
+    func_Del_ipset && \
     func_Del_rule &
     sleep 2
     if [ $(nvram get ss_enable) = "0" ]
