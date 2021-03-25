@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compile:by-lanse	2021-03-24
+# Compile:by-lanse	2021-03-25
 
 export PATH=$PATH:/etc/storage/shadowsocks
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/etc/storage/shadowsocks
@@ -170,9 +170,7 @@ youtube.com
 youneed.win
 livestream.com
 githubusercontent.com
-gnews.org
 gtv.org
-suannai.me
 
 EOF
         chmod 644 $STORAGE/ss_dom.sh
@@ -342,13 +340,10 @@ func_start(){
     ulimit -n 65536
     if [ "$SS_ENABLE" = "1" ]
     then
-        if [ "$ss_mode" = "2" ]
-        then
-            check_music
-        fi
         func_sshome_file && \
         if [ "$ss_mode" = "2" ]
         then
+            check_music && \
             func_gfwlist_file &
         else
             func_chnroute_file &
