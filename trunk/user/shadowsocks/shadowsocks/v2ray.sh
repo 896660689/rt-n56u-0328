@@ -219,8 +219,8 @@ func_start(){
 }
 
 func_stop(){
-    func_Del_ipset && \
-    func_Del_rule &
+    func_Del_rule && \
+    func_Del_ipset &
     sleep 2
     if [ $(nvram get ss_enable) = "0" ]
     then
