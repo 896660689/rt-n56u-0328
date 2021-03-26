@@ -164,7 +164,8 @@ wyy_start()
 
 wyy_close()
 {
-    del_rule
+    del_rule && \
+    ipset -X music 2>/dev/null &
     [ -d "$STORAGE_DIR/unblockmusic" ] && rm -rf "$STORAGE_DIR/unblockmusic"
     logger -t "音乐解锁" "已关闭"
 }
