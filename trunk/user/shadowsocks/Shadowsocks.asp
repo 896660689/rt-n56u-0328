@@ -39,15 +39,6 @@ $j(document).ready(function(){
 	});
 });
 
-var m_list = [<% get_nvram_list("ShadowsocksConf", "SdnsList"); %>];
-var mlist_ifield = 6;
-if(m_list.length > 0){
-	var m_list_ifield = m_list[0].length;
-	for (var i = 0; i < m_list.length; i++) {
-		m_list[i][mlist_ifield] = i;
-	}
-}
-
 function initial(){
 	show_banner(2);
 	show_menu(11,-1,0);
