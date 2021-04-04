@@ -145,14 +145,14 @@ write_vsftpd_conf(void)
 	fprintf(fp, "max_clients=%d\n", i_maxuser);
 	fprintf(fp, "max_per_ip=%d\n", i_maxuser);
 	fprintf(fp, "ftpd_banner=Welcome to %s FTP service.\n", nvram_safe_get("productid"));
-	
+
 	fclose(fp);
 }
 
 void
 run_ftp(void)
 {
-	if (nvram_match("enable_ftp", "0")) 
+	if (nvram_match("enable_ftp", "0"))
 		return;
 
 	if (is_ftp_run())
@@ -283,12 +283,12 @@ write_smb_conf(void)
 		for (follow_disk = disks_info; follow_disk != NULL; follow_disk = follow_disk->next) {
 			for (follow_partition = follow_disk->partitions; follow_partition != NULL; follow_partition = follow_partition->next) {
 				char *mount_folder;
-				
+
 				if (follow_partition->mount_point == NULL)
 					continue;
-				
+
 				mount_folder = strrchr(follow_partition->mount_point, '/')+1;
-				
+
 				fprintf(fp, "[%s]\n", mount_folder);
 				fprintf(fp, "comment = %s's %s\n", follow_disk->tag, mount_folder);
 				fprintf(fp, "path = %s\n", follow_partition->mount_point);
@@ -319,38 +319,38 @@ write_smb_conf(void)
 	} else {
 		int n, acc_num = 0, sh_num=0;
 		char **account_list;
-		
+
 		// get the account list
 		if (get_account_list(&acc_num, &account_list) < 0) {
 			free_2_dimension_list(&acc_num, &account_list);
 			goto confpage;
 		}
-		
+
 		for (follow_disk = disks_info; follow_disk != NULL; follow_disk = follow_disk->next) {
 			for (follow_partition = follow_disk->partitions; follow_partition != NULL; follow_partition = follow_partition->next) {
 				if (follow_partition->mount_point == NULL)
 					continue;
-				
+
 				char **folder_list;
-				
+
 				// 1. get the folder list
 				if (get_folder_list_in_mount_path(follow_partition->mount_point, &sh_num, &folder_list) < 0) {
 					free_2_dimension_list(&sh_num, &folder_list);
 					continue;
 				}
-				
+
 				// 2. start to get every share
 				for (n = 0; n < sh_num; ++n) {
 					int i, right, first;
 					char share[256];
-					
+
 					int guest_right = get_permission(SMB_GUEST_USER, follow_partition->mount_point, folder_list[n], "cifs");
 
 					memset(share, 0, 256);
 					strcpy(share, folder_list[n]);
-					
+
 					fclose(fp);
-					
+
 					if(check_existed_share(share)){
 						i = 1;
 						memset(share, 0, 256);
@@ -361,7 +361,7 @@ write_smb_conf(void)
 							sprintf(share, "%s(%d)", folder_list[n], i);
 						}
 					}
-					
+
 					if((fp = fopen(SAMBA_CONF, "a")) == NULL)
 						goto confpage;
 					fprintf(fp, "[%s]\n", share);
@@ -370,7 +370,7 @@ write_smb_conf(void)
 					fprintf(fp, /*(guest_right == 2) ? "writeable = yes\n" : */"writeable = no\n");
 					if (guest_right >= 1)
 						fprintf(fp, "guest ok = yes\n");
-					
+
 					fprintf(fp, "valid users = ");
 					first = 1;
 					if (guest_right >= 1) {
@@ -383,27 +383,27 @@ write_smb_conf(void)
 							first = 0;
 						else
 							fprintf(fp, ", ");
-						
+
 						fprintf(fp, "%s", account_list[i]);
 					}
 					fprintf(fp, "\n");
-					
+
 					fprintf(fp, "invalid users = ");
 					first = 1;
 					for (i = 0; i < acc_num; ++i) {
 						right = get_permission(account_list[i], follow_partition->mount_point, folder_list[n], "cifs");
 						if (right >= 1)
 							continue;
-						
+
 						if (first == 1)
 							first = 0;
 						else
 							fprintf(fp, ", ");
-						
+
 						fprintf(fp, "%s", account_list[i]);
 					}
 					fprintf(fp, "\n");
-					
+
 					fprintf(fp, "read list = ");
 					first = 1;
 					if (guest_right >= 1) {
@@ -414,16 +414,16 @@ write_smb_conf(void)
 						right = get_permission(account_list[i], follow_partition->mount_point, folder_list[n], "cifs");
 						if (right < 1)
 							continue;
-						
+
 						if (first == 1)
 							first = 0;
 						else
 							fprintf(fp, ", ");
-						
+
 						fprintf(fp, "%s", account_list[i]);
 					}
 					fprintf(fp, "\n");
-					
+
 					fprintf(fp, "write list = ");
 					first = 1;
 					if (guest_right >= 2) {
@@ -434,21 +434,21 @@ write_smb_conf(void)
 						right = get_permission(account_list[i], follow_partition->mount_point, folder_list[n], "cifs");
 						if (right < 2)
 							continue;
-						
+
 						if (first == 1)
 							first = 0;
 						else
 							fprintf(fp, ", ");
-						
+
 						fprintf(fp, "%s", account_list[i]);
 					}
 					fprintf(fp, "\n");
 				}
-				
+
 				free_2_dimension_list(&sh_num, &folder_list);
 			}
 		}
-		
+
 		free_2_dimension_list(&acc_num, &account_list);
 	}
 
@@ -504,9 +504,9 @@ stop_samba(int force_stop)
 {
 	char* svcs[] = { "smbd",
 #if defined (APP_SMBD36)
-	"wsdd2" ,
+	"wsdd2",
 #endif
-	 "nmbd", NULL };
+	"nmbd", NULL };
 
 	const int nmbdidx = sizeof(svcs) / sizeof(svcs[0]) - 2;
 
@@ -571,7 +571,7 @@ void run_samba(void)
 		doSystem("killall %s %s", "-SIGHUP", "wsdd2");
 	else
 		eval("/sbin/wsdd2", "-d", "-w");
-	
+
 	if (pids("wsdd2"))
 		logmessage("WSDD2", "daemon is started");
 #endif
@@ -602,6 +602,7 @@ write_nfsd_exports(void)
 	const char *exports_file = "/etc/exports";
 	const char *exports_rule = "async,insecure,no_root_squash,no_subtree_check";
 	char *nfsmm, *acl_addr, *acl_mask;
+
 #if defined (USE_IPV6)
 	int ipv6_type;
 	char *acl_addr6, *acl_len6;
@@ -647,7 +648,7 @@ write_nfsd_exports(void)
 		} else
 #endif
 			ip2class(acl_addr, acl_mask, acl_vpn, sizeof(acl_vpn));
-		
+
 		if (strcmp(acl_lan, acl_vpn) == 0)
 			acl_vpn[0] = 0;
 	}
@@ -659,13 +660,13 @@ write_nfsd_exports(void)
 		while (fgets(line, sizeof(line), procpt)) {
 			if (sscanf(line, "%31s %255s %31s %3[^\n]", devname, mpname, fstype, fsmode) != 4)
 				continue;
-			
+
 			if (strcmp(fstype, "fuseblk") == 0)
 				continue;
-			
+
 			if (!is_valid_storage_device(devname))
 				continue;
-			
+
 			if (strncmp(mpname, "/media/", 7) == 0) {
 				fsmode[2] = 0;
 				nfsmm = (strcmp(fsmode, "ro") == 0) ? "ro" : "rw";
@@ -681,7 +682,7 @@ write_nfsd_exports(void)
 				fprintf(fp, "\n");
 			}
 		}
-		
+
 		fclose(procpt);
 	}
 
@@ -748,7 +749,7 @@ int create_mp_link(char *search_dir, char *link_path, int force_first_valid)
 		while (fgets(line, sizeof(line), procpt)) {
 			if (sscanf(line, "%31s %255s %31s %*[^\n]", devname, mpname, fstype) != 3)
 				continue;
-			
+
 #if 0
 			if (only_ext_xfs) {
 				if (strcmp(fstype, "xfs") && strcmp(fstype, "exfat") && strncmp(fstype, "ext", 3))
@@ -774,11 +775,11 @@ int create_mp_link(char *search_dir, char *link_path, int force_first_valid)
 							break;
 						}
 					}
-				
+
 				}
 			}
 		}
-		
+
 		fclose(procpt);
 	}
 
@@ -954,7 +955,7 @@ void stop_itunes(void)
 	kill_services(svcs, 5, 1);
 }
 
-static void 
+static void
 update_firefly_conf(const char *link_path, const char *conf_path, const char *conf_file)
 {
 	FILE *fp1, *fp2;
@@ -1236,16 +1237,16 @@ umount_ejected(void)
 						break;
 					}
 				}
-				
+
 				if (!active) {
 					umount(mpname);
 					rmdir(mpname);
 				}
-				
+
 				fclose(procpt2);
 			}
 		}
-		
+
 		fclose(procpt);
 	}
 
@@ -1265,7 +1266,7 @@ umount_dev(const char *dev_name, int is_root_dev)
 	if (procpt) {
 		while (fgets(line, sizeof(line), procpt)) {
 			int is_our_dev = 0;
-			
+
 			if (sscanf(line, "%31s %255s %*[^\n]", devname, mpname) != 2)
 				continue;
 			if (strncmp(devname, "/dev/sd", 7) == 0) {
@@ -1296,7 +1297,7 @@ umount_dev(const char *dev_name, int is_root_dev)
 					break;
 			}
 		}
-		
+
 		fclose(procpt);
 	}
 }
@@ -1313,11 +1314,11 @@ count_stor_mountpoint(void)
 		while (fgets(line, sizeof(line), procpt)) {
 			if (sscanf(line, "%31s %*[^\n]", devname) != 1)
 				continue;
-			
+
 			if (is_valid_storage_device(devname))
 				count++;
 		}
-		
+
 		fclose(procpt);
 	}
 
@@ -1519,7 +1520,7 @@ safe_remove_stor_device(int port_b, int port_e, const char *dev_name, int do_spi
 		else
 			unload_nfsd();
 #endif
-	
+
 	} else if (has_swapon_port) {
 		for (port = port_b; port <= port_e; port++)
 			umount_stor_path(disks_info, port, dev_name, do_spindown);
