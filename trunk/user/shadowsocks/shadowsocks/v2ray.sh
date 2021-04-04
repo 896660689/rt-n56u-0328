@@ -3,6 +3,7 @@
 
 v2_home="/tmp/v2fly"
 v2_json="$v2_home/config.json"
+v2fly_url="https://cdn.jsdelivr.net/gh/896660689/OS/v2fly/v2ray"
 ss_mode=$(nvram get ss_mode)
 STORAGE="/etc/storage"
 dir_chnroute_file="$STORAGE/chinadns/chnroute.txt"
@@ -18,7 +19,8 @@ func_download(){
     if [ ! -f "$v2_home/v2ray" ]
     then
         mkdir -p "$v2_home"
-        curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 https://cdn.jsdelivr.net/gh/896660689/OS/v2fly/v2ray && \
+        wget --no-check-certificate -c $v2fly_url -qO $v2_home/v2ray && \
+        #curl -k -s -o $v2_home/v2ray --connect-timeout 10 --retry 3 $v2fly_url && \
         chmod 777 "$v2_home/v2ray"
     fi
 }
@@ -214,7 +216,7 @@ func_start(){
 
 func_stop(){
     func_Del_rule &
-    sleep 2 && ipset -X gfwlist 2>/dev/null &
+    sleep 2 && ipset -X chnroute 2>/dev/null &
     if [ $(nvram get ss_enable) = "0" ]
     then
         [ -d "$v2_home" ] && rm -rf $v2_home
