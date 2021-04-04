@@ -1106,11 +1106,12 @@ void announce_802_3_packet(
 		if (ra_sw_nat_hook_rx != NULL) {
 
 			RtmpOsPktProtocolAssign(pRxPkt);
-			RtmpOsPktNatMagicTag(pRxPkt);
-
-			if (ra_sw_nat_hook_rx(pRxPkt))
+			FOE_MAGIC_TAG(RTPKT_TO_OSPKT(pRxPkt)) = FOE_MAGIC_EXTIF;
+			if (ra_sw_nat_hook_rx(pRxPkt)) {
+				FOE_MAGIC_TAG(RTPKT_TO_OSPKT(pRxPkt)) = 0;
 				RtmpOsPktRcvHandle(pRxPkt);
-
+			}
+			
 			return;
 		}
 #endif /* CONFIG_FAST_NAT_SUPPORT */
