@@ -1,20 +1,12 @@
-name: AD-CI
+name: CI
 
 # Controls when the action will run. 
-
-on:
+on: 
+  push:
+  pull_request:
   workflow_dispatch:
   release:
     types: [published]
-  push:
-    tags:
-    - 'v*'
-  #  branches: 
-    - ad
-#  schedule:
-#    - cron: 0 8 * * 5
-  watch:
-    types: [started]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -32,9 +24,9 @@ jobs:
           - build_variant: "mt7620"
             targets: "K2"
           - build_variant: "mt7628"
-            targets: "HC5761A HC5661A"
+            targets: "HC5761A"
           - build_variant: "mt7621"
-            targets: "K2P K2P-5.0"
+            targets: "K2P-5.0 K2P"
     steps:
       - uses: actions/checkout@v2
       - name: Prepare environment
@@ -77,3 +69,9 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
+      - name: Upload images to Releases
+        if: env.upload_wetransfer == 'release' && success()
+        run: |                         # 上传到 WeTransfer
+          curl -fsSL git.io/file-transfer | sh
+          ./transfer wet -s -p 16 --no-progress ${images_dir} 2>&1 | tee wetransfer.log
+          echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
