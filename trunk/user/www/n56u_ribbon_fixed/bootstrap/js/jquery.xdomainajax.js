@@ -1,5 +1,5 @@
 /**
- * jQuery.ajax mid - CROSS DOMAIN AJAX
+ * jQuery.ajax mid - CROSS DOMAIN AJAX 
  * ---
  * @author James Padolsey (http://james.padolsey.com)
  * @version 0.11
@@ -57,4 +57,3 @@ jQuery.ajax = (function(_ajax){
         return _ajax.apply(this, arguments);
     };
 })(jQuery.ajax);
-
