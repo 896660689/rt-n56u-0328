@@ -2,10 +2,10 @@
 
 [ ! -x /sbin/hdparm ] && exit 1
 
-hdd_spindt=$(nvram get hdd_spindt)
+hdd_spindt=`nvram get hdd_spindt`
 [ -z "$hdd_spindt" ] && hdd_spindt=0
 
-hdd_apmoff=$(nvram get hdd_apmoff)
+hdd_apmoff=`nvram get hdd_apmoff`
 [ -z "$hdd_apmoff" ] && hdd_apmoff=0
 
 
@@ -50,15 +50,15 @@ if [ -z "$1" ] ; then
 	for i in a b c d e f g h i k ; do
 		removable=1
 		if [ -e /sys/block/sd${i} ] ; then
-			[ -r /sys/block/sd${i}/removable ] && removable=$(cat /sys/block/sd${i}/removable)
-			[ "$removable" -eq 0 ] && /sbin/hdparm $HDPARM_S $HDPARM_B /dev/sd${i}
+			[ -r /sys/block/sd${i}/removable ] && removable=`cat /sys/block/sd${i}/removable`
+			[ $removable -eq 0 ] && /sbin/hdparm $HDPARM_S $HDPARM_B /dev/sd${i}
 		fi
 	done
 else
 	if [ -e /sys/block/$1 ] ; then
 		removable=1
-		[ -r /sys/block/$1/removable ] && removable=$(cat /sys/block/$1/removable)
-		if [ "$removable" -eq 0 ] ; then
+		[ -r /sys/block/$1/removable ] && removable=`cat /sys/block/$1/removable`
+		if [ $removable -eq 0 ] ; then
 			if [ $hdd_spindt -gt 0 ] ; then
 				logger -t hdparm "Set spindown timeout to device /dev/$1"
 				/sbin/hdparm $HDPARM_S /dev/$1

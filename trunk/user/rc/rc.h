@@ -513,6 +513,18 @@ int start_services_once(int is_ap_mode);
 void stop_services(int stopall);
 void stop_services_lan_wan(void);
 void stop_misc(void);
+#if defined(APP_SCUT)
+int is_scutclient_run(void);
+void stop_scutclient(void);
+void start_scutclient(void);
+void restart_scutclient(void);
+#endif
+#if defined(APP_MENTOHUST)
+int is_mentohust_run(void);
+void stop_mentohust(void);
+void start_mentohust(void);
+void restart_mentohust(void);
+#endif
 #if defined(APP_TTYD)
 void stop_ttyd(void);
 void start_ttyd(void);
@@ -528,24 +540,18 @@ void restart_ss_tunnel(void);
 void update_chnroute(void);
 void update_gfwlist(void);
 #endif
+#if defined(APP_VLMCSD)
+void stop_vlmcsd(void);
+void start_vlmcsd(void);
+void restart_vlmcsd(void);
+#endif
 #if defined(APP_NAPT66)
 void start_napt66(void);
 #endif
-#if defined(APP_ADBYBY)
-void stop_adbyby(void);
-void start_adbyby(void);
-void restart_adbyby(void);
-void update_adb(void);
-#endif
-#if defined(APP_WYY)
-void stop_wyy(void);
-void start_wyy(void);
-void restart_wyy(void);
-#endif
-#if defined(APP_ADGUARDHOME)
-void stop_adguardhome(void);
-void start_adguardhome(void);
-void restart_adguardhome(void);
+#if defined(APP_DNSFORWARDER)
+void stop_dnsforwarder(void);
+void start_dnsforwarder(void);
+void restart_dnsforwarder(void);
 #endif
 
 /* services_ex.c */
@@ -627,7 +633,6 @@ void stop_aria(void);
 void run_aria(void);
 void restart_aria(void);
 #endif
-
 int count_stor_mountpoint(void);
 void umount_stor_path(struct disk_info_t *disks_info, int port, const char *dev_name, int do_spindown);
 void umount_ejected(void);
@@ -768,4 +773,3 @@ int  mdev_mmc_main(int argc, char **argv);
 #endif
 
 #endif /* _rc_h_ */
-

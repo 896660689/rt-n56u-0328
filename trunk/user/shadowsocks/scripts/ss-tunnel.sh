@@ -1,10 +1,9 @@
 #!/bin/sh
 
-ss_bin="ss-local"
+ss_bin=ss-local
 ss_json_file="/tmp/ss-local.json"
 ss_proc="/var/ss-tunnel"
-
-## /usr/bin/ss-local -> /var/ss-tunnel -> /usr/bin/ss-orig-tunnel or /usr/bin/ssr-local
+#/usr/bin/ss-local -> /var/ss-tunnel -> /usr/bin/ss-orig-tunnel or /usr/bin/ssr-local
 
 ss_type="$(nvram get ss_type)" #0=ss;1=ssr
 

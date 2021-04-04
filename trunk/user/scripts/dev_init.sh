@@ -4,17 +4,13 @@ mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 [ -d /proc/bus/usb ] && mount -t usbfs usbfs /proc/bus/usb
 
-size_tmp="26M"
+size_tmp="24M"
 size_var="4M"
+size_etc="6M"
+
 if [ "$1" == "-l" ] ; then
 	size_tmp="8M"
 	size_var="1M"
-fi
-
-if [ "$1" == "-b" ] ; then
-	size_etc="10M"
-else
-	size_etc="6M"
 fi
 
 mount -t tmpfs tmpfs /dev   -o size=8K
@@ -67,10 +63,6 @@ if [ -f /etc_ro/openssl.cnf ]; then
 	cp -f /etc_ro/openssl.cnf /etc/ssl
 fi
 
-if [ -f /etc_ro/ca-certificates.crt ]; then
-	ln -sf /etc_ro/ca-certificates.crt /etc/ssl/cert.pem
-fi
-
 # create symlinks
 ln -sf /home/root /home/admin
 ln -sf /proc/mounts /etc/mtab
@@ -101,13 +93,8 @@ if [ -f /usr/bin/htop ]; then
 	echo "color_scheme=6" > /home/root/.config/htop/htoprc
 fi
 
-# setup htop default color
-if [ -f /usr/bin/htop ]; then
-	mkdir -p /home/root/.config/htop
-	echo "color_scheme=6" > /home/root/.config/htop/htoprc
-fi
-
 # perform start script
 if [ -x /etc/storage/start_script.sh ] ; then
 	/etc/storage/start_script.sh
 fi
+

@@ -25,7 +25,7 @@
 #include <shutils.h>
 #include <nvram_linux.h>
 
-#define SYSLOG_ID_HTTPD	"httpd"
+#define SYSLOG_ID_HTTPD		"httpd"
 
 #define STORAGE_HTTPSSL_DIR	"/etc/storage/https"
 #define STORAGE_OVPNSVR_DIR	"/etc/storage/openvpn/server"
@@ -62,7 +62,7 @@ struct language_table{
 extern const struct language_table language_tables[];
 
 typedef struct kw_s     {
-	int len, tlen;             // actually / total
+	int len, tlen;                                          // actually / total
 	char dict[4];
 	unsigned char **idx;
 	unsigned char *buf;
@@ -220,4 +220,3 @@ extern char log_header[];
 
 
 #endif /* _httpd_h_ */
-

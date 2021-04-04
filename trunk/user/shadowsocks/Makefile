@@ -7,25 +7,31 @@ SRC_SSR_NAME=shadowsocksr-libev-master
 ARCHIVE_SSR_NAME=shadowsocksr-libev-master-e2373d7
 #https://github.com/shadowsocksr-backup/shadowsocksr-libev.git
 
-SSR_HOME=shadowsocks
+GFWLIST_NAME=dnsmasq_gfwlist.conf
+GFWLIST_URL=https://cokebar.github.io/gfwlist2dnsmasq/$(GFWLIST_NAME)
+GFWLIST_DIR=gfwlist
 
-all: shadowsocks_dl extract_test config_test
+all: gfwlist_dl extract_test config_test
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_SSR_NAME)
 endif
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_SS_NAME)
 
+gfwlist_dl:
+ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
+	mkdir -p $(GFWLIST_DIR)
+	( if [ ! -f $(GFWLIST_DIR)/.finish ]; then \
+		cd $(GFWLIST_DIR) && rm -f * && \
+		wget -q -t5 --timeout=20 --no-check-certificate $(GFWLIST_URL) && \
+		tar jcf gfwlist.bz2 $(GFWLIST_NAME) && \
+		touch .finish ; \
+	fi )
+endif
+
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 extract_test: extract_ssr_test extract_ss_test
 else
 extract_test: extract_ss_test
-endif
-
-shadowsocks_dl:
-ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
-	( if [ -d $(SSR_HOME) ]; then \
-		tar zcf shadowsocks.tar.gz $(SSR_HOME) ; \
-	fi )
 endif
 
 extract_ssr_test:
@@ -67,7 +73,7 @@ configure_ssr:
 		--disable-ssp \
 		--disable-assert \
 		--enable-system-shared-lib \
-		--with-crypto-library=openssl \
+		--with-crypto-library=mbedtls \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)
@@ -86,6 +92,7 @@ configure_ss:
 
 clean: clean_ssr clean_ss
 	rm -f ssr_config_done ss_config_done
+	rm -rf $(GFWLIST_DIR)
 
 clean_ssr:
 	( if [ -f $(SRC_SSR_NAME)/Makefile ] ; then \
@@ -99,10 +106,9 @@ clean_ss:
 
 romfs:
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
-	chmod -R +x ./shadowsocks
-	chmod -R +x ./scripts
+	chmod -R +x scripts/
 	$(ROMFSINST) $(THISDIR)/scripts/ /usr/bin/
-	$(ROMFSINST) $(THISDIR)/shadowsocks.tar.gz /etc_ro/shadowsocks.tar.gz
+	$(ROMFSINST) $(THISDIR)/gfwlist/gfwlist.bz2 /etc_ro/gfwlist.bz2
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SSR_NAME)/src/ss-redir /usr/bin/ssr-redir
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SSR_NAME)/src/ss-local /usr/bin/ssr-local
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-redir /usr/bin/ss-orig-redir
@@ -114,5 +120,3 @@ endif
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SSSERVER),y)
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_SS_NAME)/src/ss-server /usr/bin/ss-server
 endif
-	$(ROMFSINST) $(THISDIR)/Shadowsocks.asp /www/Shadowsocks.asp
-	$(ROMFSINST) $(THISDIR)/Shadowsocks_action.asp /www/Shadowsocks_action.asp
